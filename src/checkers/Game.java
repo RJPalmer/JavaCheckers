@@ -6,6 +6,7 @@ package checkers;
 
 import gameboard.GameBoard;
 import gameboard.Piece;
+import java.awt.Container;
 import javax.swing.JFrame;
 
 /**
@@ -19,10 +20,16 @@ public class Game {
     public Game() {
         gameGUI = new JFrame("Welcome to Checkers");
         gameGUI.setSize(800, 800);
+        gameGUI.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        
     }
 
     public Game(GameBoard board, Piece[] gamePieces, Player[] players) {
         //throw new UnsupportedOperationException("Not yet implemented");
+        this();
+        Container container;
+        container = gameGUI.getContentPane();
+        container.add(board);
     }
 
     void startGame() {
