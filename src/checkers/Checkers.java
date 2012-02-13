@@ -52,7 +52,7 @@ public class Checkers {
     public static void main(String[] args) {
         // TODO code application logic here
         Checkers checkers = new Checkers();
-        checkers.getGameGui().setVisible(true);
+        checkers.newGame.startGame();
     }
 
     /**
@@ -79,16 +79,7 @@ public class Checkers {
 
     private void initComponents() {
         boolean isLoading = true;
-        Container container;
         
-        gameGui = new JFrame("Welcome to Checkers");
-        gameGui.setSize(800, 800);
-        // TODO code application logic here
-       
-        gameGui.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        
-        //gameGui.setLayout(new CardLayout());
-        container = gameGui.getContentPane();
        
         /*
         loadingScreen = new JPanel();
@@ -98,7 +89,7 @@ public class Checkers {
         board = new GameBoard();
         
         //container.add(loadingScreen);
-        container.add(board);
+        
         
         gamePieces = new Piece[24];
         players = new Player[2];
@@ -107,17 +98,4 @@ public class Checkers {
         
     }
 
-    /**
-     * @return the gameGui
-     */
-    public JFrame getGameGui() {
-        return gameGui;
-    }
-
-    /**
-     * @param gameGui the gameGui to set
-     */
-    public void setGameGui(JFrame gameGui) {
-        this.gameGui = gameGui;
-    }
 }
