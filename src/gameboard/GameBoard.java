@@ -36,9 +36,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         //this.setBackground(Color.red);
         squareWidth = 100;
         pieces = new Piece[14];
-        for (int i = 0; i < pieces.length; i++) {
-            pieces[i] = new Piece(0, 0, squareWidth, squareWidth, 0, 360);
-        }
+
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
@@ -53,13 +51,6 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         drawBoard(g);
         drawPieces(g);
 
-        //draw a piece on the board at the third square
-        /*
-        piece1.setWidth(squareWidth);
-        piece1.setHeight(squareWidth);
-        piece1.drawPiece(g);
-         * 
-         */
         /*
         g2.setColor(Color.DARK_GRAY);
         piece1.movePiece(2*squareWidth, squareWidth);
@@ -212,9 +203,6 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
      */
     public void setPieces(Piece[] pieces) {
         this.pieces = pieces;
-        for (int i = 0; i < pieces.length; i++) {
-            this.pieces[i] = new Piece(0, 0, squareWidth, squareWidth, 0, 360);
-        }
     }
 
     private void drawBoard(Graphics g) {
@@ -273,6 +261,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
                     if (pieceIndex < pieces.length) {
                         pieces[pieceIndex].setxPos(i);
                         pieces[pieceIndex].setyPos(k);
+                        pieces[pieceIndex].setWidth(squareWidth);
                         pieces[pieceIndex].drawPiece(g);
                         pieceIndex++;
                     }
@@ -286,6 +275,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
                     if (pieceIndex < pieces.length) {
                         pieces[pieceIndex].setxPos(i);
                         pieces[pieceIndex].setyPos(k);
+                        pieces[pieceIndex].setWidth(squareWidth);
                         pieces[pieceIndex].drawPiece(g);
                         pieceIndex++;
                     }
