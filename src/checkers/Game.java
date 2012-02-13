@@ -29,6 +29,7 @@ public class Game {
         this();
         Container container;
         container = gameGUI.getContentPane();
+        board.setPieces(gamePieces);
         container.add(board);
     }
 

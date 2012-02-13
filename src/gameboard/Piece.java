@@ -5,6 +5,7 @@
 package gameboard;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 /**
@@ -163,7 +164,8 @@ public class Piece {
      * drawPiece - renders the piece using the given graphics component
      * @param g2 
      */
-    public void drawPiece(Graphics2D g2) {
+    public void drawPiece(Graphics g) {
+        Graphics2D g2 = (Graphics2D)g;
         if (isSelected) {
             g2.setColor(Color.YELLOW);
         } else {
