@@ -91,7 +91,7 @@ public class Checkers {
         //container.add(loadingScreen);
         
         
-        gamePieces = new Piece[14];
+        gamePieces = new Piece[13];
         players = new Player[2];
         
         newGame = new Game(board, gamePieces, players);
