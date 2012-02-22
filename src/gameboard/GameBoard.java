@@ -219,35 +219,39 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         int swap = 1;
         for (int k = 0; k <= this.getHeight(); k += (getSquareWidth())) {
             if (swap % 2 == 1) {
-                for (int i = 0; i <= this.getWidth();
+                for (int i = 0; i <= getSquareWidth() * 8;
                         i += (2 * getSquareWidth())) {
 
                     g2.setColor(boardSquare1.getSquareColor());
                     g2.fillRect(i, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }
 
-                for (int j = getSquareWidth(); j <= this.getWidth(); j += (2 * getSquareWidth())) {
+                for (int j = getSquareWidth(); j <= getSquareWidth() * 8; j += (2 * getSquareWidth())) {
                     g2.setColor(boardSquare2.getSquareColor());
                     g2.fillRect(j, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }
 
                 swap++;
             }//end if
             else {
-                for (int j = 0; j <= this.getWidth(); j += (2 * getSquareWidth())) {
+                for (int j = 0; j <= getSquareWidth() * 8; j += (2 * getSquareWidth())) {
                     g2.setColor(boardSquare2.getSquareColor());
                     g2.fillRect(j, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }//end for loop
 
-                for (int i = getSquareWidth(); i <= this.getWidth();
+                for (int i = getSquareWidth() * 8; i <= this.getWidth();
                         i += (2 * getSquareWidth())) {
 
                     g2.setColor(boardSquare1.getSquareColor());
                     g2.fillRect(i, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }//end for loop
                 swap++;
             }//end else
@@ -262,9 +266,24 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
      * @param g 
      */
     private void drawPieces(Graphics g) {
+         int pieceX;
+        int pieceY;
+        int adjustX;
+        int adjustY;
+        for(int i = 0; i < this.pieces.length; i++){
+            
+        }
         for (int i = 0; i < pieces.length;
                 i++) {
+            pieceX = pieces[i].getxPos();
+            pieceY = pieces[i].getyPos();
+            
+            adjustX = pieceX  / this.getSquareWidth();
+            adjustY = pieceY / this.getSquareWidth();
+            pieces[i].setxPos(this.getSquareWidth() * adjustX);
+            pieces[i].setyPos(this.getSquareWidth() * adjustY);
             pieces[i].setWidth(squareWidth);
+            pieces[i].setHeight(squareWidth);
             pieces[i].drawPiece(g);
         }
     }
@@ -281,5 +300,9 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
      */
     public void setSquareWidth(int squareWidth) {
         this.squareWidth = squareWidth;
+    }
+
+    private void updatePiece(int xPos, int yPos) {
+       
     }
 }

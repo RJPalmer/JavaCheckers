@@ -98,10 +98,11 @@ public class Game {
             }
         }//end for loop
         
+        pieceIndex = 0;
         //for the bottom pieces
-        for (int k = (gameGUI.getHeight() - 99); 
-                k >= ((gameGUI.getHeight() - (99*3))); k -= (99)) {
-            if (swap % 2 == 1) {
+        for (int k = (gameGUI.getHeight() - 102); 
+                k >= ((gameGUI.getHeight() - (102*3))); k -= (100)) {
+            if (swap % 2 == 0) {
 
                 for (int j = 99; j <= gameGUI.getWidth(); j += (2 * 99)) {
 
