@@ -36,15 +36,12 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         //this.setBackground(Color.red);
         setSquareWidth(100);
         pieces = new Piece[14];
-<<<<<<< Updated upstream
 
 
-=======
-        piece1 = new Piece();
+        //piece1 = new Piece();
         for (int i = 0; i < pieces.length; i++) {
             pieces[i] = new Piece(0, 0, squareWidth, squareWidth, 0, 360);
         }
->>>>>>> Stashed changes
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
@@ -80,16 +77,13 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 
         //we only want to move the piece if the piece has been selected
 
-<<<<<<< Updated upstream
-=======
         //if the mouse is on top of the piece, the piece should change color
         //if the mouse is to the right of top left corner, but to the left of the
         //top right corner
-        if (eMouseEvent.getX() > piece1.getxPos()
-                && eMouseEvent.getX() < (piece1.getxPos() + squareWidth)
-                && eMouseEvent.getY() > piece1.getyPos()
-                && eMouseEvent.getY() < (piece1.getyPos() + squareWidth)) {
->>>>>>> Stashed changes
+        // if (eMouseEvent.getX() > piece1.getxPos()
+        //         && eMouseEvent.getX() < (piece1.getxPos() + squareWidth)
+        //         && eMouseEvent.getY() > piece1.getyPos()
+        //         && eMouseEvent.getY() < (piece1.getyPos() + squareWidth)) {
 
 
 
