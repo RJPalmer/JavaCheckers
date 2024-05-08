@@ -4,13 +4,10 @@
  */
 package checkers;
 
+import javax.swing.JPanel;
+
 import gameboard.GameBoard;
 import gameboard.Piece;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Container;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  * Checkers - An application that allows a user to play the game of checkers
@@ -91,7 +88,7 @@ public class Checkers {
         //container.add(loadingScreen);
         
         
-        gamePieces = new Piece[24];
+        gamePieces = new Piece[13];
         players = new Player[2];
         
         newGame = new Game(board, gamePieces, players);

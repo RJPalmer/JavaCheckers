@@ -24,7 +24,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     private Graphics panelG;
     private Square boardSquare1;
     private Square boardSquare2;
-    private Piece piece1;
+    private int selectedPiece;
     private JPanel checkerBoard;
     private Piece[] pieces;
 
@@ -34,11 +34,17 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 
     private void initComponents() {
         //this.setBackground(Color.red);
-        squareWidth = 100;
+        setSquareWidth(100);
         pieces = new Piece[14];
+<<<<<<< Updated upstream
+
+
+=======
+        piece1 = new Piece();
         for (int i = 0; i < pieces.length; i++) {
             pieces[i] = new Piece(0, 0, squareWidth, squareWidth, 0, 360);
         }
+>>>>>>> Stashed changes
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
@@ -53,13 +59,6 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         drawBoard(g);
         drawPieces(g);
 
-        //draw a piece on the board at the third square
-        /*
-        piece1.setWidth(squareWidth);
-        piece1.setHeight(squareWidth);
-        piece1.drawPiece(g);
-         * 
-         */
         /*
         g2.setColor(Color.DARK_GRAY);
         piece1.movePiece(2*squareWidth, squareWidth);
@@ -73,46 +72,63 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     public void mouseClicked(MouseEvent e) {
         int squareX = 0;
         int squareY = 0;
+        MouseEvent eMouseEvent = e;
+
 
         //update the square width
         updateSquare();
 
         //we only want to move the piece if the piece has been selected
 
+<<<<<<< Updated upstream
+=======
         //if the mouse is on top of the piece, the piece should change color
         //if the mouse is to the right of top left corner, but to the left of the
         //top right corner
-        if (e.getX() > piece1.getxPos()
-                && e.getX() < (piece1.getxPos() + squareWidth)
-                && e.getY() > piece1.getyPos()
-                && e.getY() < (piece1.getyPos() + squareWidth)) {
+        if (eMouseEvent.getX() > piece1.getxPos()
+                && eMouseEvent.getX() < (piece1.getxPos() + squareWidth)
+                && eMouseEvent.getY() > piece1.getyPos()
+                && eMouseEvent.getY() < (piece1.getyPos() + squareWidth)) {
+>>>>>>> Stashed changes
 
-            //if the piece has not been selected
-            if (!piece1.isSelected) {
-                //set isSelected to true
-                piece1.isSelected = true;
+
+
+
+        for (int i = 0; i < pieces.length; i++) {
+            if (e.getX() > pieces[i].getxPos()
+                    && e.getX() < (pieces[i].getxPos() + getSquareWidth())
+                    && e.getY() > pieces[i].getyPos()
+                    && e.getY() < (pieces[i].getyPos() + getSquareWidth())) {
+
+
+                //if the piece has not been selected
+                if (!pieces[i].isSelected) {
+                    //set isSelected to true
+                    pieces[i].isSelected = true;         //the square the mouse is over
+                    selectedPiece = i;
+                }//end if
+                else {
+                    pieces[i].isSelected = false;
+                }//end else
+
+
             }//end if
-            else {
-                piece1.isSelected = false;
-            }//end else
-        }//end if
-        //if the mouse is not over the piece, and the piece is selected, then you
-        //should move the piece to where the mouse is
-        else {
-            if (piece1.isSelected) {
-                //we want the piece to be drawn in the square the mouse is over
-                //the square the mouse is over
-                squareX = e.getX() / squareWidth;
-                squareY = e.getY() / squareWidth;
+            else if(pieces[selectedPiece] != null){
+                    squareX = e.getX() / getSquareWidth();
+                    squareY = e.getY() / getSquareWidth();
 
-                //move the piece coordinates to the appropriate square
-                piece1.movePiece(squareX, squareY);
-                piece1.isSelected = false;
-            }
-        }
+                    //move the piece coordinates to the appropriate square
+                    pieces[selectedPiece].movePiece(squareX, squareY);
+                    
+                }//end if
+                
+        }//end for
+
+                         
+                   
+        
         //redraw the screen
         repaint();
-
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -203,7 +219,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
      * updateSquare - updates the width of the squares on the board.
      */
     private void updateSquare() {
-        squareWidth = this.getWidth() / 8;
+        setSquareWidth(this.getWidth() / 8);
     }
 
     /**
@@ -212,47 +228,48 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
      */
     public void setPieces(Piece[] pieces) {
         this.pieces = pieces;
-        for (int i = 0; i < pieces.length; i++) {
-            this.pieces[i] = new Piece(0, 0, squareWidth, squareWidth, 0, 360);
-        }
     }
 
     private void drawBoard(Graphics g) {
-        boardSquare1 = new Square(0, 0, squareWidth, squareWidth, Color.BLUE);
-        boardSquare2 = new Square(0, 0, squareWidth, squareWidth, Color.BLACK);
+        boardSquare1 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLUE);
+        boardSquare2 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLACK);
         Graphics2D g2 = (Graphics2D) g;
         int swap = 1;
-        for (int k = 0; k <= this.getHeight(); k += (squareWidth)) {
+        for (int k = 0; k <= this.getHeight(); k += (getSquareWidth())) {
             if (swap % 2 == 1) {
-                for (int i = 0; i <= this.getWidth();
-                        i += (2 * squareWidth)) {
+                for (int i = 0; i <= getSquareWidth() * 8;
+                        i += (2 * getSquareWidth())) {
 
                     g2.setColor(boardSquare1.getSquareColor());
                     g2.fillRect(i, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }
 
-                for (int j = squareWidth; j <= this.getWidth(); j += (2 * squareWidth)) {
+                for (int j = getSquareWidth(); j <= getSquareWidth() * 8; j += (2 * getSquareWidth())) {
                     g2.setColor(boardSquare2.getSquareColor());
                     g2.fillRect(j, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }
 
                 swap++;
             }//end if
             else {
-                for (int j = 0; j <= this.getWidth(); j += (2 * squareWidth)) {
+                for (int j = 0; j <= getSquareWidth() * 8; j += (2 * getSquareWidth())) {
                     g2.setColor(boardSquare2.getSquareColor());
                     g2.fillRect(j, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }//end for loop
 
-                for (int i = squareWidth; i <= this.getWidth();
-                        i += (2 * squareWidth)) {
+                for (int i = getSquareWidth() * 8; i <= this.getWidth();
+                        i += (2 * getSquareWidth())) {
 
                     g2.setColor(boardSquare1.getSquareColor());
                     g2.fillRect(i, k,
                             boardSquare1.getWidth(), boardSquare1.getHeight());
+                    
                 }//end for loop
                 swap++;
             }//end else
@@ -262,40 +279,48 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         }//end for loop
     }
 
+    /**
+     * 
+     * @param g 
+     */
     private void drawPieces(Graphics g) {
-        int swap = 1;
-        int pieceIndex = 0;
+         int pieceX;
+        int pieceY;
+        int adjustX;
+        int adjustY;
+        for(int i = 0; i < this.pieces.length; i++){
+            
+        }
+        for (int i = 0; i < pieces.length;
+                i++) {
+            pieceX = pieces[i].getxPos();
+            pieceY = pieces[i].getyPos();
+            
+            adjustX = pieceX  / this.getSquareWidth();
+            adjustY = pieceY / this.getSquareWidth();
+            pieces[i].setxPos(this.getSquareWidth() * adjustX);
+            pieces[i].setyPos(this.getSquareWidth() * adjustY);
+            pieces[i].setWidth(squareWidth);
+            pieces[i].setHeight(squareWidth);
+            pieces[i].drawPiece(g);
+        }
+    }
 
-        for (int k = 0; k <= this.getHeight(); k += (squareWidth)) {
-            if (swap % 2 == 1) {
-                for (int i = 0; i <= this.getWidth();
-                        i += (2 * squareWidth)) {
-                    if (pieceIndex < pieces.length) {
-                        pieces[pieceIndex].setxPos(i);
-                        pieces[pieceIndex].setyPos(k);
-                        pieces[pieceIndex].drawPiece(g);
-                        pieceIndex++;
-                    }
-                }//end for loop
+    /**
+     * @return the squareWidth
+     */
+    public int getSquareWidth() {
+        return squareWidth;
+    }
 
-                swap++;
-            }//end if
-            else {
-                for (int i = squareWidth; i <= this.getWidth();
-                        i += (2 * squareWidth)) {
-                    if (pieceIndex < pieces.length) {
-                        pieces[pieceIndex].setxPos(i);
-                        pieces[pieceIndex].setyPos(k);
-                        pieces[pieceIndex].drawPiece(g);
-                        pieceIndex++;
-                    }
-                }//end for loop
-                swap++;
-            }//end else
-            if (swap > 2) {
-                swap = 1;
-            }
-        }//end for loop
+    /**
+     * @param squareWidth the squareWidth to set
+     */
+    public void setSquareWidth(int squareWidth) {
+        this.squareWidth = squareWidth;
+    }
 
-    }//end drawPieces
+    private void updatePiece(int xPos, int yPos) {
+       
+    }
 }
