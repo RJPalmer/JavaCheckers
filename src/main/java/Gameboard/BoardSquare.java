@@ -11,14 +11,14 @@ import java.awt.Color;
  * @author robertpalmer
  */
 public class BoardSquare {
-    
-        private Color Color;
-        
-    private boolean hasPiece;
-    
-        private Piece currentPiece;
 
-        /**
+    private Color Color;
+
+    private boolean hasPiece;
+
+    private Piece currentPiece;
+
+    /**
      * Get the value of currentPiece
      *
      * @return the value of currentPiece
@@ -42,7 +42,6 @@ public class BoardSquare {
         this.currentPiece = currentPiece;
     }
 
-
     /**
      * Get the value of hasPiece
      *
@@ -60,7 +59,6 @@ public class BoardSquare {
     public void setHasPiece(boolean hasPiece) {
         this.hasPiece = hasPiece;
     }
-
 
     /**
      * Get the value of Color

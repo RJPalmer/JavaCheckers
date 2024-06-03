@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 /**
- * Piece.java - Represents a piece to be placed on the gameboard
+ * Piece.java - Represents a piece to be placed on the game board
  * @author Palmer
  */
 public class Piece {
