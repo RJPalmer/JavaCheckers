@@ -2,17 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package checkers;
+package com.mycompany.javacheckers;
 
-import gameboard.BoardSquare;
-import gameboard.GameBoard;
+import Gameboard.BoardSquare;
+import Gameboard.GameBoard;
+import Gameboard.GameboardResizeListener;
+import checkers.Player;
 import gameboard.Piece;
 import java.awt.Color;
 import java.awt.Container;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.awt.Dimension;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  *
@@ -24,6 +26,7 @@ public class Game {
     private static final int ROW_COUNT = 8;
     private static final int COLUMN_COUNT = 8;
     private JFrame gameGUI;
+    private GameboardResizeListener resizer;
     private int numPieces;
 
     /**
@@ -33,6 +36,7 @@ public class Game {
         gameGUI = new JFrame("Welcome to Checkers");
         gameGUI.setSize(800, 800);
         gameGUI.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        gameGUI.addComponentListener(resizer);
 
     }
 
@@ -45,8 +49,10 @@ public class Game {
     public Game(GameBoard board, Piece[] gamePieces, Player[] players) {
         //throw new UnsupportedOperationException("Not yet implemented");
         this();
+//        JScrollPane scrollPane = new JScrollPane()
         Container container;
-
+        JScrollPane panel = new JScrollPane();
+        panel.setPreferredSize(new Dimension(800, 800));
         container = gameGUI.getContentPane();
 
         BoardSquare[][] gameBoard;
@@ -64,7 +70,7 @@ public class Game {
             }
             for (int colIndex = 0; colIndex < COLUMN_COUNT; colIndex++) {
                 Color color = (colIndex % 2 == 0) ? color1 : color2;
-                gameBoard[rowIndex][colIndex] = new gameboard.BoardSquare(color, false, null);
+                gameBoard[rowIndex][colIndex] = new BoardSquare(color, false, null);
             }
         }
         
@@ -74,13 +80,16 @@ public class Game {
 //        Piece[] player2Pieces = new Piece[GAME_PIECE_COUNT / 2];
 
         for (int i = 0; i < gamePieces.length; i++) {
-                gamePieces[i] = new Piece(0,0,100,100,0,360);
-//            player1Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
-//            player2Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
-//            player1Pieces[i].setPieceColor(Color.RED);
-//            player2Pieces[i].setPieceColor(Color.yellow);
+                gamePieces[i] = new Piece(0,0,0,0,100,100,0,360);
+//<editor-fold defaultstate="collapsed" desc="comment">
+/*
 
-                
+            player1Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
+            player2Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
+            player1Pieces[i].setPieceColor(Color.RED);
+            player2Pieces[i].setPieceColor(Color.yellow);
+        */
+//</editor-fold>      
         }
 
         initPieces(gamePieces, gameBoard);
@@ -90,7 +99,14 @@ public class Game {
         //list.toArray(gamePieces);
         board.setGameBoard(gameBoard);
         board.setPieces(gamePieces);
-        container.add(board);
+        board.setPreferredSize(new Dimension(800,800));
+        panel.setViewportView(board);
+        JPanel tempPanel = new JPanel();
+        tempPanel.add(panel);
+//        panel.setPreferredSize(new Dimension(800, 800));
+        container.add(tempPanel);
+       
+        
     }
 
     void startGame() {
@@ -227,8 +243,8 @@ public class Game {
      */
     private void placePiece(int rowIndex, int colIndex, BoardSquare boardSquare, Piece player1Piece) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        player1Piece.setxPos(colIndex);
-        player1Piece.setyPos(rowIndex);
+        player1Piece.setxCol(colIndex);
+        player1Piece.setyRow(rowIndex);
         boardSquare.setCurrentPiece(player1Piece);
         
     }
@@ -250,8 +266,8 @@ public class Game {
             for (int colIndex =0; colIndex < COLUMN_COUNT; colIndex++){
                 Color color = gameBoard[rowIndex][colIndex].getColor();
                 if(color.equals(Color.black)){
-                    gamePieces[pieceIndex].setxPos(colIndex);
-                    gamePieces[pieceIndex].setyPos(rowIndex);
+                    gamePieces[pieceIndex].setxCol(colIndex);
+                    gamePieces[pieceIndex].setyRow(rowIndex);
                     gamePieces[pieceIndex].setPieceColor(Color.yellow);
                     placePiece(rowIndex, colIndex, gameBoard[rowIndex][colIndex], gamePieces[pieceIndex]);
                     pieceIndex++;
@@ -266,8 +282,8 @@ public class Game {
             for (int colIndex =0; colIndex < COLUMN_COUNT; colIndex++){
                 Color color = gameBoard[rowIndex][colIndex].getColor();
                 if(color.equals(Color.black)){
-                    gamePieces[pieceIndex].setxPos(colIndex);
-                    gamePieces[pieceIndex].setyPos(rowIndex);
+                    gamePieces[pieceIndex].setxCol(colIndex);
+                    gamePieces[pieceIndex].setyRow(rowIndex);
                     gamePieces[pieceIndex].setPieceColor(Color.RED);
                     placePiece(rowIndex, colIndex, gameBoard[rowIndex][colIndex], gamePieces[pieceIndex]);
                     pieceIndex++;

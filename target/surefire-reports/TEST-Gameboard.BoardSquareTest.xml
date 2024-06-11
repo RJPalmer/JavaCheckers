@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="Gameboard.BoardSquareTest" time="0.157" tests="6" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="Gameboard.BoardSquareTest" time="0.205" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="/Applications/Apache NetBeans.app/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/surefire/surefirebooter-20240603091623989_3.jar /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/surefire 2024-06-03T09-16-23_863-jvmRun1 surefire-20240603091623989_1tmp surefire_0-20240603091623989_2tmp"/>
+    <property name="sun.java.command" value="/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/surefire/surefirebooter-20240610201215805_3.jar /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/surefire 2024-06-10T20-12-15_686-jvmRun1 surefire-20240610201215805_1tmp surefire_0-20240610201215805_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/test-classes:/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/classes:/Users/robertpalmer/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.6.0/junit-jupiter-api-5.6.0.jar:/Users/robertpalmer/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/robertpalmer/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/robertpalmer/.m2/repository/org/junit/platform/junit-platform-commons/1.6.0/junit-platform-commons-1.6.0.jar:/Users/robertpalmer/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.6.0/junit-jupiter-params-5.6.0.jar:/Users/robertpalmer/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.6.0/junit-jupiter-engine-5.6.0.jar:/Users/robertpalmer/.m2/repository/org/junit/platform/junit-platform-engine/1.6.0/junit-platform-engine-1.6.0.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/surefire/surefirebooter-20240603091623989_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/target/surefire/surefirebooter-20240610201215805_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="21.0.2+13-LTS"/>
@@ -59,27 +59,27 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testGetColor" classname="Gameboard.BoardSquareTest" time="0.057">
+  <testcase name="testGetColor" classname="Gameboard.BoardSquareTest" time="0.065">
     <system-out><![CDATA[getColor
 ]]></system-out>
   </testcase>
-  <testcase name="testGetCurrentPiece" classname="Gameboard.BoardSquareTest" time="0.006">
+  <testcase name="testGetCurrentPiece" classname="Gameboard.BoardSquareTest" time="0.017">
     <system-out><![CDATA[getCurrentPiece
 ]]></system-out>
   </testcase>
-  <testcase name="testIsHasPiece" classname="Gameboard.BoardSquareTest" time="0.013">
+  <testcase name="testIsHasPiece" classname="Gameboard.BoardSquareTest" time="0.007">
     <system-out><![CDATA[isHasPiece
 ]]></system-out>
   </testcase>
-  <testcase name="testSetCurrentPiece" classname="Gameboard.BoardSquareTest" time="0.003">
+  <testcase name="testSetCurrentPiece" classname="Gameboard.BoardSquareTest" time="0.002">
     <system-out><![CDATA[setCurrentPiece
 ]]></system-out>
   </testcase>
-  <testcase name="testSetHasPiece" classname="Gameboard.BoardSquareTest" time="0.002">
+  <testcase name="testSetHasPiece" classname="Gameboard.BoardSquareTest" time="0.003">
     <system-out><![CDATA[setHasPiece
 ]]></system-out>
   </testcase>
-  <testcase name="testSetColor" classname="Gameboard.BoardSquareTest" time="0.002">
+  <testcase name="testSetColor" classname="Gameboard.BoardSquareTest" time="0.003">
     <system-out><![CDATA[setColor
 ]]></system-out>
   </testcase>

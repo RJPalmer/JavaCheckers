@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gameboard;
+package Gameboard;
 
+import gameboard.Piece;
+import gameboard.Square;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Objects;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  *
@@ -25,7 +28,8 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     // private Graphics panelG;
     //private Square boardSquare1;
     //private Square boardSquare2;
-    private BoardSquare[][] gameDataBoard;
+    private Gameboard.BoardSquare[][] gameDataBoard;
+    private Gameboard.GameboardResizeListener resizer;
     private int selectedPiece;
     // private JPanel checkerBoard;
     private Piece[] pieces;
@@ -40,9 +44,10 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     /**
      *
      */
-    private void initComponents() {
+        private void initComponents() {
         // this.setBackground(Color.red);
-        setSquareWidth(100);
+        resizer = new Gameboard.GameboardResizeListener();
+        //setSquareWidth(100);
 //        pieces = new Piece[14];
 
         // piece1 = new Piece();
@@ -51,6 +56,9 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 //        }
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        this.addComponentListener(resizer);
+        rows = 8;
+        columns = 8;
 
     }
 
@@ -209,7 +217,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     /**
      * updateSquare - updates the width of the squares on the board.
      */
-    private void updateSquare() {
+    public void updateSquare() {
         setSquareWidth(this.getWidth() / 8);
     }
 
@@ -233,7 +241,8 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
                 for(int board_col = 0; board_col < 8; board_col++){
                     BoardSquare currentSquare = gameDataBoard[board_row][board_col];
                     Color boardColor = currentSquare.getColor();
-                    Square boardSquare = new Square(board_row, board_col, getSquareWidth(), getSquareWidth(), 
+                    int squareWidth1 = getSquareWidth(); 
+                    Square boardSquare = new Square(board_row, board_col, squareWidth1, squareWidth1, 
                             boardColor);
                     
                     this.drawBoardSquare(g2, boardSquare);
@@ -306,16 +315,16 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     private void drawPieces(Graphics g) {
         int pieceX;
         int pieceY;
-        int adjustX;
-        int adjustY;
+        int squareWidth1 = this.getSquareWidth();
         if (!Objects.isNull(pieces)) {
             for (Piece piece : pieces) {
-                pieceX = piece.getxPos();
-                pieceY = piece.getyPos();
+                pieceX = piece.getxCol();
+                pieceY = piece.getyRow();
+                
 //                adjustX = pieceX / this.getSquareWidth();
 //                adjustY = pieceY / this.getSquareWidth();
-                piece.setxPos(this.getSquareWidth() * pieceX);
-                piece.setyPos(this.getSquareWidth() * pieceY);
+                piece.setxPos(squareWidth1 * pieceX);
+                piece.setyPos(squareWidth1 * pieceY);
                 piece.setWidth(squareWidth);
                 piece.setHeight(squareWidth);
                 piece.drawPiece(g);
@@ -357,4 +366,5 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         g2.fillRect(squareX, squareY,
                 boardSquare.getWidth(), boardSquare.getHeight());
     }
+
 }
