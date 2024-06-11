@@ -1,8 +1,9 @@
-gameboard/GameBoard.class
-gameboard/BoardSquare.class
-gameboard/Piece.class
-checkers/Checkers.class
-checkers/Game.class
+Gameboard/BoardSquare.class
+Gameboard/Square.class
+Gameboard/GameboardResizeListener.class
+com/mycompany/javacheckers/Game.class
+Gameboard/GameBoard.class
 checkers/Player.class
-gameboard/Square.class
+Gameboard/Piece.class
 checkers/KingPiece.class
+com/mycompany/javacheckers/Checkers.class

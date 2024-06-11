@@ -10,12 +10,43 @@ import java.awt.Graphics2D;
 
 /**
  * Piece.java - Represents a piece to be placed on the game board
+ *
  * @author Palmer
  */
 public class Piece {
 
+    /**
+     * @return the xCol
+     */
+    public int getxCol() {
+        return xCol;
+    }
+
+    /**
+     * @param xCol the xCol to set
+     */
+    public void setxCol(int xCol) {
+        this.xCol = xCol;
+    }
+
+    /**
+     * @return the yRow
+     */
+    public int getyRow() {
+        return yRow;
+    }
+
+    /**
+     * @param yRow the yRow to set
+     */
+    public void setyRow(int yRow) {
+        this.yRow = yRow;
+    }
+
     private int xPos;
     private int yPos;
+    private int xCol;
+    private int yRow;
     private int width;
     private int height;
     private int startAngle;
@@ -29,11 +60,13 @@ public class Piece {
     private int minRangeY = 1;
 
     /**
-     * 
+     *
      */
     public Piece() {
         this.xPos = 0;
         this.yPos = 0;
+        this.xCol = 0;
+        this.yRow = 0;
         this.width = 0;
         this.height = 0;
         this.startAngle = 0;
@@ -44,17 +77,19 @@ public class Piece {
     }
 
     /**
-     * 
+     *
      * @param xPos
      * @param yPos
      * @param width
      * @param height
      * @param startAngle
-     * @param endAngle 
+     * @param endAngle
      */
-    public Piece(int xPos, int yPos, int width, int height, int startAngle, int endAngle) {
+    public Piece(int xPos, int yPos, int xCol, int yRow, int width, int height, int startAngle, int endAngle) {
         this.xPos = xPos;
         this.yPos = yPos;
+        this.xCol = xCol;
+        this.yRow = yRow;
         this.width = width;
         this.height = height;
         this.startAngle = startAngle;
@@ -66,6 +101,7 @@ public class Piece {
 
     /**
      * getEndAngle - returns the end angle of the piece arc
+     *
      * @return endAngle
      */
     public int getEndAngle() {
@@ -74,7 +110,8 @@ public class Piece {
 
     /**
      * setEndAngle - sets the end angle of the piece arc
-     * @param endAngle 
+     *
+     * @param endAngle
      */
     public void setEndAngle(int endAngle) {
         this.endAngle = endAngle;
@@ -82,6 +119,7 @@ public class Piece {
 
     /**
      * getHeight - returns the height of the piece object
+     *
      * @return height
      */
     public int getHeight() {
@@ -90,7 +128,8 @@ public class Piece {
 
     /**
      * setHeight - sets the height of the piece object
-     * @param height 
+     *
+     * @param height
      */
     public void setHeight(int height) {
         this.height = height;
@@ -98,7 +137,8 @@ public class Piece {
 
     /**
      * getStartAngle - returns the starting angle for the piece arc
-     * @return 
+     *
+     * @return
      */
     public int getStartAngle() {
         return startAngle;
@@ -106,7 +146,8 @@ public class Piece {
 
     /**
      * setStartAngle - sets the starting angle for the piece arc
-     * @param startAngle 
+     *
+     * @param startAngle
      */
     public void setStartAngle(int startAngle) {
         this.startAngle = startAngle;
@@ -114,7 +155,8 @@ public class Piece {
 
     /**
      * getWidth - returns the piece width
-     * @return 
+     *
+     * @return
      */
     public int getWidth() {
         return width;
@@ -122,7 +164,8 @@ public class Piece {
 
     /**
      * setWidth - sets the piece width
-     * @param width 
+     *
+     * @param width
      */
     public void setWidth(int width) {
         this.width = width;
@@ -130,7 +173,8 @@ public class Piece {
 
     /**
      * getxPos - returns the x position of the piece
-     * @return 
+     *
+     * @return
      */
     public int getxPos() {
         return xPos;
@@ -138,7 +182,8 @@ public class Piece {
 
     /**
      * setxPos - sets the x position of the piece
-     * @param xPos 
+     *
+     * @param xPos
      */
     public void setxPos(int xPos) {
         this.xPos = xPos;
@@ -146,7 +191,8 @@ public class Piece {
 
     /**
      * getyPos - returns the y position of the piece
-     * @return 
+     *
+     * @return
      */
     public int getyPos() {
         return yPos;
@@ -154,7 +200,8 @@ public class Piece {
 
     /**
      * setyPos - sets the y position for the piece
-     * @param yPos 
+     *
+     * @param yPos
      */
     public void setyPos(int yPos) {
         this.yPos = yPos;
@@ -162,10 +209,11 @@ public class Piece {
 
     /**
      * drawPiece - renders the piece using the given graphics component
-     * @param g2 
+     *
+     * @param g2
      */
     public void drawPiece(Graphics g) {
-        Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g2 = (Graphics2D) g;
         if (isSelected) {
             g2.setColor(Color.YELLOW);
         } else {
@@ -176,8 +224,9 @@ public class Piece {
 
     /**
      * movePiece - moves the piece to the given position.
+     *
      * @param newX
-     * @param newY 
+     * @param newY
      */
     public void movePiece(int newSqrX, int newSqrY) {
 
@@ -190,6 +239,7 @@ public class Piece {
 
     /**
      * getPieceColor - returns the color of the piece
+     *
      * @return the pieceColor
      */
     public Color getPieceColor() {
@@ -198,6 +248,7 @@ public class Piece {
 
     /**
      * setPieceColor - sets the color of the piece
+     *
      * @param pieceColor the pieceColor to set
      */
     public void setPieceColor(Color pieceColor) {
@@ -206,10 +257,11 @@ public class Piece {
 
     /**
      * withinRange - determines if the selected square is within the movement
-     *              range of the piece
+     * range of the piece
+     *
      * @param newSqrX
      * @param newSqrY
-     * @return 
+     * @return
      */
     private boolean withinRange(int newSqrX, int newSqrY) {
         int currentSqrX = xPos / width;

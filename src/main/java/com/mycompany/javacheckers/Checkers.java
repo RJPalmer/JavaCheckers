@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package checkers;
+package com.mycompany.javacheckers;
 
+import Gameboard.GameBoard;
+import checkers.Player;
 import javax.swing.JPanel;
 
-import gameboard.GameBoard;
 import gameboard.Piece;
 
 /**
