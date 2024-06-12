@@ -4,8 +4,6 @@
  */
 package Gameboard;
 
-import gameboard.Piece;
-import gameboard.Square;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,7 +12,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Objects;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 /**
  *
@@ -25,28 +22,32 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     private int rows;
     private int columns;
     private int squareWidth;
-    // private Graphics panelG;
-    //private Square boardSquare1;
-    //private Square boardSquare2;
+    /*
+        private Graphics panelG;
+        private Square boardSquare1;
+        private Square boardSquare2;
+     */
     private Gameboard.BoardSquare[][] gameDataBoard;
     private Gameboard.GameboardResizeListener resizer;
+    private Gameboard.GameboardMouseListener mouseAction;
     private int selectedPiece;
     // private JPanel checkerBoard;
     private Piece[] pieces;
 
     /**
-     *
+     * Empty Constructor
      */
     public GameBoard() {
         initComponents();
     }
 
     /**
-     *
+     * Initializes the components of the Gameboard object
      */
-        private void initComponents() {
+    private void initComponents() {
         // this.setBackground(Color.red);
-        resizer = new Gameboard.GameboardResizeListener();
+        resizer = new GameboardResizeListener();
+        mouseAction = new GameboardMouseListener();
         //setSquareWidth(100);
 //        pieces = new Piece[14];
 
@@ -54,13 +55,20 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 //        for (int i = 0; i < pieces.length; i++) {
 //            pieces[i] = new Piece(0, 0, squareWidth, squareWidth, 0, 360);
 //        }
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
+        /*        
+            this.addMouseListener(this);
+            this.addMouseMotionListener(this);
+         */
+        this.addMouseListener(mouseAction);
+        this.addMouseMotionListener(mouseAction);
         this.addComponentListener(resizer);
-        rows = 8;
-        columns = 8;
+
+        rows = BOARD_ROWS;
+        columns = BOARD_COLUMNS;
 
     }
+    private static final int BOARD_COLUMNS = 8;
+    private static final int BOARD_ROWS = 8;
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -235,24 +243,24 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
      */
     private void drawBoard(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        
-        if(Objects.nonNull(this.gameDataBoard)){
-            for(int board_row = 0; board_row < 8; board_row++){
-                for(int board_col = 0; board_col < 8; board_col++){
+
+        if (Objects.nonNull(this.gameDataBoard)) {
+            for (int board_row = 0; board_row < 8; board_row++) {
+                for (int board_col = 0; board_col < 8; board_col++) {
                     BoardSquare currentSquare = gameDataBoard[board_row][board_col];
                     Color boardColor = currentSquare.getColor();
-                    int squareWidth1 = getSquareWidth(); 
-                    Square boardSquare = new Square(board_row, board_col, squareWidth1, squareWidth1, 
+                    int squareWidth1 = getSquareWidth();
+                    Square boardSquare = new Square(board_row, board_col, squareWidth1, squareWidth1,
                             boardColor);
-                    
+
                     this.drawBoardSquare(g2, boardSquare);
                 }
             }
 //            boardSquare1 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLUE);
 //            boardSquare2 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLACK);
-            
+
             int swap = 1;
-            
+
 //            for (int k = 0; k <= this.getHeight(); k += (getSquareWidth())) {
 //                if (swap % 2 == 1) {
 //                    drawBoardRow(g2, k, false);
@@ -295,7 +303,6 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 //            }
 //        }
 //    }
-
     /**
      * @param g2
      * @param k
@@ -320,7 +327,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
             for (Piece piece : pieces) {
                 pieceX = piece.getxCol();
                 pieceY = piece.getyRow();
-                
+
 //                adjustX = pieceX / this.getSquareWidth();
 //                adjustY = pieceY / this.getSquareWidth();
                 piece.setxPos(squareWidth1 * pieceX);
@@ -346,7 +353,6 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         this.squareWidth = squareWidth;
     }
 
-   
     public void setGameBoard(BoardSquare[][] gameBoard) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         this.gameDataBoard = gameBoard;
@@ -355,7 +361,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
     /*
      * @param g2
      * @param boardSquare
-    */
+     */
     private void drawBoardSquare(Graphics2D g2, Square boardSquare) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         //(2 * getSquareWidth())

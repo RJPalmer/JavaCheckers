@@ -4,7 +4,6 @@
  */
 package Gameboard;
 
-import gameboard.Piece;
 import java.awt.Color;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;

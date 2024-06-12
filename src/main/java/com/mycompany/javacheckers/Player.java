@@ -1,6 +1,6 @@
-package checkers;
+package com.mycompany.javacheckers;
 
-import gameboard.Piece;
+import Gameboard.Piece;
 
 
 

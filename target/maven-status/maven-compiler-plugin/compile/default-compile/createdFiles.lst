@@ -3,7 +3,8 @@ Gameboard/Square.class
 Gameboard/GameboardResizeListener.class
 com/mycompany/javacheckers/Game.class
 Gameboard/GameBoard.class
-checkers/Player.class
 Gameboard/Piece.class
+com/mycompany/javacheckers/Player.class
 checkers/KingPiece.class
+Gameboard/GameboardMouseListener.class
 com/mycompany/javacheckers/Checkers.class

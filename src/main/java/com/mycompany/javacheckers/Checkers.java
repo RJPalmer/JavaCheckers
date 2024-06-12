@@ -5,10 +5,9 @@
 package com.mycompany.javacheckers;
 
 import Gameboard.GameBoard;
-import checkers.Player;
 import javax.swing.JPanel;
 
-import gameboard.Piece;
+import Gameboard.Piece;
 
 /**
  * Checkers - An application that allows a user to play the game of checkers
