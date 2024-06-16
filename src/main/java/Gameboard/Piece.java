@@ -16,6 +16,23 @@ import java.awt.Graphics2D;
 public class Piece {
 
     /**
+     * @return the hasMoved
+     */
+    public boolean isHasMoved() {
+        return hasMoved;
+    }
+
+    /**
+     * @param hasMoved the hasMoved to set
+     */
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
+    private Color selected_Piece_color = Color.GREEN;
+    private boolean hasMoved;
+
+    /**
      * @return the xCol
      */
     public int getxCol() {
@@ -85,7 +102,7 @@ public class Piece {
      * @param startAngle
      * @param endAngle
      */
-    public Piece(int xPos, int yPos, int xCol, int yRow, int width, int height, int startAngle, int endAngle) {
+    public Piece(int xPos, int yPos, int xCol, int yRow, int width, int height, int startAngle, int endAngle, boolean hasMoved) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.xCol = xCol;
@@ -97,6 +114,7 @@ public class Piece {
         this.pieceColor = Color.WHITE;
         this.isSelected = false;
         this.foreward = 1;
+        this.hasMoved = false;
     }
 
     /**
@@ -215,26 +233,12 @@ public class Piece {
     public void drawPiece(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         if (isSelected) {
-            g2.setColor(Color.YELLOW);
+            
+            g2.setColor(selected_Piece_color);
         } else {
             g2.setColor(pieceColor);
         }
         g2.fillArc(xPos, yPos, width, height, startAngle, endAngle);
-    }
-
-    /**
-     * movePiece - moves the piece to the given position.
-     *
-     * @param newX
-     * @param newY
-     */
-    public void movePiece(int newSqrX, int newSqrY) {
-
-        if (withinRange(newSqrX, newSqrY)) {
-            this.setxPos(newSqrX * width);
-            this.setyPos(newSqrY * width);
-        }
-
     }
 
     /**

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: Gameboard.BoardSquareTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.168 s -- in Gameboard.BoardSquareTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.343 s -- in Gameboard.BoardSquareTest

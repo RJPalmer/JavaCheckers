@@ -77,7 +77,7 @@ public class Game {
 //        Piece[] player1Pieces = new Piece[GAME_PIECE_COUNT / 2];
 //        Piece[] player2Pieces = new Piece[GAME_PIECE_COUNT / 2];
         for (int i = 0; i < gamePieces.length; i++) {
-            gamePieces[i] = new Piece(0, 0, 0, 0, 100, 100, 0, 360);
+            gamePieces[i] = new Piece(0, 0, 0, 0, 100, 100, 0, 360, false);
 //<editor-fold defaultstate="collapsed" desc="comment">
 /*
 
@@ -125,6 +125,7 @@ public class Game {
         player1Piece.setxCol(colIndex);
         player1Piece.setyRow(rowIndex);
         boardSquare.setCurrentPiece(player1Piece);
+        boardSquare.setHasPiece(true);
 
     }
 

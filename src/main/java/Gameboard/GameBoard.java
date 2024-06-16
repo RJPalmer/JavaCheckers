@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  *
  * @author Palmer
  */
-public class GameBoard extends JPanel implements MouseListener, MouseMotionListener {
+public class GameBoard extends JPanel{
 
     private int rows;
     private int columns;
@@ -59,6 +59,7 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
             this.addMouseListener(this);
             this.addMouseMotionListener(this);
          */
+        mouseAction.setBoard(this);
         this.addMouseListener(mouseAction);
         this.addMouseMotionListener(mouseAction);
         this.addComponentListener(resizer);
@@ -87,55 +88,55 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
          */
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int squareX = 0;
-        int squareY = 0;
-        MouseEvent eMouseEvent = e;
-
-        // update the square width
-        updateSquare();
-
-        // we only want to move the piece if the piece has been selected
-        // if the mouse is on top of the piece, the piece should change color
-        // if the mouse is to the right of top left corner, but to the left of the
-        // top right corner
-        // if (eMouseEvent.getX() > piece1.getxPos()
-        // && eMouseEvent.getX() < (piece1.getxPos() + squareWidth)
-        // && eMouseEvent.getY() > piece1.getyPos()
-        // && eMouseEvent.getY() < (piece1.getyPos() + squareWidth)) {
-        for (int i = 0; i < pieces.length; i++) {
-            if (e.getX() > pieces[i].getxPos()
-                    && e.getX() < (pieces[i].getxPos() + getSquareWidth())
-                    && e.getY() > pieces[i].getyPos()
-                    && e.getY() < (pieces[i].getyPos() + getSquareWidth())) {
-
-                // if the piece has not been selected
-                if (!pieces[i].isSelected) {
-                    // set isSelected to true
-                    pieces[i].isSelected = true; // the square the mouse is over
-                    selectedPiece = i;
-                } // end if
-                else {
-                    pieces[i].isSelected = false;
-                } // end else
-
-            } // end if
-            else if (pieces[selectedPiece] != null) {
-                squareX = e.getX() / getSquareWidth();
-                squareY = e.getY() / getSquareWidth();
-
-                // move the piece coordinates to the appropriate square
-                pieces[selectedPiece].movePiece(squareX, squareY);
-
-            } // end if
-
-        } // end for
-
-        // redraw the screen
-        repaint();
-        // throw new UnsupportedOperationException("Not supported yet.");
-    }
+//    @Override
+//    public void mouseClicked(MouseEvent e) {
+////        int squareX = 0;
+////        int squareY = 0;
+////        MouseEvent eMouseEvent = e;
+////
+////        // update the square width
+////        updateSquare();
+////
+////        // we only want to move the piece if the piece has been selected
+////        // if the mouse is on top of the piece, the piece should change color
+////        // if the mouse is to the right of top left corner, but to the left of the
+////        // top right corner
+////        // if (eMouseEvent.getX() > piece1.getxPos()
+////        // && eMouseEvent.getX() < (piece1.getxPos() + squareWidth)
+////        // && eMouseEvent.getY() > piece1.getyPos()
+////        // && eMouseEvent.getY() < (piece1.getyPos() + squareWidth)) {
+////        for (int i = 0; i < pieces.length; i++) {
+////            if (e.getX() > pieces[i].getxPos()
+////                    && e.getX() < (pieces[i].getxPos() + getSquareWidth())
+////                    && e.getY() > pieces[i].getyPos()
+////                    && e.getY() < (pieces[i].getyPos() + getSquareWidth())) {
+////
+////                // if the piece has not been selected
+////                if (!pieces[i].isSelected) {
+////                    // set isSelected to true
+////                    pieces[i].isSelected = true; // the square the mouse is over
+////                    selectedPiece = i;
+////                } // end if
+////                else {
+////                    pieces[i].isSelected = false;
+////                } // end else
+////
+////            } // end if
+////            else if (pieces[selectedPiece] != null) {
+////                squareX = e.getX() / getSquareWidth();
+////                squareY = e.getY() / getSquareWidth();
+////
+////                // move the piece coordinates to the appropriate square
+////                pieces[selectedPiece].movePiece(squareX, squareY);
+////
+////            } // end if
+////
+////        } // end for
+////
+////        // redraw the screen
+////        repaint();
+////        // throw new UnsupportedOperationException("Not supported yet.");
+//    }
 
     /**
      * @return the rows
@@ -165,62 +166,62 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         this.columns = columns;
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // user clicks on the piece
-        // we want the piece to move with the mouse
-        // set the piece coordinates to that of the mouse coordinates
-        /*
-         * updateSquare();
-         * piece1.setxPos(e.getX()- (squareWidth / 2));
-         * piece1.setyPos(e.getY()- (squareWidth / 2));
-         * repaint();
-         * 
-         */
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        int squareX = 0;
-        int squareY = 0;
-
-        // update the square width
-        updateSquare();/*
-                        * //when the user releases the mouse
-                        * //we want the piece to be drawn in the square the mouse is over
-                        * //the square the mouse is over
-                        * squareX = e.getX() / squareWidth;
-                        * squareY = e.getY() / squareWidth;
-                        * piece1.setxPos((squareX * squareWidth));
-                        * piece1.setyPos(squareY * squareWidth);
-         */
-        repaint();
-
-        // throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        // throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {/*
-                                             * // throw new UnsupportedOperationException("Not supported yet.");
-                                             * piece1.setxPos(e.getX()- (squareWidth / 2));
-                                             * piece1.setyPos(e.getY()- (squareWidth / 2));
-         */
-        repaint();
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        // throw new UnsupportedOperationException("Not supported yet.");
-    }
+//    @Override
+//    public void mousePressed(MouseEvent e) {
+//        // user clicks on the piece
+//        // we want the piece to move with the mouse
+//        // set the piece coordinates to that of the mouse coordinates
+//        /*
+//         * updateSquare();
+//         * piece1.setxPos(e.getX()- (squareWidth / 2));
+//         * piece1.setyPos(e.getY()- (squareWidth / 2));
+//         * repaint();
+//         * 
+//         */
+//    }
+//
+//    @Override
+//    public void mouseReleased(MouseEvent e) {
+//        int squareX = 0;
+//        int squareY = 0;
+//
+//        // update the square width
+//        updateSquare();/*
+//                        * //when the user releases the mouse
+//                        * //we want the piece to be drawn in the square the mouse is over
+//                        * //the square the mouse is over
+//                        * squareX = e.getX() / squareWidth;
+//                        * squareY = e.getY() / squareWidth;
+//                        * piece1.setxPos((squareX * squareWidth));
+//                        * piece1.setyPos(squareY * squareWidth);
+//         */
+//        repaint();
+//
+//        // throw new UnsupportedOperationException("Not supported yet.");
+//    }
+//
+//    @Override
+//    public void mouseEntered(MouseEvent e) {
+//        // throw new UnsupportedOperationException("Not supported yet.");
+//    }
+//
+//    @Override
+//    public void mouseExited(MouseEvent e) {
+//    }
+//
+//    @Override
+//    public void mouseDragged(MouseEvent e) {/*
+//                                             * // throw new UnsupportedOperationException("Not supported yet.");
+//                                             * piece1.setxPos(e.getX()- (squareWidth / 2));
+//                                             * piece1.setyPos(e.getY()- (squareWidth / 2));
+//         */
+//        repaint();
+//    }
+//
+//    @Override
+//    public void mouseMoved(MouseEvent e) {
+//        // throw new UnsupportedOperationException("Not supported yet.");
+//    }
 
     /**
      * updateSquare - updates the width of the squares on the board.
@@ -330,8 +331,10 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
 
 //                adjustX = pieceX / this.getSquareWidth();
 //                adjustY = pieceY / this.getSquareWidth();
-                piece.setxPos(squareWidth1 * pieceX);
-                piece.setyPos(squareWidth1 * pieceY);
+                if(!piece.isSelected){
+                    piece.setxPos(squareWidth1 * pieceX);
+                    piece.setyPos(squareWidth1 * pieceY);
+                }
                 piece.setWidth(squareWidth);
                 piece.setHeight(squareWidth);
                 piece.drawPiece(g);
@@ -371,6 +374,53 @@ public class GameBoard extends JPanel implements MouseListener, MouseMotionListe
         int squareY = boardSquare.getBoardRow() * this.getSquareWidth();
         g2.fillRect(squareX, squareY,
                 boardSquare.getWidth(), boardSquare.getHeight());
+    }
+
+    public BoardSquare getBoardSquare(int squareX, int squareY) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+           BoardSquare clickSqure;
+           clickSqure = gameDataBoard[squareX][squareY];
+           
+           return clickSqure;
+    }
+
+    void movePiece(Piece newState, Piece oldState, int squareX, int squareY) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        //set the piece to the new position
+        newState.setxPos(squareWidth * squareX);
+        newState.setyPos(squareWidth * squareY);
+        newState.setxCol(squareY);
+        newState.setyRow(squareX);
+        newState.isSelected = !newState.isSelected;
+
+        
+        
+        //update the new square to indicate that the piece is there
+        BoardSquare newStateSqr = getBoardSquare(squareX, squareY);
+        newStateSqr.setHasPiece(true);
+        newStateSqr.setCurrentPiece(newState);
+        
+        //update the old square to indicate that the piece is no longer there
+        BoardSquare oldStateSqr = getBoardSquare(oldState.getyRow(), oldState.getxCol());
+        oldStateSqr.setHasPiece(false);
+        oldStateSqr.setCurrentPiece(null);
+        
+        //newState.setHasMoved(false);
+    }
+
+    void resetPiece(Piece newState, Piece oldState) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//       newState = oldState;
+         newState.setxPos(oldState.getxPos());
+         newState.setyPos(oldState.getyPos());
+         newState.setxCol(oldState.getxCol());
+         newState.setyRow(oldState.getyRow());
+         
+       if(newState.isSelected)
+            newState.isSelected = !newState.isSelected;
+        
+        
     }
 
 }
