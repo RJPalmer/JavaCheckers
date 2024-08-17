@@ -1,3 +1,4 @@
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -16,6 +17,16 @@ import java.awt.Graphics2D;
 public class Piece {
 
     /**
+     * Whether or not the piece is moveable
+     */
+    private boolean isMoveable;
+    
+    /**
+     * The direction the piece considers forward 
+     */
+    private String pieceDirection;
+
+    /**
      * @return the hasMoved
      */
     public boolean isHasMoved() {
@@ -27,6 +38,20 @@ public class Piece {
      */
     public void setHasMoved(boolean hasMoved) {
         this.hasMoved = hasMoved;
+    }
+
+    /**
+     * @return the pieceDirection
+     */
+    public String getPieceDirection() {
+        return pieceDirection;
+    }
+
+    /**
+     * @param pieceDirection the pieceDirection to set
+     */
+    public void setPieceDirection(String pieceDirection) {
+        this.pieceDirection = pieceDirection;
     }
 
     private Color selected_Piece_color = Color.GREEN;
@@ -69,6 +94,10 @@ public class Piece {
     private int startAngle;
     private int endAngle;
     private Color pieceColor;
+
+    /**
+     *
+     */
     public boolean isSelected;
     private int foreward;
     private int maxRangeX = 2;
@@ -97,10 +126,13 @@ public class Piece {
      *
      * @param xPos
      * @param yPos
+     * @param xCol
+     * @param yRow
      * @param width
      * @param height
      * @param startAngle
      * @param endAngle
+     * @param hasMoved
      */
     public Piece(int xPos, int yPos, int xCol, int yRow, int width, int height, int startAngle, int endAngle, boolean hasMoved) {
         this.xPos = xPos;
@@ -228,7 +260,7 @@ public class Piece {
     /**
      * drawPiece - renders the piece using the given graphics component
      *
-     * @param g2
+     * @param g
      */
     public void drawPiece(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -287,5 +319,19 @@ public class Piece {
             return false;
         }//end else-if
         return false;
+    }
+
+    /**
+     * @return the isMoveable
+     */
+    public boolean IsMoveable() {
+        return isMoveable;
+    }
+
+    /**
+     * @param isMoveable the isMoveable to set
+     */
+    public void setIsMoveable(boolean isMoveable) {
+        this.isMoveable = isMoveable;
     }
 }

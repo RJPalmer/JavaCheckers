@@ -7,15 +7,24 @@ package Gameboard;
 import java.awt.Color;
 
 /**
- *
+ * Represents a square on the game board
  * @author robertpalmer
  */
 public class BoardSquare {
 
+    /**
+     * The color of the square
+     */
     private Color Color;
 
+    /**
+     * Whether or not there's a Piece on the square
+     */
     private boolean hasPiece;
 
+    /**
+     * The Piece on the square
+     */
     private Piece currentPiece;
 
     /**
@@ -36,6 +45,12 @@ public class BoardSquare {
         this.currentPiece = currentPiece;
     }
 
+    /**
+     * Constructor for board square
+     * @param Color
+     * @param hasPiece
+     * @param currentPiece 
+     */
     public BoardSquare(Color Color, boolean hasPiece, Piece currentPiece) {
         this.Color = Color;
         this.hasPiece = hasPiece;
@@ -72,7 +87,7 @@ public class BoardSquare {
     /**
      * Set the value of Color
      *
-     * @param Color new value of Color
+     * @param color
      */
     public void setColor(Color color) {
         this.Color = color;

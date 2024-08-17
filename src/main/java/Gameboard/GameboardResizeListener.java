@@ -9,13 +9,17 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 /**
- * Class that handles the 
+ * Class that handles events involving the resizing of the Gameboard 
  * @author robertpalmer
  */
 public class GameboardResizeListener implements ComponentListener {
     
     Gameboard.GameBoard gameboard;
     
+    /**
+     *
+     * @param e
+     */
     @Override
     public void componentResized(ComponentEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -29,16 +33,28 @@ gameboard.revalidate();
         gameboard.repaint();
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void componentMoved(ComponentEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void componentShown(ComponentEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void componentHidden(ComponentEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

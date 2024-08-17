@@ -4,16 +4,17 @@
  */
 package Gameboard;
 
+import com.mycompany.javacheckers.Game;
+import com.mycompany.javacheckers.Player;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Objects;
-
-
+    
 /**
- *
+ * Handles events involving the actions of the mouse on the Gameboard
  * @author robertpalmer
  */
 public class GameboardMouseListener implements MouseListener, MouseInputListener, MouseMotionListener {
@@ -47,53 +48,50 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
     }
 
     private GameBoard board;
+    private Game checkersGame;
     private Piece gamePiece;
     private Piece moveCopy;
     private int squareX = 0;
     private int squareY = 0;
     private int mouseX = 0;
     private int mouseY = 0;
-    
+    private Player currentPlayer;
+    private String userPieceColor;
+
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        
-        
-        
-        
+
         MouseEvent eMouseEvent = e;
 
         //Getting current mouse screen coordinates
         mouseX = eMouseEvent.getX();
         mouseY = eMouseEvent.getY();
-        
+
         //translate mouse screen coordinates into rows/colum
         translateToGrid(mouseX, mouseY);
-        
+
         //check the board to see if there's a piece there
-        try{
-        gamePiece = checkForGamePiece(squareX, squareY);
-        }
-        catch(Exception nullExcept){
-            System.out.println("No piece at location");
-        }
-        if(gamePiece != null){
-            if(gamePiece.isSelected){
-               //gamePiece.setPieceColor(Color.yellow);
-               gamePiece.isSelected = false;
-               board.repaint();
-            }
-            else{
-                 //gamePiece.setPieceColor(Color.green);
-                 gamePiece.isSelected = true;
-                 board.repaint();
+        gamePiece = board.checkForGamePiece(squareX, squareY);
+
+        if (gamePiece != null) {
+            if (gamePiece.isSelected) {
+                //gamePiece.setPieceColor(Color.yellow);
+                gamePiece.isSelected = false;
+                board.repaint();
+            } else {
+                //gamePiece.setPieceColor(Color.green);
+                gamePiece.isSelected = true;
+                board.repaint();
             }
         }
-        
-        
-        System.out.printf("Mousex: %d, MouseY: %d\n SquareX: %d, SquareY: %d\n",mouseX, mouseY, squareX, squareY);
-        
-        
+
+        System.out.printf("Mousex: %d, MouseY: %d\n SquareX: %d, SquareY: %d\n", mouseX, mouseY, squareX, squareY);
+
 //        // update the square width
 //        //updateSquare();
 //
@@ -132,86 +130,93 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
 //            } // end if
 //
 //        } // end for
-
         // redraw the screen
         //repaint();
         // throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        
+
         MouseEvent eMouseEvent = e;
         moveCopy = new Piece();
 
         //Getting current mouse screen coordinates
         mouseX = eMouseEvent.getX();
         mouseY = eMouseEvent.getY();
-        
+
         //translate mouse screen coordinates into rows/colum
         translateToGrid(mouseX, mouseY);
-        
+
         //check the board to see if there's a piece there
-        try{
-        gamePiece = checkForGamePiece(squareX, squareY);
-        }
-        catch(Exception nullExcept){
-            System.out.println("No piece at location");
-        }
-        if(gamePiece != null){
-            moveCopy.setxPos(gamePiece.getxPos());
-            moveCopy.setyPos(gamePiece.getyPos());
-            moveCopy.setxCol(gamePiece.getxCol());
-            moveCopy.setyRow(gamePiece.getyRow());
-            
-            
+        gamePiece = board.checkForGamePiece(squareX, squareY);
+
+        if (gamePiece != null) {
+            prepMoveCopy();
             gamePiece.isSelected = !gamePiece.isSelected; //gamePiece.setPieceColor(Color.yellow);
+
+//            if (ArrayUtils.isEmpty(board.checkForMoves(gamePiece))) {
+//
+//            }
             //board.repaint();
             //gamePiece.setPieceColor(Color.green);
             //board.repaint();
         }
     }
 
+    private void prepMoveCopy() {
+        moveCopy.setxPos(gamePiece.getxPos());
+        moveCopy.setyPos(gamePiece.getyPos());
+        moveCopy.setxCol(gamePiece.getxCol());
+        moveCopy.setyRow(gamePiece.getyRow());
+    }
+
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         int currentX;
         int currentY;
         Piece existPiece;
-        if(gamePiece != null){
+        if (gamePiece != null) {
             currentX = e.getX();
             currentY = e.getY();
 
             translateToGrid(currentX, currentY);
 
-            existPiece = checkForGamePiece(squareX, squareY);
+            existPiece = board.checkForGamePiece(squareX, squareY);
 
-            if(Objects.isNull(existPiece)){
-                BoardSquare currentSqre = board.getBoardSquare(squareX-1, squareY-1);
-                if(currentSqre.getColor() == Color.BLACK){
-                    board.movePiece(gamePiece, moveCopy, squareX-1, squareY-1);
+            if (Objects.isNull(existPiece)) {
+                BoardSquare currentSqre = board.getBoardSquare(squareX - 1, squareY - 1);
+                if (currentSqre.getColor() == Color.BLACK) {
+                    board.movePiece(gamePiece, moveCopy, squareX - 1, squareY - 1);
                     moveCopy = null;
                     gamePiece.setHasMoved(false);
-                }
-                else{
+                    currentPlayer.setMoveComplete();
+                } else {
                     board.resetPiece(gamePiece, moveCopy);
                     moveCopy = null;
                     gamePiece.setHasMoved(false);
                 }
-            }
-            else{
-                if(gamePiece.isHasMoved()){
+            } else {
+                if (gamePiece.isHasMoved()) {
                     board.resetPiece(gamePiece, moveCopy);
                     moveCopy = null;
                     gamePiece.setHasMoved(false);
-                }
-                else{
+                } else {
                     existPiece.isSelected = !existPiece.isSelected;
                 }
             }
             board.repaint();
-          
+
         }
 //          int squareX = 0;
 //        int squareY = 0;
@@ -230,37 +235,47 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         //repaint();
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-      
+        
+        //String selectPieceColor = gamePiece.getPieceColor().toString();
+        //userPieceColor = board.getUserColor();
         //make sure there's a selected piece
-        if(gamePiece != null){
+        if (gamePiece != null && gamePiece.IsMoveable()) {
+            
             //get current mouse x & y
             int newMouseX = e.getX();
             int newMouseY = e.getY();
-            
+
             //if(newMouseX)
             //update the piece x/y to match the mouse x/y
             gamePiece.setxPos(newMouseX);
             gamePiece.setyPos(newMouseY);
             gamePiece.setHasMoved(true);
-            
+
             board.repaint();
-            
+
         }
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -273,22 +288,27 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         this.board = board;
     }
 
+    /**
+     * 
+     * @param mouseX
+     * @param mouseY 
+     */
     private void translateToGrid(int mouseX, int mouseY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         setSquareY((mouseX / board.getSquareWidth()) + 1);
         setSquareX((mouseY / board.getSquareWidth()) + 1);
-        
+
     }
 
-    private Piece checkForGamePiece(int squareX, int squareY) {
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        BoardSquare selectedSquare = board.getBoardSquare(squareX - 1, squareY-1);
-        if (selectedSquare.isHasPiece()){
-           return selectedSquare.getCurrentPiece();
-        }
-        else{
-            return null;
-        }
     }
-    
+
+
+
 }

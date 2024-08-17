@@ -19,6 +19,34 @@ import javax.swing.JPanel;
  */
 public class GameBoard extends JPanel{
 
+    /**
+     * @return the BOARD_COLUMNS
+     */
+    public static int getBOARD_COLUMNS() {
+        return BOARD_COLUMNS;
+    }
+
+    /**
+     * @param aBOARD_COLUMNS the BOARD_COLUMNS to set
+     */
+    public static void setBOARD_COLUMNS(int aBOARD_COLUMNS) {
+        BOARD_COLUMNS = aBOARD_COLUMNS;
+    }
+
+    /**
+     * @return the BOARD_ROWS
+     */
+    public static int getBOARD_ROWS() {
+        return BOARD_ROWS;
+    }
+
+    /**
+     * @param aBOARD_ROWS the BOARD_ROWS to set
+     */
+    public static void setBOARD_ROWS(int aBOARD_ROWS) {
+        BOARD_ROWS = aBOARD_ROWS;
+    }
+
     private int rows;
     private int columns;
     private int squareWidth;
@@ -64,13 +92,17 @@ public class GameBoard extends JPanel{
         this.addMouseMotionListener(mouseAction);
         this.addComponentListener(resizer);
 
-        rows = BOARD_ROWS;
-        columns = BOARD_COLUMNS;
+        rows = getBOARD_ROWS();
+        columns = getBOARD_COLUMNS();
 
     }
-    private static final int BOARD_COLUMNS = 8;
-    private static final int BOARD_ROWS = 8;
+    private static int BOARD_COLUMNS = 8;
+    private static int BOARD_ROWS = 8;
 
+    /**
+     *
+     * @param g
+     */
     @Override
     protected void paintComponent(Graphics g) {
         // super.paintComponent(g);
@@ -356,6 +388,10 @@ public class GameBoard extends JPanel{
         this.squareWidth = squareWidth;
     }
 
+    /**
+     *
+     * @param gameBoard
+     */
     public void setGameBoard(BoardSquare[][] gameBoard) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         this.gameDataBoard = gameBoard;
@@ -376,6 +412,12 @@ public class GameBoard extends JPanel{
                 boardSquare.getWidth(), boardSquare.getHeight());
     }
 
+    /**
+     *
+     * @param squareX
+     * @param squareY
+     * @return
+     */
     public BoardSquare getBoardSquare(int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
            BoardSquare clickSqure;
@@ -383,8 +425,32 @@ public class GameBoard extends JPanel{
            
            return clickSqure;
     }
+    
+    /*
+     * @param squareX - the X location of the square
+     * @param squareY - the Y location of the square
+     * @param squareToAdd - the square to be added
+    */
 
-    void movePiece(Piece newState, Piece oldState, int squareX, int squareY) {
+    /**
+     *
+     * @param squareX
+     * @param squareY
+     * @param squareToAdd
+     */
+
+    public void setBoardSquare(int squareX, int squareY, BoardSquare squareToAdd){
+        gameDataBoard[squareX][squareY] = squareToAdd;
+    }
+
+    /**
+     *
+     * @param newState
+     * @param oldState
+     * @param squareX
+     * @param squareY
+     */
+    public void movePiece(Piece newState, Piece oldState, int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         
         //set the piece to the new position
@@ -409,7 +475,12 @@ public class GameBoard extends JPanel{
         //newState.setHasMoved(false);
     }
 
-    void resetPiece(Piece newState, Piece oldState) {
+    /**
+     *
+     * @param newState
+     * @param oldState
+     */
+    public void resetPiece(Piece newState, Piece oldState) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //       newState = oldState;
          newState.setxPos(oldState.getxPos());
@@ -422,5 +493,77 @@ public class GameBoard extends JPanel{
         
         
     }
+
+
+    /**
+     *
+     * @param squareX
+     * @param squareY
+     * @return
+     */
+    public Piece checkForGamePiece(int squareX, int squareY) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        BoardSquare selectedSquare = getBoardSquare(squareX - 1, squareY - 1);
+        if (selectedSquare.isHasPiece()) {
+            return selectedSquare.getCurrentPiece();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *  Determines if the given piece can move forward
+     * @param pieceToMove
+     * @return 
+     */
+    public boolean isBlocked(Piece pieceToMove) {
+        boolean isPieceBlocked = false;
+        String pieceDirection = pieceToMove.getPieceDirection();
+        
+
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        switch(pieceDirection){
+
+            case "Red" -> {
+                
+            }
+            
+            case "Yellow" -> {
+            }
+            default -> throw new IllegalArgumentException("Invalid color");
+        }
+        return isPieceBlocked;
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /**
+     * 
+     * @param pieceToMove 
+     */
+    public void moveOptions(Piece pieceToMove) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    /**
+     * Determines if the piece can move forward or not
+     * @param gamePiece
+     * @return
+     */
+    //<editor-fold defaultstate="collapsed" desc="setPlayerPieces">
+    /**
+     *
+     * @return
+     */
+//    public Piece[] setPlayerPieces() {
+//        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//        Piece[] playerPieces = null;
+//        
+//        return playerPieces;
+//    }
+//</editor-fold>
+
+
+
+
 
 }
