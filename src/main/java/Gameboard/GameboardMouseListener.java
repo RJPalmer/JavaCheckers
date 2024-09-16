@@ -295,8 +295,8 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
      */
     private void translateToGrid(int mouseX, int mouseY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        setSquareY((mouseX / board.getSquareWidth()) + 1);
-        setSquareX((mouseY / board.getSquareWidth()) + 1);
+        setSquareY((mouseX / board.getSquareWidth()));
+        setSquareX((mouseY / board.getSquareWidth()));
 
     }
 

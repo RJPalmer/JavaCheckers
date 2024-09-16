@@ -7,7 +7,12 @@ package com.mycompany.javacheckers;
 import Gameboard.BoardSquare;
 import Gameboard.GameBoard;
 import Gameboard.Piece;
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -41,7 +46,7 @@ public class ComputerPlayer extends Player {
 
     /**
      * @param gameboard the value of gameboard
-     * @return
+     * @return the boolean
      */
     @Override
     public boolean makeMove(GameBoard gameboard) {
@@ -65,7 +70,11 @@ public class ComputerPlayer extends Player {
         //identify the front row
         int front_row;
         Piece pieceToMove = new Piece();
-        BoardSquare[] pieceOptions;
+        Piece pieceOnceMoved = new Piece();
+        
+        pieceOnceMoved.setPieceColor(pieceToMove.getPieceColor());
+        pieceOnceMoved.setHeight(pieceToMove.getHeight());
+        List<Point> pieceOptions = new ArrayList<>();
         var rand = new Random();
         //identify pieces in the front row
 
@@ -77,9 +86,9 @@ public class ComputerPlayer extends Player {
                     front_row = temp.getAreaRows()[0];
                     var eligible = Arrays.stream(playerPieces).filter(piece -> piece.getyRow() == front_row).toArray();
 
-                    int randIndex = rand.nextInt((eligible.length - 0) + 1) + 0;
+                    int randIndex = rand.nextInt((eligible.length - 1) + 1) + 0;
                     pieceToMove = (Piece) eligible[randIndex];
-                    gameboard.checkForGamePiece(randIndex, randIndex);
+                    gameboard.checkForGamePiece(pieceToMove.getyRow(), pieceToMove.getxCol());
                 }
 
                 case "Yellow" -> {
@@ -94,13 +103,32 @@ public class ComputerPlayer extends Player {
 
         //<editor-fold defaultstate="collapsed" desc="move piece one space forward">
         //find out if the piece is blocked
-        if(!gameboard.isBlocked(pieceToMove)){
+        if (!gameboard.isBlocked(pieceToMove)) {
             //where can the piece move
-            gameboard.moveOptions(pieceToMove);
-           
-            //pick a place
-            
+            pieceOptions = gameboard.moveOptions(pieceToMove);
+            //if options are available
+            if (!pieceOptions.isEmpty()) {
+                //one option 
+               if (pieceOptions.size() == 1) {
+                    Point destination = pieceOptions.getFirst();
+                    
+                    //move the piece
+                    //gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
+                    gameboard.movePieceToSquare(pieceToMove, destination);
+                } //multiple options
+                else {
+                    //pick one
+                    Point destination = pieceOptions.get(rand.nextInt(pieceOptions.size()));
+
+                    //move the piece
+//                    gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
+                    gameboard.movePieceToSquare(pieceToMove, destination);
+                }
+            }
+
             //move the piece
+        } else {
+
         }
         //</editor-fold>
         //that's it

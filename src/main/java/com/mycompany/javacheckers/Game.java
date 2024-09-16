@@ -196,6 +196,7 @@ public class Game {
                     moveMade = opponent.makeMove(this.gameboard);
                     if (moveMade) {
                         lastPlayed = 1;
+                        this.gameboard.repaint();
                     }
                 }
 

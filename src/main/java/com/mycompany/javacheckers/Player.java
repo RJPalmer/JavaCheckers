@@ -171,6 +171,11 @@ public class Player {
                 //piece movement is handled by the mouselistener
                 //move is considered made when 
                 while(!isTurnComplete){
+                    try{
+                        Thread.sleep(10000);
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
                 }
                 moveMade = true;
             }
