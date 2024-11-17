@@ -8,6 +8,8 @@ import Gameboard.GameBoard;
 import javax.swing.JPanel;
 
 import Gameboard.Piece;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Checkers - An application that allows a user to play the game of checkers
@@ -65,7 +67,11 @@ public class Checkers {
     public static void main(String[] args) {
         // TODO code application logic here
         Checkers checkers = new Checkers();
-        checkers.newGame.startGame();
+        try {
+            checkers.newGame.startGame();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Checkers.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

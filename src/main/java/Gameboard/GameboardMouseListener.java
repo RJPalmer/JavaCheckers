@@ -20,6 +20,13 @@ import java.util.Objects;
 public class GameboardMouseListener implements MouseListener, MouseInputListener, MouseMotionListener {
 
     /**
+     * @param currentPlayer the currentPlayer to set
+     */
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    /**
      * @return the squareX
      */
     public int getSquareX() {
@@ -195,9 +202,9 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
             existPiece = board.checkForGamePiece(squareX, squareY);
 
             if (Objects.isNull(existPiece)) {
-                BoardSquare currentSqre = board.getBoardSquare(squareX - 1, squareY - 1);
+                BoardSquare currentSqre = board.getBoardSquare(squareX, squareY);
                 if (currentSqre.getColor() == Color.BLACK) {
-                    board.movePiece(gamePiece, moveCopy, squareX - 1, squareY - 1);
+                    board.movePiece(gamePiece, moveCopy, squareX ,squareY);
                     moveCopy = null;
                     gamePiece.setHasMoved(false);
                     currentPlayer.setMoveComplete();

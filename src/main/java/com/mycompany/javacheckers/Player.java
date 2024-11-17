@@ -3,6 +3,8 @@ package com.mycompany.javacheckers;
 import Gameboard.GameBoard;
 import Gameboard.Move;
 import Gameboard.Piece;
+import java.awt.event.MouseListener;
+import Gameboard.GameboardMouseListener;
 
 /**
  *
@@ -158,32 +160,53 @@ public class Player {
     }
 
     /**
-     * @param gameboard the value of gameboard
-     * @return the boolean 
+     * @param gameboard the value of gameboard 
      */
-    public boolean makeMove(GameBoard gameboard) {
+    public void makeMove(GameBoard gameboard) throws InterruptedException {
         
         boolean moveMade = false;
+        GameboardMouseListener listen = (GameboardMouseListener)gameboard.getMouseListeners()[0];
+        listen.setCurrentPlayer(this);
         //can the player make a move
         if(piecesCount != 0){
                 //if this player is controlled by the user
             if(isUserPlayer){
                 //piece movement is handled by the mouselistener
                 //move is considered made when 
-                while(!isTurnComplete){
+                //<editor-fold defaultstate="collapsed" desc="create a separate thread to count">
+                Thread turnLengthCounter = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int counter = 0;
+                        while(!isTurnComplete){
+                            counter++;
+                            try{
+                                System.out.print("\rTime Elapsed: " + counter + "s");
+                                Thread.sleep(1000);
+                            }
+                            catch(InterruptedException e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                
+                turnLengthCounter.start();
+                while(!moveMade){
                     try{
-                        Thread.sleep(10000);
+                    Thread.sleep(100);
                     }catch (InterruptedException e){
                         e.printStackTrace();
                     }
                 }
-                moveMade = true;
+                turnLengthCounter.interrupt();
+//</editor-fold>
             }
             else{
 
             }
         }
-        return moveMade;
+        //return moveMade;
     }
 
     /**
@@ -191,7 +214,7 @@ public class Player {
      */
     public void setMoveComplete() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        
+        //i/f()
         isTurnComplete = !isTurnComplete;
     }
 

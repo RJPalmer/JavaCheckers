@@ -138,6 +138,7 @@ public class Game {
         gameboard.setGameBoard(dataGameBoard);
         gameboard.setPieces(gamePieces);
         gameboard.setPreferredSize(new Dimension(800, 800));
+        gameboard.setUserPlayer(this.userPlayer);
         panel.setViewportView(board);
         JPanel tempPanel = new JPanel();
         tempPanel.add(panel);
@@ -150,7 +151,7 @@ public class Game {
     /**
      * Sets the JFrame to visible to display the screen
      */
-    public void startGame() {
+    public void startGame() throws InterruptedException {
 
         String playerColor = userPlayer.getPlayerColor();
         boolean moveMade = false;
@@ -186,14 +187,14 @@ public class Game {
         while (!haveWinner) {
 
             //darker boardSquareColor goes first
-            if (turnCount == 1) {
+                if (turnCount == 1) {
                 if ("Red".equals(userPlayer.getPlayerColor())) {
-                    moveMade = userPlayer.makeMove(this.gameboard);
+                    userPlayer.makeMove(this.gameboard);
                     if (moveMade) {
                         lastPlayed = 0;
                     }
                 } else {
-                    moveMade = opponent.makeMove(this.gameboard);
+                    opponent.makeMove(this.gameboard);
                     if (moveMade) {
                         lastPlayed = 1;
                         this.gameboard.repaint();
@@ -203,13 +204,13 @@ public class Game {
                 //now the other player goes
                 switch (lastPlayed) {
                     case 0 -> {
-                        moveMade = opponent.makeMove(this.gameboard);
+                        opponent.makeMove(this.gameboard);
                         checkForWinner(userPlayer, opponent);
                         lastPlayed = 1;
                     }
 
                     case 1 -> {
-                        moveMade = userPlayer.makeMove(this.gameboard);
+                        userPlayer.makeMove(this.gameboard);
                         checkForWinner(userPlayer, opponent);
                         lastPlayed = 0;
                     }
@@ -218,7 +219,7 @@ public class Game {
             //for all other turns
             switch (lastPlayed) {
                 case 0 -> {
-                    moveMade = opponent.makeMove(this.gameboard);
+                    opponent.makeMove(this.gameboard);
                     if (moveMade) {
                         checkForWinner(userPlayer, opponent);
                         lastPlayed = 1;
@@ -226,7 +227,8 @@ public class Game {
                 }
 
                 case 1 -> {
-                    moveMade = userPlayer.makeMove(this.gameboard);
+                    
+                    userPlayer.makeMove(this.gameboard);
                     if (moveMade) {
                         checkForWinner(userPlayer, opponent);
                         lastPlayed = 0;
@@ -341,12 +343,12 @@ public class Game {
         int choice = JOptionPane.showOptionDialog(null, "Choose A Color",
                 "Pick Your Color", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
                 null, pieceColors, pieceColors[0]);
-        if(choice == 1)
+        if (choice == 1) {
             chosenPlayer = new Player(playerDomains[1], PLAYER_PIECE_COUNT, null, pieceColors[choice]);
-        else{
+        } else {
             chosenPlayer = new Player(playerDomains[0], PLAYER_PIECE_COUNT, null, pieceColors[choice]);
         }
-        
+
         //chosenPlayer = new Player(, PLAYER_PIECE_COUNT, null, pieceColors[choice]);
         return chosenPlayer;
     }

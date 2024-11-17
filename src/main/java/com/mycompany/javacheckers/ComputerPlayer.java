@@ -49,11 +49,11 @@ public class ComputerPlayer extends Player {
      * @return the boolean
      */
     @Override
-    public boolean makeMove(GameBoard gameboard) {
+    public void makeMove(GameBoard gameboard) {
         boolean moveMade = false;
         practiceMove(gameboard);
         moveMade = !moveMade;
-        return moveMade; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+//        return moveMade; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
 
     /**

@@ -4,6 +4,7 @@
  */
 package Gameboard;
 
+import com.mycompany.javacheckers.Player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -481,6 +482,7 @@ public class GameBoard extends JPanel {
         oldStateSqr.setHasPiece(false);
         oldStateSqr.setCurrentPiece(null);
 
+        this.repaint();
         //newState.setHasMoved(false);
     }
 
@@ -721,6 +723,21 @@ public class GameBoard extends JPanel {
         return this.pieces[0];
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    public void setUserPlayer(Player userPlayer) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    private Player userPlayer;
+
+    /**
+     * Get the value of userPlayer
+     *
+     * @return the value of userPlayer
+     */
+    public Player getUserPlayer() {
+        return userPlayer;
+    }
+
 
     /**
      * Determines if the piece can move forward or not
