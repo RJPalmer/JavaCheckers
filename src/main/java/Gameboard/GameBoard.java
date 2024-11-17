@@ -4,20 +4,56 @@
  */
 package Gameboard;
 
+import com.mycompany.javacheckers.Player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.swing.JPanel;
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  *
  * @author Palmer
  */
-public class GameBoard extends JPanel{
+public class GameBoard extends JPanel {
+
+    /**
+     * @return the BOARD_COLUMNS
+     */
+    public static int getBOARD_COLUMNS() {
+        return BOARD_COLUMNS;
+    }
+
+    /**
+     * @param aBOARD_COLUMNS the BOARD_COLUMNS to set
+     */
+    public static void setBOARD_COLUMNS(int aBOARD_COLUMNS) {
+        BOARD_COLUMNS = aBOARD_COLUMNS;
+    }
+
+    /**
+     * @return the BOARD_ROWS
+     */
+    public static int getBOARD_ROWS() {
+        return BOARD_ROWS;
+    }
+
+    /**
+     * @param aBOARD_ROWS the BOARD_ROWS to set
+     */
+    public static void setBOARD_ROWS(int aBOARD_ROWS) {
+        BOARD_ROWS = aBOARD_ROWS;
+    }
 
     private int rows;
     private int columns;
@@ -64,13 +100,17 @@ public class GameBoard extends JPanel{
         this.addMouseMotionListener(mouseAction);
         this.addComponentListener(resizer);
 
-        rows = BOARD_ROWS;
-        columns = BOARD_COLUMNS;
+        rows = getBOARD_ROWS();
+        columns = getBOARD_COLUMNS();
 
     }
-    private static final int BOARD_COLUMNS = 8;
-    private static final int BOARD_ROWS = 8;
+    private static int BOARD_COLUMNS = 8;
+    private static int BOARD_ROWS = 8;
 
+    /**
+     *
+     * @param g
+     */
     @Override
     protected void paintComponent(Graphics g) {
         // super.paintComponent(g);
@@ -137,7 +177,6 @@ public class GameBoard extends JPanel{
 ////        repaint();
 ////        // throw new UnsupportedOperationException("Not supported yet.");
 //    }
-
     /**
      * @return the rows
      */
@@ -157,6 +196,13 @@ public class GameBoard extends JPanel{
      */
     public int getColumns() {
         return columns;
+    }
+
+    /**
+     * @return the pieces
+     */
+    public Piece[] getPieces() {
+        return pieces;
     }
 
     /**
@@ -222,7 +268,6 @@ public class GameBoard extends JPanel{
 //    public void mouseMoved(MouseEvent e) {
 //        // throw new UnsupportedOperationException("Not supported yet.");
 //    }
-
     /**
      * updateSquare - updates the width of the squares on the board.
      */
@@ -325,13 +370,13 @@ public class GameBoard extends JPanel{
         int pieceY;
         int squareWidth1 = this.getSquareWidth();
         if (!Objects.isNull(pieces)) {
-            for (Piece piece : pieces) {
+            for (Piece piece : getPieces()) {
                 pieceX = piece.getxCol();
                 pieceY = piece.getyRow();
 
 //                adjustX = pieceX / this.getSquareWidth();
 //                adjustY = pieceY / this.getSquareWidth();
-                if(!piece.isSelected){
+                if (!piece.isSelected) {
                     piece.setxPos(squareWidth1 * pieceX);
                     piece.setyPos(squareWidth1 * pieceY);
                 }
@@ -356,6 +401,10 @@ public class GameBoard extends JPanel{
         this.squareWidth = squareWidth;
     }
 
+    /**
+     *
+     * @param gameBoard
+     */
     public void setGameBoard(BoardSquare[][] gameBoard) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         this.gameDataBoard = gameBoard;
@@ -376,17 +425,46 @@ public class GameBoard extends JPanel{
                 boardSquare.getWidth(), boardSquare.getHeight());
     }
 
+    /**
+     *
+     * @param squareX
+     * @param squareY
+     * @return
+     */
     public BoardSquare getBoardSquare(int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-           BoardSquare clickSqure;
-           clickSqure = gameDataBoard[squareX][squareY];
-           
-           return clickSqure;
+        BoardSquare clickSqure;
+        System.out.println(String.format("%d, %d", squareX, squareY));
+        clickSqure = gameDataBoard[squareX][squareY];
+
+        return clickSqure;
     }
 
-    void movePiece(Piece newState, Piece oldState, int squareX, int squareY) {
+    /*
+     * @param squareX - the X location of the square
+     * @param squareY - the Y location of the square
+     * @param squareToAdd - the square to be added
+     */
+    /**
+     *
+     * @param squareX
+     * @param squareY
+     * @param squareToAdd
+     */
+    public void setBoardSquare(int squareX, int squareY, BoardSquare squareToAdd) {
+        gameDataBoard[squareX][squareY] = squareToAdd;
+    }
+
+    /**
+     *
+     * @param newState the piece in the new position
+     * @param oldState the piece in the current position
+     * @param squareX the x pos of the piece in the new position
+     * @param squareY the y pos of the piece in the new position
+     */
+    public void movePiece(Piece newState, Piece oldState, int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        
+
         //set the piece to the new position
         newState.setxPos(squareWidth * squareX);
         newState.setyPos(squareWidth * squareY);
@@ -394,33 +472,289 @@ public class GameBoard extends JPanel{
         newState.setyRow(squareX);
         newState.isSelected = !newState.isSelected;
 
-        
-        
         //update the new square to indicate that the piece is there
         BoardSquare newStateSqr = getBoardSquare(squareX, squareY);
         newStateSqr.setHasPiece(true);
         newStateSqr.setCurrentPiece(newState);
-        
+
         //update the old square to indicate that the piece is no longer there
         BoardSquare oldStateSqr = getBoardSquare(oldState.getyRow(), oldState.getxCol());
         oldStateSqr.setHasPiece(false);
         oldStateSqr.setCurrentPiece(null);
-        
+
+        this.repaint();
         //newState.setHasMoved(false);
     }
 
-    void resetPiece(Piece newState, Piece oldState) {
+    /**
+     *
+     * @param newState
+     * @param oldState
+     */
+    public void resetPiece(Piece newState, Piece oldState) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //       newState = oldState;
-         newState.setxPos(oldState.getxPos());
-         newState.setyPos(oldState.getyPos());
-         newState.setxCol(oldState.getxCol());
-         newState.setyRow(oldState.getyRow());
-         
-       if(newState.isSelected)
+        newState.setxPos(oldState.getxPos());
+        newState.setyPos(oldState.getyPos());
+        newState.setxCol(oldState.getxCol());
+        newState.setyRow(oldState.getyRow());
+
+        if (newState.isSelected) {
             newState.isSelected = !newState.isSelected;
-        
-        
+        }
+
     }
 
+    /**
+     *
+     * @param squareX
+     * @param squareY
+     * @return
+     */
+    public Piece checkForGamePiece(int squareX, int squareY) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        BoardSquare selectedSquare = getBoardSquare(squareX, squareY );
+        if (selectedSquare.isHasPiece()) {  
+            return selectedSquare.getCurrentPiece();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Determines if the given piece can move forward
+     *
+     * @param pieceToMove
+     * @return
+     */
+    public boolean isBlocked(Piece pieceToMove) {
+        boolean isPieceBlocked = false;
+        Piece movingPiece = pieceToMove;
+        movingPiece.setPieceDirection("NEGATIVE");
+        int pieceCol = movingPiece.getxCol();
+        int pieceRow = movingPiece.getyRow();
+        String pieceDirection = movingPiece.getPieceDirection();
+        BoardSquare fwdLeft;
+        BoardSquare fwdRight;
+        switch (pieceDirection) {
+            //the piece is moving towards the bottom 
+            case "POSITIVE" -> {
+                fwdLeft = gameDataBoard[pieceCol - 1][pieceRow + 1];
+                fwdRight = gameDataBoard[pieceCol + 1][pieceRow + 1];
+
+            }
+
+            //the piece is moving towards the top
+            case "NEGATIVE" -> {
+                fwdLeft = squareLookUp(pieceRow - 1, pieceCol - 1);
+                fwdRight = squareLookUp(pieceRow - 1, pieceCol + 1);
+                if (fwdLeft != null && fwdRight != null) {
+                    if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
+                        isPieceBlocked = false;
+                    } else {
+                        if (!fwdLeft.isHasPiece()) {
+                            isPieceBlocked = false;
+                        } else {
+                            isPieceBlocked = false;
+                        }
+                    }
+                } else {
+                    if (fwdLeft != null) {
+                        if (fwdLeft.isHasPiece()) {
+                            isPieceBlocked = true;
+                        }
+                    } else {
+                        if (fwdRight.isHasPiece()) {
+                            isPieceBlocked = true;
+                        }
+                    }
+
+                }
+            }
+
+            default -> {
+
+            }
+        }
+
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return isPieceBlocked;
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private BoardSquare squareLookUp(int pieceRow, int pieceCol) {
+        if (pieceRow >= this.rows || pieceCol >= this.columns) {
+            return null;
+        }
+        return gameDataBoard[pieceRow][pieceCol];
+    }
+
+    /**
+     *
+     * @param pieceToMove
+     * @return the java.util.Map<java.lang.Integer,java.lang.Integer>
+     */
+    public List<Point> moveOptions(Piece pieceToMove) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        List<Point> optionList = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        List<BoardSquare> optionSqr = new ArrayList<>();
+        Piece movingPiece = pieceToMove;
+        movingPiece.setPieceDirection("NEGATIVE");
+        int pieceCol = movingPiece.getxCol();
+        int pieceRow = movingPiece.getyRow();
+        String pieceDirection = movingPiece.getPieceDirection();
+        BoardSquare fwdLeft;
+        BoardSquare fwdRight;
+        int col_neg_id = pieceCol - 1;
+        int row_id = pieceRow-1;
+        int col_pos_id = pieceCol + 1;
+        switch (pieceDirection) {
+            //the piece is moving towards the bottom 
+            case "POSITIVE" -> {
+                fwdLeft = gameDataBoard[col_neg_id][row_id];
+                fwdRight = gameDataBoard[col_pos_id][row_id];
+
+            }
+
+            //the piece is moving towards the top
+            case "NEGATIVE" -> {
+                int row_neg_id = pieceRow;
+                fwdLeft = squareLookUp(row_id, col_neg_id);
+                fwdRight = squareLookUp(row_id, col_pos_id);
+                if (fwdLeft != null && fwdRight != null) {
+                    if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
+//                        map.put(col_neg_id, row_id);
+//                        map.put(col_pos_id, row_id);
+//                        optionSqr.add(fwdLeft);
+//                        optionSqr.add(fwdRight);
+                        optionList.add(new Point(row_id, col_neg_id));
+                        optionList.add(new Point(row_id, col_pos_id));
+                    } else {
+                        if (!fwdLeft.isHasPiece()) {
+//                            map.put(col_neg_id, row_id);
+//                            optionSqr.add(fwdLeft);
+                            optionList.add(new Point(row_id, col_neg_id));
+                        } else {
+//                            optionSqr.add(fwdRight);
+//                            map.put(col_pos_id, row_id);
+                            optionList.add(new Point(row_id, col_pos_id));
+                        }
+                    }
+                } else {
+                    if (fwdLeft != null) {
+                        if (!fwdLeft.isHasPiece()) {
+                            //map.put(row_id, row_id);
+//                            optionSqr.add(fwdLeft);
+                            optionList.add(new Point(row_id, col_neg_id));
+                        }
+                    } else if (fwdRight != null) {
+                        if (!fwdRight.isHasPiece()) {
+//                            optionSqr.add(fwdRight);
+                            optionList.add(new Point(row_id, col_pos_id));
+//                            destCell.setLocation(col_pos_id, row_id);
+//                            map.put(col_pos_id, row_id);
+                        }
+                    }
+
+                }
+            }
+
+            default -> {
+                throw new RuntimeException("Scenario not considered");
+            }
+        }
+
+        return optionList;
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+    }
+
+    /**
+     *
+     * @param pieceToMove
+     * @param destination
+     */
+    public void movePieceToSquare(Piece pieceToMove, Point destination) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Piece newState = new Piece();
+        int ptmXCol = pieceToMove.getyRow();
+        int ptmYRow = pieceToMove.getxCol();
+        BoardSquare oldStateSqr = getBoardSquare(ptmXCol, ptmYRow);
+        int pieceIndex = ArrayUtils.indexOf(this.getPieces(), oldStateSqr.getCurrentPiece());
+        //decouple the piece from its current square
+        //update the old square to indicate that the piece is no longer there
+        
+        oldStateSqr.setHasPiece(false);
+        oldStateSqr.setCurrentPiece(null);
+
+        //set the piece to the new position
+        pieceToMove = this.getPiece(pieceIndex);
+        pieceToMove.setxPos(squareWidth * destination.y-1);
+        pieceToMove.setyPos(squareWidth * destination.x-1);
+        pieceToMove.setxCol(destination.y);
+        pieceToMove.setyRow(destination.x);
+        //pieceToMove.isSelected = !newState.isSelected;
+        
+        //decouple the piece from its current square
+        //update the old square to indicate that the piece is no longer there
+        
+        oldStateSqr.setHasPiece(false);
+        oldStateSqr.setCurrentPiece(null);
+        
+        //update the new square to indicate that the piece is there
+        BoardSquare newStateSqr = getBoardSquare(destination.x, destination.y);
+        newStateSqr.setHasPiece(true);
+        newStateSqr.setCurrentPiece(pieceToMove);
+
+    }
+
+    /*
+        
+    */
+    public Piece getPiece(int pieceIndex) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try{
+        return this.pieces[pieceIndex];
+        }
+        catch(java.lang.ArrayIndexOutOfBoundsException ex){
+            System.out.println("Alert: Index " + pieceIndex + " is out of bounds!");
+        }
+        return this.pieces[0];
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void setUserPlayer(Player userPlayer) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    private Player userPlayer;
+
+    /**
+     * Get the value of userPlayer
+     *
+     * @return the value of userPlayer
+     */
+    public Player getUserPlayer() {
+        return userPlayer;
+    }
+
+
+    /**
+     * Determines if the piece can move forward or not
+     *
+     * @param gamePiece
+     * @return
+     */
+    //<editor-fold defaultstate="collapsed" desc="setPlayerPieces">
+    /**
+     *
+     * @return
+     */
+//    public Piece[] setPlayerPieces() {
+//        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//        Piece[] playerPieces = null;
+//        
+//        return playerPieces;
+//    }
+//</editor-fold>
 }
