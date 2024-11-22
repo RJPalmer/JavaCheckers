@@ -1,10 +1,13 @@
 Gameboard/Square.class
+Gameboard/GameMenu$1.class
 com/mycompany/javacheckers/ComputerPlayer.class
+Gameboard/GameMenu$2.class
 Gameboard/Piece.class
 com/mycompany/javacheckers/Player.class
 Gameboard/Move.class
 checkers/KingPiece.class
 Gameboard/BoardSquare.class
+Gameboard/GameMenu.class
 com/mycompany/javacheckers/Player$1.class
 Gameboard/Move$Move_Type.class
 Gameboard/GameboardResizeListener.class

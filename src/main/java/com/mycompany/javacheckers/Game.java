@@ -6,8 +6,10 @@ package com.mycompany.javacheckers;
 
 import Gameboard.BoardSquare;
 import Gameboard.GameBoard;
+import Gameboard.GameMenu;
 import Gameboard.GameboardResizeListener;
 import Gameboard.Piece;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -40,9 +42,19 @@ public class Game {
      *
      */
     public static final String PROP_USERCOLOR = "userColor";
-    private JFrame gameGUI;
+
+    public void start() {
+        try {
+            //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            startGame();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private GameboardResizeListener resizer;
     public GameBoard gameboard;
+    public GameMenu gameMenu;
+    private JFrame gameWindow;
     private boolean haveWinner;
     private Player userPlayer;
     private ComputerPlayer opponent;
@@ -60,12 +72,9 @@ public class Game {
      */
     public Game() {
         PLAYER_PIECE_COUNT = 12;
-        gameGUI = new JFrame("Welcome to Checkers");
-        gameGUI.setSize(800, 800);
-        gameGUI.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        gameGUI.addComponentListener(resizer);
-
+        gameWindow = new JFrame();
         gameboard = new GameBoard();
+        gameMenu = new GameMenu(this);
         piecesForGame = new Piece[]{};
         haveWinner = false;
         turnCount = 1;
@@ -81,16 +90,19 @@ public class Game {
      * @param gamePieces The pieces that are used in the game
      * @param players The players playing in the game.
      */
-    public Game(GameBoard board, Piece[] gamePieces, Player[] players) {
+    public Game(JFrame window, GameBoard board, Piece[] gamePieces, Player[] players) {
         this();
         PLAYER_PIECE_COUNT = 12;
 
         //throw new UnsupportedOperationException("Not yet implemented");
 //        JScrollPane scrollPane = new JScrollPane()
         Container container;
+        CardLayout cardLayout = new CardLayout();
+        JPanel cards = new JPanel(cardLayout);
         JScrollPane panel = new JScrollPane();
         panel.setPreferredSize(new Dimension(800, 800));
-        container = gameGUI.getContentPane();
+        gameWindow = window;
+        container = gameWindow.getContentPane();
 
         BoardSquare[][] dataGameBoard;
         dataGameBoard = new BoardSquare[ROW_COUNT][COLUMN_COUNT];
@@ -141,9 +153,18 @@ public class Game {
         gameboard.setUserPlayer(this.userPlayer);
         panel.setViewportView(board);
         JPanel tempPanel = new JPanel();
-        tempPanel.add(panel);
+//        tempPanel.add(panel);
 //        panel.setPreferredSize(new Dimension(800, 800));
-        container.add(tempPanel);
+//        container.add(gameMenu);
+//        container.add(tempPanel);
+        gameMenu.setParent(cards);
+        gameMenu.setCardLayout(cardLayout);
+        gameMenu.setIsNext(false);
+        cards.add(gameMenu);
+        cards.add(gameboard);
+        panel.setViewportView(cards);
+//        tempPanel.add(panel);
+        gameWindow.add(panel);
         userColor = "";
 
     }
@@ -156,7 +177,7 @@ public class Game {
         String playerColor = userPlayer.getPlayerColor();
         boolean moveMade = false;
         //throw new UnsupportedOperationException("Not yet implemented");
-        gameGUI.setVisible(true);
+//        gameWindow.setVisible(true);
         //PlayerArea oppArea = new PlayerArea();
 
         int lastPlayed = 0;
@@ -362,11 +383,11 @@ public class Game {
     private void checkForWinner(Player player, ComputerPlayer opponent1) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         if (player.getPiecesCount() == 0) {
-            JOptionPane.showMessageDialog(gameGUI, String.format("The %s player has won", opponent1.getPlayerColor()));
+            JOptionPane.showMessageDialog(gameWindow, String.format("The %s player has won", opponent1.getPlayerColor()));
             haveWinner = true;
         }
         if (opponent1.getPiecesCount() == 0) {
-            JOptionPane.showMessageDialog(gameGUI, String.format("The %s player has won", player.getPlayerColor()));
+            JOptionPane.showMessageDialog(gameWindow, String.format("The %s player has won", player.getPlayerColor()));
             haveWinner = true;
         }
     }
@@ -479,6 +500,19 @@ public class Game {
         }
         temp = rows.stream().mapToInt(Integer::intValue).toArray();
         playerDomains[1].setAreaRows(temp);
+    }
+
+    private JFrame getGameWindow() {
+        return gameWindow;
+    }
+
+    /*
+        Starts the game
+    */
+    public void launch() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        gameWindow.setVisible(true);
+        
     }
 
 }
