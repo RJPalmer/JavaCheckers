@@ -5,20 +5,23 @@
 package Gameboard;
 
 import com.mycompany.javacheckers.Player;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.lang.reflect.Array;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.swing.AbstractAction;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
@@ -26,6 +29,37 @@ import org.apache.commons.lang.ArrayUtils;
  * @author Palmer
  */
 public class GameBoard extends JPanel {
+
+    private static int BOARD_COLUMNS = 8;
+    private static int BOARD_ROWS = 8;
+
+    /**
+     *
+     */
+    public void pauseGame() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        CardLayout cl = (CardLayout) parentPanel.getLayout();
+        cl.next(parentPanel);
+    }
+    private JPanel parentPanel;
+
+    /**
+     * Get the value of parentPanel
+     *
+     * @return the value of parentPanel
+     */
+    public JPanel getParentPanel() {
+        return parentPanel;
+    }
+
+    /**
+     * Set the value of parentPanel
+     *
+     * @param parentPanel new value of parentPanel
+     */
+    public void setParentPanel(JPanel parentPanel) {
+        this.parentPanel = parentPanel;
+    }
 
     /**
      * @return the BOARD_COLUMNS
@@ -59,9 +93,8 @@ public class GameBoard extends JPanel {
     private int columns;
     private int squareWidth;
     /*
-        private Graphics panelG;
-        private Square boardSquare1;
-        private Square boardSquare2;
+     * private Graphics panelG; private Square boardSquare1; private Square
+     * boardSquare2;
      */
     private Gameboard.BoardSquare[][] gameDataBoard;
     private Gameboard.GameboardResizeListener resizer;
@@ -69,12 +102,15 @@ public class GameBoard extends JPanel {
     private int selectedPiece;
     // private JPanel checkerBoard;
     private Piece[] pieces;
+    private GameboardKeyBoardListener kbAction;
+    private Player userPlayer;
 
     /**
      * Empty Constructor
      */
     public GameBoard() {
         initComponents();
+        this.setFocusable(true);
     }
 
     /**
@@ -84,28 +120,33 @@ public class GameBoard extends JPanel {
         // this.setBackground(Color.red);
         resizer = new GameboardResizeListener();
         mouseAction = new GameboardMouseListener();
-        //setSquareWidth(100);
-//        pieces = new Piece[14];
-
-        // piece1 = new Piece();
-//        for (int i = 0; i < pieces.length; i++) {
-//            pieces[i] = new Piece(0, 0, squareWidth, squareWidth, 0, 360);
-//        }
-        /*        
-            this.addMouseListener(this);
-            this.addMouseMotionListener(this);
-         */
+        kbAction = new GameboardKeyBoardListener(this);
         mouseAction.setBoard(this);
         this.addMouseListener(mouseAction);
         this.addMouseMotionListener(mouseAction);
         this.addComponentListener(resizer);
+        this.addComponentListener(new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+                e.getComponent().requestFocus();
+            }
+            
+        });
+        this.addKeyListener(kbAction);
+//        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction(){
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                   CardLayout cl = (CardLayout) parentPanel.getLayout();
+//                    cl.next(parentPanel);
+//            }
+//            
+//        });
 
         rows = getBOARD_ROWS();
         columns = getBOARD_COLUMNS();
 
     }
-    private static int BOARD_COLUMNS = 8;
-    private static int BOARD_ROWS = 8;
 
     /**
      *
@@ -120,11 +161,10 @@ public class GameBoard extends JPanel {
         drawPieces(g);
 
         /*
-         * g2.setColor(Color.DARK_GRAY);
-         * piece1.movePiece(2*squareWidth, squareWidth);
-         * piece1.drawPiece(g2);
-         * //g2.fillArc(0, 0, 100, 100, 0, 360);
-         * 
+         * g2.setColor(Color.DARK_GRAY); piece1.movePiece(2*squareWidth,
+         * squareWidth); piece1.drawPiece(g2); //g2.fillArc(0, 0, 100, 100, 0,
+         * 360);
+         *
          */
     }
 
@@ -411,8 +451,7 @@ public class GameBoard extends JPanel {
     }
 
     /*
-     * @param g2
-     * @param boardSquare
+     * @param g2 @param boardSquare
      */
     private void drawBoardSquare(Graphics2D g2, Square boardSquare) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -429,6 +468,7 @@ public class GameBoard extends JPanel {
      *
      * @param squareX
      * @param squareY
+     *
      * @return
      */
     public BoardSquare getBoardSquare(int squareX, int squareY) {
@@ -441,9 +481,8 @@ public class GameBoard extends JPanel {
     }
 
     /*
-     * @param squareX - the X location of the square
-     * @param squareY - the Y location of the square
-     * @param squareToAdd - the square to be added
+     * @param squareX - the X location of the square @param squareY - the Y
+     * location of the square @param squareToAdd - the square to be added
      */
     /**
      *
@@ -459,8 +498,8 @@ public class GameBoard extends JPanel {
      *
      * @param newState the piece in the new position
      * @param oldState the piece in the current position
-     * @param squareX the x pos of the piece in the new position
-     * @param squareY the y pos of the piece in the new position
+     * @param squareX  the x pos of the piece in the new position
+     * @param squareY  the y pos of the piece in the new position
      */
     public void movePiece(Piece newState, Piece oldState, int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -509,12 +548,13 @@ public class GameBoard extends JPanel {
      *
      * @param squareX
      * @param squareY
+     *
      * @return
      */
     public Piece checkForGamePiece(int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        BoardSquare selectedSquare = getBoardSquare(squareX, squareY );
-        if (selectedSquare.isHasPiece()) {  
+        BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
+        if (selectedSquare.isHasPiece()) {
             return selectedSquare.getCurrentPiece();
         } else {
             return null;
@@ -525,6 +565,7 @@ public class GameBoard extends JPanel {
      * Determines if the given piece can move forward
      *
      * @param pieceToMove
+     *
      * @return
      */
     public boolean isBlocked(Piece pieceToMove) {
@@ -592,6 +633,7 @@ public class GameBoard extends JPanel {
     /**
      *
      * @param pieceToMove
+     *
      * @return the java.util.Map<java.lang.Integer,java.lang.Integer>
      */
     public List<Point> moveOptions(Piece pieceToMove) {
@@ -607,7 +649,7 @@ public class GameBoard extends JPanel {
         BoardSquare fwdLeft;
         BoardSquare fwdRight;
         int col_neg_id = pieceCol - 1;
-        int row_id = pieceRow-1;
+        int row_id = pieceRow - 1;
         int col_pos_id = pieceCol + 1;
         switch (pieceDirection) {
             //the piece is moving towards the bottom 
@@ -684,24 +726,23 @@ public class GameBoard extends JPanel {
         int pieceIndex = ArrayUtils.indexOf(this.getPieces(), oldStateSqr.getCurrentPiece());
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
-        
+
         oldStateSqr.setHasPiece(false);
         oldStateSqr.setCurrentPiece(null);
 
         //set the piece to the new position
         pieceToMove = this.getPiece(pieceIndex);
-        pieceToMove.setxPos(squareWidth * destination.y-1);
-        pieceToMove.setyPos(squareWidth * destination.x-1);
+        pieceToMove.setxPos(squareWidth * destination.y - 1);
+        pieceToMove.setyPos(squareWidth * destination.x - 1);
         pieceToMove.setxCol(destination.y);
         pieceToMove.setyRow(destination.x);
         //pieceToMove.isSelected = !newState.isSelected;
-        
+
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
-        
         oldStateSqr.setHasPiece(false);
         oldStateSqr.setCurrentPiece(null);
-        
+
         //update the new square to indicate that the piece is there
         BoardSquare newStateSqr = getBoardSquare(destination.x, destination.y);
         newStateSqr.setHasPiece(true);
@@ -709,25 +750,30 @@ public class GameBoard extends JPanel {
 
     }
 
-    /*
-        
-    */
+    /**
+     *
+     * @param pieceIndex
+     *
+     * @return
+     */
     public Piece getPiece(int pieceIndex) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        try{
-        return this.pieces[pieceIndex];
-        }
-        catch(java.lang.ArrayIndexOutOfBoundsException ex){
+        try {
+            return this.pieces[pieceIndex];
+        } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
             System.out.println("Alert: Index " + pieceIndex + " is out of bounds!");
         }
         return this.pieces[0];
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /**
+     *
+     * @param userPlayer
+     */
     public void setUserPlayer(Player userPlayer) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    private Player userPlayer;
 
     /**
      * Get the value of userPlayer
@@ -738,11 +784,11 @@ public class GameBoard extends JPanel {
         return userPlayer;
     }
 
-
     /**
      * Determines if the piece can move forward or not
      *
      * @param gamePiece
+     *
      * @return
      */
     //<editor-fold defaultstate="collapsed" desc="setPlayerPieces">
