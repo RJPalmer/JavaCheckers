@@ -19,6 +19,13 @@ import java.util.Objects;
  */
 public class GameboardMouseListener implements MouseListener, MouseInputListener, MouseMotionListener {
 
+    private GameBoard relatedGB;
+    
+    GameboardMouseListener(GameBoard aThis) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.relatedGB = aThis;
+    }
+
     /**
      * @param currentPlayer the currentPlayer to set
      */
@@ -85,6 +92,7 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         //check the board to see if there's a piece there
         gamePiece = board.checkForGamePiece(squareX, squareY);
 
+        
         if (gamePiece != null) {
             if (gamePiece.isSelected) {
                 //gamePiece.setPieceColor(Color.yellow);

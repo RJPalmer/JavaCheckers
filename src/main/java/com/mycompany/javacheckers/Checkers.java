@@ -20,7 +20,7 @@ import javax.swing.JFrame;
 public class Checkers {
 
     
-    /**
+    /** 
      * GameBoard
      */
     private GameBoard board;

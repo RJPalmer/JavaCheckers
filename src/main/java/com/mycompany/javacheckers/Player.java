@@ -5,6 +5,9 @@ import Gameboard.Move;
 import Gameboard.Piece;
 import java.awt.event.MouseListener;
 import Gameboard.GameboardMouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 /**
  *
@@ -192,13 +195,14 @@ public class Player {
                 });
                 
                 turnLengthCounter.start();
-                while(!moveMade){
-                    try{
-                    Thread.sleep(100);
-                    }catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
-                }
+   
+//                while(!moveMade){
+//                    try{
+//                    Thread.sleep(100);
+//                    }catch (InterruptedException e){
+//                        e.printStackTrace();
+//                    }
+//                }
                 turnLengthCounter.interrupt();
 //</editor-fold>
             }

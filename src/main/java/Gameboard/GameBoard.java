@@ -119,7 +119,7 @@ public class GameBoard extends JPanel {
     private void initComponents() {
         // this.setBackground(Color.red);
         resizer = new GameboardResizeListener();
-        mouseAction = new GameboardMouseListener();
+        mouseAction = new GameboardMouseListener(this);
         kbAction = new GameboardKeyBoardListener(this);
         mouseAction.setBoard(this);
         this.addMouseListener(mouseAction);
@@ -133,7 +133,7 @@ public class GameBoard extends JPanel {
             }
             
         });
-        this.addKeyListener(kbAction);
+        //this.addKeyListener(kbAction);
 //        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction(){
 //            @Override
 //            public void actionPerformed(ActionEvent e) {

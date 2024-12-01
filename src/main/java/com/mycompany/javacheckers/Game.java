@@ -4,15 +4,15 @@
  */
 package com.mycompany.javacheckers;
 
-import Gameboard.BoardSquare;
-import Gameboard.GameBoard;
-import Gameboard.GameMenu;
-import Gameboard.GameboardResizeListener;
-import Gameboard.Piece;
+import Gameboard.*;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -21,10 +21,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 
 /**
  * Handles the logic for playing the game
@@ -33,39 +36,49 @@ import javax.swing.JScrollPane;
  */
 public class Game {
 
-    public static final int GAME_PIECE_COUNT = 24;
-    public static int PLAYER_PIECE_COUNT;
-    private static final int ROW_COUNT = 8;
     private static final int COLUMN_COUNT = 8;
+
+    /**
+     *
+     */
+    public static final int GAME_PIECE_COUNT = 24;
+
+    /**
+     *
+     */
+    public static int PLAYER_PIECE_COUNT;
 
     /**
      *
      */
     public static final String PROP_USERCOLOR = "userColor";
 
-    public void start() {
-        try {
-            //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            startGame();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    private GameboardResizeListener resizer;
-    public GameBoard gameboard;
-    public GameMenu gameMenu;
-    private JFrame gameWindow;
-    private boolean haveWinner;
-    private Player userPlayer;
-    private ComputerPlayer opponent;
-    private int turnCount;
-    private String userColor;
+    private static final int ROW_COUNT = 8;
 
+    /**
+     *
+     */
+    public GameMenu gameMenu;
+    private GameState gameState;
+    private JFrame gameWindow;
+
+    /**
+     *
+     */
+    public GameBoard gameboard;
+    private boolean haveWinner;
+    private ComputerPlayer opponent;
     /**
      * Represents the pieces used for the game
      */
     public Piece[] piecesForGame;
+    /**
+     *
+     */
+    public PlayerArea[] playerDomains;
     private final transient PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
+    private String userColor;
+    private Player userPlayer;
 
     /**
      * Empty Game Constructor
@@ -77,32 +90,32 @@ public class Game {
         gameMenu = new GameMenu(this);
         piecesForGame = new Piece[]{};
         haveWinner = false;
-        turnCount = 1;
         userColor = "";
         this.playerDomains = new PlayerArea[0];
         this.userPlayer = new Player();
+
+        
     }
 
     /**
      * Game Constructor
      *
-     * @param board The gameboard used in the game
+     * @param window
+     * @param board      The gameboard used in the game
      * @param gamePieces The pieces that are used in the game
-     * @param players The players playing in the game.
+     * @param players    The players playing in the game.
      */
     public Game(JFrame window, GameBoard board, Piece[] gamePieces, Player[] players) {
         this();
         PLAYER_PIECE_COUNT = 12;
 
-        //throw new UnsupportedOperationException("Not yet implemented");
-//        JScrollPane scrollPane = new JScrollPane()
-        Container container;
         CardLayout cardLayout = new CardLayout();
         JPanel cards = new JPanel(cardLayout);
         JScrollPane panel = new JScrollPane();
         panel.setPreferredSize(new Dimension(800, 800));
+        gameState = new GameState();
         gameWindow = window;
-        container = gameWindow.getContentPane();
+        gameWindow.getContentPane();
 
         BoardSquare[][] dataGameBoard;
         dataGameBoard = new BoardSquare[ROW_COUNT][COLUMN_COUNT];
@@ -132,11 +145,11 @@ public class Game {
             gamePieces[i] = new Piece(0, 0, 0, 0, 100, 100, 0, 360, false);
 //<editor-fold defaultstate="collapsed" desc="comment">
 /*
-
-            player1Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
-            player2Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
-            player1Pieces[i].setPieceColor(Color.RED);
-            player2Pieces[i].setPieceColor(Color.yellow);
+             *
+             * player1Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
+             * player2Pieces[i] = new Piece(0, 0, 100, 100, 0, 360);
+             * player1Pieces[i].setPieceColor(Color.RED);
+             * player2Pieces[i].setPieceColor(Color.yellow);
              */
 //</editor-fold>
         }
@@ -151,8 +164,20 @@ public class Game {
         gameboard.setPieces(gamePieces);
         gameboard.setPreferredSize(new Dimension(800, 800));
         gameboard.setUserPlayer(this.userPlayer);
-        panel.setViewportView(board);
-        JPanel tempPanel = new JPanel();
+        gameboard.setParentPanel(cards);
+       // gameboard.addKeyListener(new GameboardKeyBoardListener(gameboard));
+        gameboard.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "pauseGame");
+        gameboard.getActionMap().put("pauseGame", new AbstractAction(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+               gameState.setCurrentState(new PausedState());
+               gameState.processState();
+            }
+            
+        });
+        
+        //panel.setViewportView(board);
 //        tempPanel.add(panel);
 //        panel.setPreferredSize(new Dimension(800, 800));
 //        container.add(gameMenu);
@@ -162,108 +187,42 @@ public class Game {
         gameMenu.setIsNext(false);
         cards.add(gameMenu);
         cards.add(gameboard);
+        //cards.addKeyListener(new GameboardKeyBoardListener(gameboard));
+        //cards.setFocusable(true);
         panel.setViewportView(cards);
 //        tempPanel.add(panel);
         gameWindow.add(panel);
+        
         userColor = "";
-
+        
     }
 
     /**
-     * Sets the JFrame to visible to display the screen
-     */
-    public void startGame() throws InterruptedException {
-
-        String playerColor = userPlayer.getPlayerColor();
-        boolean moveMade = false;
-        //throw new UnsupportedOperationException("Not yet implemented");
-//        gameWindow.setVisible(true);
-        //PlayerArea oppArea = new PlayerArea();
-
-        int lastPlayed = 0;
-        //let the user pick their boardSquareColor
-        userPlayer = pickUserPlayer();
-        userPlayer.isUserPlayer = true;
-
-        getUserColor();
-        playerColor = userPlayer.getPlayerColor();
-        //setup the other player
-        setUserColor(playerColor);
-
-        if (playerColor.equals("Yellow")) {
-
-            playerDomains[1].setAreaColor("Red");
-            opponent = new ComputerPlayer(playerDomains[1], PLAYER_PIECE_COUNT, null, "Red");
-        } else {
-            playerDomains[0].setAreaColor("Yellow");
-            opponent = new ComputerPlayer(playerDomains[0], PLAYER_PIECE_COUNT, null, "Yellow");
-        }
-
-        //give the players their pieces;
-        userPlayer.playerPieces = setPlayerPieces(userPlayer);
-        opponent.playerPieces = setPlayerPieces(opponent);
-//        userPlayer = userPlayer;
-//        opponent = opponent;
-        //play the game until you have a winner
-        while (!haveWinner) {
-
-            //darker boardSquareColor goes first
-                if (turnCount == 1) {
-                if ("Red".equals(userPlayer.getPlayerColor())) {
-                    userPlayer.makeMove(this.gameboard);
-                    if (moveMade) {
-                        lastPlayed = 0;
-                    }
-                } else {
-                    opponent.makeMove(this.gameboard);
-                    if (moveMade) {
-                        lastPlayed = 1;
-                        this.gameboard.repaint();
-                    }
-                }
-
-                //now the other player goes
-                switch (lastPlayed) {
-                    case 0 -> {
-                        opponent.makeMove(this.gameboard);
-                        checkForWinner(userPlayer, opponent);
-                        lastPlayed = 1;
-                    }
-
-                    case 1 -> {
-                        userPlayer.makeMove(this.gameboard);
-                        checkForWinner(userPlayer, opponent);
-                        lastPlayed = 0;
-                    }
-                }
-            }
-            //for all other turns
-            switch (lastPlayed) {
-                case 0 -> {
-                    opponent.makeMove(this.gameboard);
-                    if (moveMade) {
-                        checkForWinner(userPlayer, opponent);
-                        lastPlayed = 1;
-                    }
-                }
-
-                case 1 -> {
-                    
-                    userPlayer.makeMove(this.gameboard);
-                    if (moveMade) {
-                        checkForWinner(userPlayer, opponent);
-                        lastPlayed = 0;
-                    }
-                }
-            }
-            turnCount++;
-        }
-    }
-
-    /**
+     * Checks if a player has won the game
      *
+     * @param player    the user player
+     * @param opponent1 the computer player
      */
-    public PlayerArea[] playerDomains;
+    private void checkForWinner(Player player, ComputerPlayer opponent1) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (player.getPiecesCount() == 0) {
+            JOptionPane.showMessageDialog(gameWindow, String.format("The %s player has won", opponent1.getPlayerColor()));
+            haveWinner = true;
+        }
+        if (opponent1.getPiecesCount() == 0) {
+            JOptionPane.showMessageDialog(gameWindow, String.format("The %s player has won", player.getPlayerColor()));
+            haveWinner = true;
+        }
+    }
+
+    /**
+     * Return reference to the game JFrame
+     *
+     * @return
+     */
+    private JFrame getGameWindow() {
+        return gameWindow;
+    }
 
     /**
      * Get the value of playerDomains
@@ -284,20 +243,23 @@ public class Game {
     }
 
     /**
-     * Places a piece on a square on the gameboard
+     * Returns the piece boardSquareColor associated with the user
      *
-     * @param rowIndex
-     * @param colIndex
-     * @param boardSquare
-     * @param player1Piece
+     * @return the userColor
      */
-    private void placePiece(int rowIndex, int colIndex, BoardSquare boardSquare, Piece player1Piece) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        player1Piece.setxCol(colIndex);
-        player1Piece.setyRow(rowIndex);
-        boardSquare.setCurrentPiece(player1Piece);
-        boardSquare.setHasPiece(true);
+    public String getUserColor() {
+        return userColor;
+    }
 
+    /**
+     * Sets the piece boardSquareColor associated with the user
+     *
+     * @param userColor the userColor to set
+     */
+    public void setUserColor(String userColor) {
+        java.lang.String oldUserColor = this.userColor;
+        this.userColor = userColor;
+        propertyChangeSupport.firePropertyChange(PROP_USERCOLOR, oldUserColor, userColor);
     }
 
     /**
@@ -347,96 +309,6 @@ public class Game {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Determines which piece boardSquareColor gets associated with the user
-     *
-     * @return A player object with the user's chosen piece boardSquareColor
-     */
-    private Player pickUserPlayer() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Player chosenPlayer;
-        String[] pieceColors = {"Yellow", "Red"};
-
-        //have the user pick which boardSquareColor they want
-        int choice = JOptionPane.showOptionDialog(null, "Choose A Color",
-                "Pick Your Color", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                null, pieceColors, pieceColors[0]);
-        if (choice == 1) {
-            chosenPlayer = new Player(playerDomains[1], PLAYER_PIECE_COUNT, null, pieceColors[choice]);
-        } else {
-            chosenPlayer = new Player(playerDomains[0], PLAYER_PIECE_COUNT, null, pieceColors[choice]);
-        }
-
-        //chosenPlayer = new Player(, PLAYER_PIECE_COUNT, null, pieceColors[choice]);
-        return chosenPlayer;
-    }
-
-    /**
-     * Checks if a player has won the game
-     *
-     * @param player the user player
-     * @param opponent1 the computer player
-     */
-    private void checkForWinner(Player player, ComputerPlayer opponent1) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        if (player.getPiecesCount() == 0) {
-            JOptionPane.showMessageDialog(gameWindow, String.format("The %s player has won", opponent1.getPlayerColor()));
-            haveWinner = true;
-        }
-        if (opponent1.getPiecesCount() == 0) {
-            JOptionPane.showMessageDialog(gameWindow, String.format("The %s player has won", player.getPlayerColor()));
-            haveWinner = true;
-        }
-    }
-
-    /**
-     * Returns the piece boardSquareColor associated with the user
-     *
-     * @return the userColor
-     */
-    public String getUserColor() {
-        return userColor;
-    }
-
-    /**
-     * Sets the piece boardSquareColor associated with the user
-     *
-     * @param userColor the userColor to set
-     */
-    public void setUserColor(String userColor) {
-        java.lang.String oldUserColor = this.userColor;
-        this.userColor = userColor;
-        propertyChangeSupport.firePropertyChange(PROP_USERCOLOR, oldUserColor, userColor);
-    }
-
-    /**
-     * Filters the game pieces and returns the ones that belong to the player
-     *
-     * @return
-     */
-    private Piece[] setPlayerPieces(Player userPlayer1) {
-        Piece[] playerPieces = null;
-        try {
-            //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            //Piece[] playerPieces = null;
-
-            String playerColor = userPlayer1.getPlayerColor().toLowerCase();
-            Color tempColor;
-            Field field = Color.class.getField(playerColor);
-            tempColor = (Color) field.get(null);
-
-            Color temp2 = tempColor;
-            List<Piece> filtered;
-            filtered = Arrays.stream(this.piecesForGame).filter(piece -> piece.getPieceColor()
-                    == temp2).collect(Collectors.toList());
-            playerPieces = filtered.toArray(Piece[]::new);
-            return playerPieces;
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-            return playerPieces;
         }
     }
 
@@ -502,17 +374,189 @@ public class Game {
         playerDomains[1].setAreaRows(temp);
     }
 
-    private JFrame getGameWindow() {
-        return gameWindow;
-    }
 
     /*
-        Starts the game
-    */
+     * Starts the game
+     */
+    /**
+     *
+     */
     public void launch() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         gameWindow.setVisible(true);
-        
+
+    }
+
+    /**
+     * Determines which piece boardSquareColor gets associated with the user
+     *
+     * @return A player object with the user's chosen piece boardSquareColor
+     */
+    private Player pickUserPlayer() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Player chosenPlayer;
+        String[] pieceColors = {"Yellow", "Red"};
+
+        //have the user pick which boardSquareColor they want
+        int choice = JOptionPane.showOptionDialog(null, "Choose A Color",
+                "Pick Your Color", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                null, pieceColors, pieceColors[0]);
+        if (choice == 1) {
+            chosenPlayer = new Player(playerDomains[1], PLAYER_PIECE_COUNT, null, pieceColors[choice]);
+        } else {
+            chosenPlayer = new Player(playerDomains[0], PLAYER_PIECE_COUNT, null, pieceColors[choice]);
+        }
+
+        //chosenPlayer = new Player(, PLAYER_PIECE_COUNT, null, pieceColors[choice]);
+        return chosenPlayer;
+    }
+
+    /**
+     * Places a piece on a square on the gameboard
+     *
+     * @param rowIndex
+     * @param colIndex
+     * @param boardSquare
+     * @param player1Piece
+     */
+    private void placePiece(int rowIndex, int colIndex, BoardSquare boardSquare, Piece player1Piece) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        player1Piece.setxCol(colIndex);
+        player1Piece.setyRow(rowIndex);
+        boardSquare.setCurrentPiece(player1Piece);
+        boardSquare.setHasPiece(true);
+
+    }
+
+    /**
+     * Filters the game pieces and returns the ones that belong to the player
+     *
+     * @return
+     */
+    private Piece[] setPlayerPieces(Player userPlayer1) {
+        Piece[] playerPieces = null;
+        try {
+            //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            //Piece[] playerPieces = null;
+
+            String playerColor = userPlayer1.getPlayerColor().toLowerCase();
+            Color tempColor;
+            Field field = Color.class.getField(playerColor);
+            tempColor = (Color) field.get(null);
+
+            Color temp2 = tempColor;
+            List<Piece> filtered;
+            filtered = Arrays.stream(this.piecesForGame).filter(piece -> piece.getPieceColor()
+                    == temp2).collect(Collectors.toList());
+            playerPieces = filtered.toArray(Piece[]::new);
+            return playerPieces;
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return playerPieces;
+        }
+    }
+
+    /**
+     *
+     */
+    public void start() {
+        try {
+            gameState.setCurrentState(new InitState());
+            gameState.processState();
+            startGame();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Sets the JFrame to visible to display the screen
+     */
+    public void startGame() throws InterruptedException {
+
+        String playerColor = userPlayer.getPlayerColor();
+        boolean moveMade = false;
+        //throw new UnsupportedOperationException("Not yet implemented");
+        //        gameWindow.setVisible(true);
+//PlayerArea oppArea = new PlayerArea();
+
+        int lastPlayed = 0;
+//let the user pick their boardSquareColor
+        userPlayer = pickUserPlayer();
+        userPlayer.isUserPlayer = true;
+
+        getUserColor();
+        playerColor = userPlayer.getPlayerColor();
+//setup the other player
+        setUserColor(playerColor);
+
+        if (playerColor.equals("Yellow")) {
+
+            playerDomains[1].setAreaColor("Red");
+            opponent = new ComputerPlayer(playerDomains[1], PLAYER_PIECE_COUNT, null, "Red");
+            gameState.setCurrentState(new OpponentState());
+        } else {
+            playerDomains[0].setAreaColor("Yellow");
+            opponent = new ComputerPlayer(playerDomains[0], PLAYER_PIECE_COUNT, null, "Yellow");
+            gameState.setCurrentState(new PlayerState());
+        }
+
+        userPlayer.playerPieces = setPlayerPieces(userPlayer);
+        opponent.playerPieces = setPlayerPieces(opponent);
+        gameState.processState();
+//         while (!haveWinner) {
+//            //darker boardSquareColor goes first
+//            if (turnCount == 1) {
+//                if ("Red".equals(userPlayer.getPlayerColor())) {
+//                    userPlayer.makeMove(this.gameboard);
+//                    if (moveMade) {
+//                        lastPlayed = 0;
+//                    }
+//                } 
+//                else {
+//                    opponent.makeMove(this.gameboard);
+//                    if (moveMade) {
+//                        lastPlayed = 1;
+//                        this.gameboard.repaint();
+//                    }
+//                }
+//
+//                //now the other player goes
+//                switch (lastPlayed) {
+//                    case 0 -> {
+//                        opponent.makeMove(this.gameboard);
+//                        checkForWinner(userPlayer, opponent);
+//                        lastPlayed = 1;
+//                    }
+//
+//                    case 1 -> {
+//                        userPlayer.makeMove(this.gameboard);
+//                        checkForWinner(userPlayer, opponent);
+//                        lastPlayed = 0;
+//                    }
+//                }
+//            }
+//            //for all other turns
+//            switch (lastPlayed) {
+//                case 0 -> {
+//                    opponent.makeMove(this.gameboard);
+//                    if (moveMade) {
+//                        checkForWinner(userPlayer, opponent);
+//                        lastPlayed = 1;
+//                    }
+//                }
+//
+//                case 1 -> {
+//
+//                    userPlayer.makeMove(this.gameboard);
+//                    if (moveMade) {
+//                        checkForWinner(userPlayer, opponent);
+//                        lastPlayed = 0;
+//                    }
+//                }
+//            }
+//            turnCount++;
+//        }
     }
 
 }
