@@ -38,7 +38,7 @@ public class GameboardMouseListenerTest {
         GameBoard.setBOARD_ROWS(10);
         board = new GameBoard();
         dataBoard = new BoardSquare[10][10];
-        instance = new GameboardMouseListener();
+        instance = new GameboardMouseListener(board);
         gamePiece = new Piece();
         moveCopy = new Piece();
         board.setGameBoard(dataBoard);

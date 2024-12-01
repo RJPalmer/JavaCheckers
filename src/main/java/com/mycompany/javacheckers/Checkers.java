@@ -5,11 +5,13 @@
 package com.mycompany.javacheckers;
 
 import Gameboard.GameBoard;
+import Gameboard.GameboardResizeListener;
 import javax.swing.JPanel;
 
 import Gameboard.Piece;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  * Checkers - An application that allows a user to play the game of checkers
@@ -18,7 +20,7 @@ import java.util.logging.Logger;
 public class Checkers {
 
     
-    /**
+    /** 
      * GameBoard
      */
     private GameBoard board;
@@ -30,6 +32,8 @@ public class Checkers {
      * players
      */
     private Player[] players;
+    
+    private JFrame gameGUI;
     /**
      * newGame
      */
@@ -38,6 +42,8 @@ public class Checkers {
      * loadingScreen
      */
     private JPanel loadingScreen;
+    
+    private GameboardResizeListener resizer;
 
     /**
      * 
@@ -58,20 +64,17 @@ public class Checkers {
         this.gamePieces = gamePieces;
         this.players = players;
         
-        newGame = new Game(this.board, this.gamePieces, this.getPlayers());
+        
+        newGame = new Game(this.gameGUI, this.board, this.gamePieces, this.getPlayers());
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
         Checkers checkers = new Checkers();
-        try {
-            checkers.newGame.startGame();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Checkers.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        checkers.newGame.launch();
     }
 
     /**
@@ -112,8 +115,11 @@ public class Checkers {
         
         gamePieces = new Piece[GAME_PIECE_COUNT];
         players = new Player[PLAYER_COUNT];
-        
-        newGame = new Game(board, gamePieces, players);
+        gameGUI = new JFrame("Welcome to Checkers");
+        gameGUI.setSize(900, 900);
+        gameGUI.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        gameGUI.addComponentListener(resizer);
+        newGame = new Game(gameGUI, board, gamePieces, players);
         
     }
     private static final int PLAYER_COUNT = 2;
