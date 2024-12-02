@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 /**
- *
+ * A JPanel that displays the main menu
  * @author robertpalmer
  */
 public class GameMenu extends JPanel {
@@ -91,16 +91,28 @@ public class GameMenu extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     }
 
+    /**
+     *
+     * @param cards
+     */
     public void setParent(JPanel cards) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         parent = cards;
     }
 
+    /**
+     *
+     * @param cardLayout
+     */
     public void setCardLayout(CardLayout cardLayout) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         cl = cardLayout;
     }
 
+    /**
+     *
+     * @param b
+     */
     public void setIsNext(boolean b) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         isNext_bool = b;

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: Gameboard.GameboardMouseListenerTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.707 s -- in Gameboard.GameboardMouseListenerTest
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.239 s -- in Gameboard.GameboardMouseListenerTest

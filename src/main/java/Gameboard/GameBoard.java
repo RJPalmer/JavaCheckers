@@ -125,13 +125,13 @@ public class GameBoard extends JPanel {
         this.addMouseListener(mouseAction);
         this.addMouseMotionListener(mouseAction);
         this.addComponentListener(resizer);
-        this.addComponentListener(new ComponentAdapter(){
+        this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
                 e.getComponent().requestFocus();
             }
-            
+
         });
         //this.addKeyListener(kbAction);
 //        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction(){
@@ -623,6 +623,9 @@ public class GameBoard extends JPanel {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /*
+     *
+     */
     private BoardSquare squareLookUp(int pieceRow, int pieceCol) {
         if (pieceRow >= this.rows || pieceCol >= this.columns) {
             return null;
@@ -632,9 +635,10 @@ public class GameBoard extends JPanel {
 
     /**
      *
-     * @param pieceToMove
+     * @param pieceToMove the piece that has been selected for movement
      *
-     * @return the java.util.Map<java.lang.Integer,java.lang.Integer>
+     * @return the java.util.List{@literal <java.awt.Point>}
+     *
      */
     public List<Point> moveOptions(Piece pieceToMove) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -778,7 +782,7 @@ public class GameBoard extends JPanel {
     /**
      * Get the value of userPlayer
      *
-     * @return the value of userPlayer
+     * @return {@link Player}the value of userPlayer
      */
     public Player getUserPlayer() {
         return userPlayer;
