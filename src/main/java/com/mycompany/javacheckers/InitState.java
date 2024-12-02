@@ -15,5 +15,15 @@ public class InitState implements State {
     public void handleRequest(){
         System.out.println("Setting up game");
     }
+
+    @Override
+    public void nextState(GameState gs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void prevState(GameState gs) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

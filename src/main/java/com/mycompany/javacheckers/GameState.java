@@ -12,12 +12,16 @@ public class GameState {
     private State currentState;
 
     /**
+     * Sets the current state
      * @param currentState the currentState to set
      */
     public void setCurrentState(State currentState) {
         this.currentState = currentState;
     }
     
+    /*
+     * Performs the actions associated with the given state
+     */
     public void processState(){
         if(currentState != null){
             currentState.handleRequest();

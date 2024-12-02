@@ -10,6 +10,8 @@ package com.mycompany.javacheckers;
  */
 public interface State {
 
+    void nextState(GameState gs);
+    void prevState(GameState gs);
     void handleRequest();
     
 }

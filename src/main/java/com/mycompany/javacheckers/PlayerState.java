@@ -5,10 +5,30 @@
 package com.mycompany.javacheckers;
 
 /**
- *
- * @author robertpalmer
+ * A State that represents the player's turn 
+* @author robertpalmer
  */
 public class PlayerState implements State {
+
+    private boolean hasMoved;
+
+    /**
+     * Get the value of hasMoved
+     *
+     * @return the value of hasMoved
+     */
+    public boolean isHasMoved() {
+        return hasMoved;
+    }
+
+    /**
+     * Set the value of hasMoved
+     *
+     * @param hasMoved new value of hasMoved
+     */
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
 
     public PlayerState() {
     }
@@ -17,6 +37,17 @@ public class PlayerState implements State {
     public void handleRequest() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         System.out.println("It''s the player''s turn");
+    }
+
+    @Override
+    public void nextState(GameState gs) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+    }
+
+    @Override
+    public void prevState(GameState gs) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }
