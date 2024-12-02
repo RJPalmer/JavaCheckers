@@ -46,7 +46,6 @@ public class ComputerPlayer extends Player {
 
     /**
      * @param gameboard the value of gameboard
-     * @return the boolean
      */
     @Override
     public void makeMove(GameBoard gameboard) {

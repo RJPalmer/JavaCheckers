@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 /**
- *
+ * A JFrame that displays the game instructions
  * @author robertpalmer
  */
 public class InstructionFrame extends JFrame {
@@ -19,6 +19,10 @@ public class InstructionFrame extends JFrame {
     JPanel basePanel = new JPanel();
     JScrollPane instructionPane;
 
+    /**
+     *
+     * @param new_Screen
+     */
     public InstructionFrame(String new_Screen) {
         super(new_Screen);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

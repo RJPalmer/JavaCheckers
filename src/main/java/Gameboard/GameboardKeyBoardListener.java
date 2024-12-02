@@ -35,19 +35,34 @@ public class GameboardKeyBoardListener implements KeyListener {
         this.gameObj = gameObj;
     }
 
+    /**
+     *
+     */
     public GameboardKeyBoardListener() {
     }
 
+    /**
+     *
+     * @param gameObj
+     */
     public GameboardKeyBoardListener(GameBoard gameObj) {
         
         this.gameObj = gameObj;
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void keyTyped(KeyEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -56,6 +71,10 @@ public class GameboardKeyBoardListener implements KeyListener {
         }
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
