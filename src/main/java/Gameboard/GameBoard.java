@@ -4,6 +4,7 @@
  */
 package Gameboard;
 
+import com.mycompany.javacheckers.Game;
 import com.mycompany.javacheckers.Player;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -32,6 +33,19 @@ public class GameBoard extends JPanel {
 
     private static int BOARD_COLUMNS = 8;
     private static int BOARD_ROWS = 8;
+
+    public void addMouseListener(GameboardMouseListener mouseAction, Game aThis) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /*
+     * 
+     */
+    void highlightPossibleJumps(Piece gamePiece) {
+        int selectedX = gamePiece.getxCol();
+        int selectedY = gamePiece.getyRow();
+        
+    }
 
     /**
      *
@@ -119,11 +133,11 @@ public class GameBoard extends JPanel {
     private void initComponents() {
         // this.setBackground(Color.red);
         resizer = new GameboardResizeListener();
-        mouseAction = new GameboardMouseListener(this);
+//      mouseAction = new GameboardMouseListener(this);
         kbAction = new GameboardKeyBoardListener(this);
-        mouseAction.setBoard(this);
-        this.addMouseListener(mouseAction);
-        this.addMouseMotionListener(mouseAction);
+        //mouseAction.setBoard(this);
+        //this.addMouseListener(mouseAction);
+        //this.addMouseMotionListener(mouseAction);
         this.addComponentListener(resizer);
         this.addComponentListener(new ComponentAdapter() {
             @Override

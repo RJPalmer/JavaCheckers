@@ -12,6 +12,12 @@ public class PlayerState implements State {
 
     private boolean hasMoved;
 
+    @Override
+    public String getState() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "Player State";
+    }
+
     /**
      * Get the value of hasMoved
      *

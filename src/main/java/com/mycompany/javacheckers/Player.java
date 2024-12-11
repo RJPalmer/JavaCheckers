@@ -3,11 +3,8 @@ package com.mycompany.javacheckers;
 import Gameboard.GameBoard;
 import Gameboard.Move;
 import Gameboard.Piece;
-import java.awt.event.MouseListener;
 import Gameboard.GameboardMouseListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.awt.Color;
 
 /**
  *
@@ -15,7 +12,20 @@ import javax.swing.Timer;
  */
 public class Player {
 
-        public PlayerArea pieceArea;
+    public PlayerArea pieceArea;
+
+    public Boolean checkPiece(Piece gamePiece) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        boolean canMove = false;
+        Color pieceColor = gamePiece.getPieceColor();
+        String playerColor1 = getPlayerColor();
+        Color color = Color.YELLOW;
+        
+        if(pieceColor.equals(color))
+            canMove = !canMove;
+        
+        return canMove;
+    }
 
     /**
      * Get the value of pieceArea

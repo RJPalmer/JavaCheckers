@@ -18,6 +18,14 @@ public class GameState {
     public void setCurrentState(State currentState) {
         this.currentState = currentState;
     }
+
+    /*
+     * 
+     */
+    public String getState() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return currentState.getState();
+    }
     
     /*
      * Performs the actions associated with the given state

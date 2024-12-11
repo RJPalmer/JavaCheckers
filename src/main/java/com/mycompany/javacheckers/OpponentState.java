@@ -14,6 +14,12 @@ public class OpponentState implements State {
     }
 
     @Override
+    public String getState() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "Opponent Turn";
+    }
+
+    @Override
     public void handleRequest() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         System.out.println("It's the opponent's turn");

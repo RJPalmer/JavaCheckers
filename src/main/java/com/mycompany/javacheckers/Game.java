@@ -7,11 +7,8 @@ package com.mycompany.javacheckers;
 import Gameboard.*;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
@@ -22,12 +19,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import Gameboard.GameboardMouseListener;
 
 /**
  * Handles the logic for playing the game
@@ -35,6 +32,27 @@ import javax.swing.KeyStroke;
  * @author Palmer
  */
 public class Game {
+
+    /**
+     * @return the userPlayer
+     */
+    public Player getUserPlayer() {
+        return userPlayer;
+    }
+
+    /**
+     * @param userPlayer the userPlayer to set
+     */
+    public void setUserPlayer(Player userPlayer) {
+        this.userPlayer = userPlayer;
+    }
+
+    /**
+     * @return the gameState
+     */
+    public GameState getGameState() {
+        return gameState;
+    }
 
     private static final int COLUMN_COUNT = 8;
 
@@ -93,6 +111,8 @@ public class Game {
         userColor = "";
         this.playerDomains = new PlayerArea[0];
         this.userPlayer = new Player();
+        gameState = new GameState();
+        gameState.setCurrentState(new InitState());
 
         
     }
@@ -113,6 +133,7 @@ public class Game {
         JPanel cards = new JPanel(cardLayout);
         JScrollPane panel = new JScrollPane();
         panel.setPreferredSize(new Dimension(800, 800));
+        
         gameState = new GameState();
         gameWindow = window;
         gameWindow.getContentPane();
@@ -120,6 +141,8 @@ public class Game {
         BoardSquare[][] dataGameBoard;
         dataGameBoard = new BoardSquare[ROW_COUNT][COLUMN_COUNT];
         gameboard = board;
+        GameboardMouseListener mouseAction;
+        mouseAction = new GameboardMouseListener(gameboard, this);
         //sets up gameboard
         for (int rowIndex = 0; rowIndex < ROW_COUNT; rowIndex++) {
             Color color1, color2;
@@ -171,11 +194,12 @@ public class Game {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-               gameState.setCurrentState(new PausedState());
-               gameState.processState();
+                getGameState().setCurrentState(new PausedState());
+                getGameState().processState();
             }
             
         });
+        gameboard.addMouseListener(mouseAction);
         
         //panel.setViewportView(board);
 //        tempPanel.add(panel);
@@ -461,8 +485,8 @@ public class Game {
      */
     public void start() {
         try {
-            gameState.setCurrentState(new InitState());
-            gameState.processState();
+            getGameState().setCurrentState(new InitState());
+            getGameState().processState();
             startGame();
         } catch (InterruptedException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -474,7 +498,7 @@ public class Game {
      */
     public void startGame() throws InterruptedException {
 
-        String playerColor = userPlayer.getPlayerColor();
+        String playerColor = getUserPlayer().getPlayerColor();
         boolean moveMade = false;
         //throw new UnsupportedOperationException("Not yet implemented");
         //        gameWindow.setVisible(true);
@@ -482,11 +506,11 @@ public class Game {
 
         int lastPlayed = 0;
 //let the user pick their boardSquareColor
-        userPlayer = pickUserPlayer();
+        setUserPlayer(pickUserPlayer());
         userPlayer.isUserPlayer = true;
 
         getUserColor();
-        playerColor = userPlayer.getPlayerColor();
+        playerColor = getUserPlayer().getPlayerColor();
 //setup the other player
         setUserColor(playerColor);
 
@@ -494,16 +518,16 @@ public class Game {
 
             playerDomains[1].setAreaColor("Red");
             opponent = new ComputerPlayer(playerDomains[1], PLAYER_PIECE_COUNT, null, "Red");
-            gameState.setCurrentState(new OpponentState());
+            getGameState().setCurrentState(new OpponentState());
         } else {
             playerDomains[0].setAreaColor("Yellow");
             opponent = new ComputerPlayer(playerDomains[0], PLAYER_PIECE_COUNT, null, "Yellow");
-            gameState.setCurrentState(new PlayerState());
+            getGameState().setCurrentState(new PlayerState());
         }
 
-        userPlayer.playerPieces = setPlayerPieces(userPlayer);
+        userPlayer.playerPieces = setPlayerPieces(getUserPlayer());
         opponent.playerPieces = setPlayerPieces(opponent);
-        gameState.processState();
+        getGameState().processState();
 //         while (!haveWinner) {
 //            //darker boardSquareColor goes first
 //            if (turnCount == 1) {

@@ -10,6 +10,12 @@ package com.mycompany.javacheckers;
  * @author robertpalmer
  */
 public class InitState implements State {
+
+    @Override
+    public String getState() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "Init State";
+    }
     
     @Override
     public void handleRequest(){

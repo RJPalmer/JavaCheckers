@@ -38,7 +38,7 @@ public class GameboardMouseListenerTest {
         GameBoard.setBOARD_ROWS(10);
         board = new GameBoard();
         dataBoard = new BoardSquare[10][10];
-        instance = new GameboardMouseListener(board);
+        instance = new GameboardMouseListener(board, gameObject);
         gamePiece = new Piece();
         moveCopy = new Piece();
         board.setGameBoard(dataBoard);
@@ -133,6 +133,7 @@ public class GameboardMouseListenerTest {
         MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 45, 45,1,false);
         //MouseEvent e = null;
         //GameboardMouseListener instance = new GameboardMouseListener();
+        instance.setCheckersGame(new Game());
         instance.mouseClicked(e);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
