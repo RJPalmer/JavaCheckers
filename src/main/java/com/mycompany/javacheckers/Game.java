@@ -200,6 +200,7 @@ public class Game {
             
         });
         gameboard.addMouseListener(mouseAction);
+        gameboard.addMouseMotionListener(mouseAction);  
         
         //panel.setViewportView(board);
 //        tempPanel.add(panel);

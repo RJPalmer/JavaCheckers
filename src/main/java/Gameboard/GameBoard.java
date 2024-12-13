@@ -565,7 +565,7 @@ public class GameBoard extends JPanel {
      *
      * @return
      */
-    public Piece checkForGamePiece(int squareX, int squareY) {
+     public Piece checkForGamePiece(int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
         if (selectedSquare.isHasPiece()) {

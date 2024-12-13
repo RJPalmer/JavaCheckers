@@ -5,6 +5,7 @@
 package Gameboard;
 
 import com.mycompany.javacheckers.Game;
+import com.mycompany.javacheckers.Player;
 import java.awt.event.MouseEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -38,6 +39,9 @@ public class GameboardMouseListenerTest {
         GameBoard.setBOARD_ROWS(10);
         board = new GameBoard();
         dataBoard = new BoardSquare[10][10];
+        gameObject = new Game();
+        gameObject.setUserColor("Red");
+        gameObject.setUserPlayer(new Player());
         instance = new GameboardMouseListener(board, gameObject);
         gamePiece = new Piece();
         moveCopy = new Piece();
@@ -49,8 +53,7 @@ public class GameboardMouseListenerTest {
         board.setGameBoard(dataBoard);
         instance.setBoard(board);
         
-        gameObject = new Game();
-        gameObject.setUserColor("Red");
+        
 
         
         
@@ -147,6 +150,7 @@ public class GameboardMouseListenerTest {
         System.out.println("mousePressed");
         MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 45, 45,1,false);
         //GameboardMouseListener instance = new GameboardMouseListener();
+        instance.setCheckersGame(new Game());
         instance.mousePressed(e);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");

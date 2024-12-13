@@ -179,7 +179,7 @@ public class Player {
         
         boolean moveMade = false;
         GameboardMouseListener listen = (GameboardMouseListener)gameboard.getMouseListeners()[0];
-        listen.setCurrentPlayer(this);
+       // listen.setCurrentPlayer(this);
         //can the player make a move
         if(piecesCount != 0){
                 //if this player is controlled by the user
