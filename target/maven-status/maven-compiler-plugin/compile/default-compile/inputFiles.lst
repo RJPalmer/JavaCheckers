@@ -12,9 +12,9 @@
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/Gameboard/GameBoard.java
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/Gameboard/Move.java
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/com/mycompany/javacheckers/KingPiece.java
-/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/com/mycompany/javacheckers/GameState.java
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/com/mycompany/javacheckers/Game.java
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/com/mycompany/javacheckers/OpponentState.java
+/Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/com/mycompany/javacheckers/GameStateContext.java
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/com/mycompany/javacheckers/Player.java
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/com/mycompany/javacheckers/Checkers.java
 /Users/robertpalmer/Desktop/Coding/Java/JavaCheckers/src/main/java/Gameboard/BoardSquare.java

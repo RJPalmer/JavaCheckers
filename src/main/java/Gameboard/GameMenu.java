@@ -5,6 +5,7 @@
 package Gameboard;
 
 import com.mycompany.javacheckers.Game;
+import com.mycompany.javacheckers.GameStateContext;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,9 +15,26 @@ import javax.swing.JPanel;
 
 /**
  * A JPanel that displays the main menu
+ *
  * @author robertpalmer
  */
 public class GameMenu extends JPanel {
+
+    /**
+     * @return the obj
+     */
+    public com.mycompany.javacheckers.Game getObj() {
+        return obj;
+    }
+
+    /**
+     * @param obj the obj to set
+     */
+    public void setObj(com.mycompany.javacheckers.Game obj) {
+        this.obj = obj;
+    }
+
+    private com.mycompany.javacheckers.Game obj;
 
     private JPanel parent;
 
@@ -41,16 +59,10 @@ public class GameMenu extends JPanel {
         startGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Action for starting the game
-                if (isNext_bool) {
-                    cl.previous(parent);
+                GameStateContext gameState = obj.getGameState();
 
-                } else {
-                    cl.next(parent);
-                    isNext_bool = true;
-                    obj.start();
-                }
-
+//                swapToMenu();
+                gameState.processState(gameState, "START");
             }
         });
 
@@ -62,7 +74,6 @@ public class GameMenu extends JPanel {
 
                 // Create a new frame for the new screen
                 InstructionFrame view = new InstructionFrame("Game instructions");
-                
 
                 // Make the new frame visible
                 view.setVisible(true);
@@ -89,6 +100,16 @@ public class GameMenu extends JPanel {
 
         // Optional: Add a border for visual appeal
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        this.obj = obj;
+    }
+
+    /**
+     *
+     * @deprecated Moved to {@link com.mycompany.javacheckers.Game#swapToMenu}
+     */
+    @Deprecated
+    private void swapToMenu() {
+        obj.swapScreens(this);
     }
 
     /**

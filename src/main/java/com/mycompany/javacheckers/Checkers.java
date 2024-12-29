@@ -120,6 +120,7 @@ public class Checkers {
         gameGUI.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         gameGUI.addComponentListener(resizer);
         newGame = new Game(gameGUI, board, gamePieces, players);
+        newGame.getGameState().setCheckersGame(newGame);
         
     }
     private static final int PLAYER_COUNT = 2;

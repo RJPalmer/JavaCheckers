@@ -4,19 +4,96 @@
  */
 package com.mycompany.javacheckers;
 
+import Gameboard.GameBoard;
+import Gameboard.GameboardMouseListener;
+import Gameboard.Piece;
+import java.awt.event.MouseEvent;
+
 /**
- * A State that represents the player's turn 
-* @author robertpalmer
+ * A State that represents the player's turn
+ *
+ * @author robertpalmer
  */
 public class PlayerState implements State {
 
     private boolean hasMoved;
+
+    public PlayerState() {
+    }
+
+    @Override
+    public void changeState(com.mycompany.javacheckers.GameStateContext gs) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+    }
 
     @Override
     public String getState() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return "Player State";
     }
+
+    @Override
+    public void handleMouseRequest(GameStateContext gameState, GameboardMouseListener gameboardMouseListener, MouseEvent e, String pressed) {
+        switch (pressed) {
+            case "Pressed":
+                MouseEvent eMouseEvent = e;
+
+                int eMouseEventX = eMouseEvent.getX();
+                //Getting current mouse screen coordinates
+                gameboardMouseListener.setMouseX(eMouseEventX);
+                int eMouseEventY = eMouseEvent.getY();
+                gameboardMouseListener.setMouseY(eMouseEventY);
+                //translate mouse screen coordinates into rows/colum
+                gameboardMouseListener.translateToGrid(gameboardMouseListener.getMouseX(), gameboardMouseListener.getMouseY());
+                int squareX = gameboardMouseListener.getSquareX();
+                int squareY = gameboardMouseListener.getSquareY();
+                GameBoard board = gameboardMouseListener.getBoard();
+                //check the board to see if there's a piece there
+                gameboardMouseListener.setGamePiece(board.checkForGamePiece(squareX, squareY));
+                Piece gamePiece = gameboardMouseListener.getGamePiece();
+                gameboardMouseListener.setGamePiece(gameboardMouseListener.selectPiece(gamePiece));
+                //        var object = board.getPieces(); new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+                break;
+
+            case "Dragged":
+                break;
+                
+            case "Released":
+                Player userPlayer = gameState.getCheckersGame().getUserPlayer();
+                
+                if (userPlayer.isTurnComplete) {
+                    //userPlayer.isTurnComplete = true;
+                    OpponentState opponentPlayer = new OpponentState(gameState.getCheckersGame().getOpponentPlayer());
+                    
+                    userPlayer.setMoveComplete();
+                    gameState.setCurrentState(opponentPlayer);
+                    gameState.processState(gameState, "YOUR_TURN");
+                }
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    @Override
+    public void handleRequest(com.mycompany.javacheckers.GameStateContext gs, java.lang.String command) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        System.out.println("It''s the player's turn");
+//        if(START.equals(command)){
+//            gs.processState(gs, "Paused");
+//            
+//        }
+        if ("Paused".equals(command)) {
+            gs.setCurrentState(new PausedState());
+            gs.processState(gs, "Paused");
+        }
+        if ("YOUR_TURN".equals(command)) {
+            hasMoved = false;
+        }
+    }
+    private static final String START = "START";
 
     /**
      * Get the value of hasMoved
@@ -36,24 +113,10 @@ public class PlayerState implements State {
         this.hasMoved = hasMoved;
     }
 
-    public PlayerState() {
+    @Override
+    public void switchToPause(GameStateContext gameState) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
     }
 
-    @Override
-    public void handleRequest() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        System.out.println("It''s the player''s turn");
-    }
-
-    @Override
-    public void nextState(GameState gs) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        
-    }
-
-    @Override
-    public void prevState(GameState gs) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
 }

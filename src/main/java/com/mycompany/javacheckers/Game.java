@@ -10,11 +10,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -24,7 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import Gameboard.GameboardMouseListener;
 
 /**
  * Handles the logic for playing the game
@@ -33,28 +34,11 @@ import Gameboard.GameboardMouseListener;
  */
 public class Game {
 
-    /**
-     * @return the userPlayer
-     */
-    public Player getUserPlayer() {
-        return userPlayer;
-    }
-
-    /**
-     * @param userPlayer the userPlayer to set
-     */
-    public void setUserPlayer(Player userPlayer) {
-        this.userPlayer = userPlayer;
-    }
-
-    /**
-     * @return the gameState
-     */
-    public GameState getGameState() {
-        return gameState;
-    }
-
     private static final int COLUMN_COUNT = 8;
+    private static final String PAUSED = "Paused";
+    private static final String PRESSED = "Pressed";
+    private static final String RELEASED = "Released";
+    private static final int ROW_COUNT = 8;
 
     /**
      *
@@ -71,21 +55,22 @@ public class Game {
      */
     public static final String PROP_USERCOLOR = "userColor";
 
-    private static final int ROW_COUNT = 8;
+    private GameStateContext gameState;
+    private JFrame gameWindow;
 
+    private boolean haveWinner;
+    private ComputerPlayer opponent;
+    private final transient PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
+    private String userColor;
+    private Player userPlayer;
     /**
      *
      */
     public GameMenu gameMenu;
-    private GameState gameState;
-    private JFrame gameWindow;
-
     /**
      *
      */
     public GameBoard gameboard;
-    private boolean haveWinner;
-    private ComputerPlayer opponent;
     /**
      * Represents the pieces used for the game
      */
@@ -94,9 +79,6 @@ public class Game {
      *
      */
     public PlayerArea[] playerDomains;
-    private final transient PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
-    private String userColor;
-    private Player userPlayer;
 
     /**
      * Empty Game Constructor
@@ -111,10 +93,9 @@ public class Game {
         userColor = "";
         this.playerDomains = new PlayerArea[0];
         this.userPlayer = new Player();
-        gameState = new GameState();
-        gameState.setCurrentState(new InitState());
 
-        
+        gameState = new GameStateContext();
+
     }
 
     /**
@@ -133,8 +114,8 @@ public class Game {
         JPanel cards = new JPanel(cardLayout);
         JScrollPane panel = new JScrollPane();
         panel.setPreferredSize(new Dimension(800, 800));
-        
-        gameState = new GameState();
+
+        gameState = new GameStateContext();
         gameWindow = window;
         gameWindow.getContentPane();
 
@@ -180,46 +161,38 @@ public class Game {
         playerDomains = new PlayerArea[players.length];
         initPieces(gamePieces, dataGameBoard, playerDomains);
         this.piecesForGame = gamePieces;
-        //List<Piece> list = new ArrayList<Piece>(Arrays.asList(player1Pieces));
-        //list.addAll(Arrays.asList(player2Pieces));
-        //list.toArray(gamePieces);
+
+        //Gameboard Setup
         gameboard.setGameBoard(dataGameBoard);
         gameboard.setPieces(gamePieces);
         gameboard.setPreferredSize(new Dimension(800, 800));
         gameboard.setUserPlayer(this.userPlayer);
         gameboard.setParentPanel(cards);
-       // gameboard.addKeyListener(new GameboardKeyBoardListener(gameboard));
-        gameboard.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "pauseGame");
-        gameboard.getActionMap().put("pauseGame", new AbstractAction(){
+        // gameboard.addKeyListener(new GameboardKeyBoardListener(gameboard));
+        gameboard.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "pauseGame");
+        gameboard.getActionMap().put("pauseGame", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                getGameState().setCurrentState(new PausedState());
-                getGameState().processState();
+                getGameState().pauseGame();
             }
-            
+
         });
         gameboard.addMouseListener(mouseAction);
-        gameboard.addMouseMotionListener(mouseAction);  
-        
-        //panel.setViewportView(board);
-//        tempPanel.add(panel);
-//        panel.setPreferredSize(new Dimension(800, 800));
-//        container.add(gameMenu);
-//        container.add(tempPanel);
+        gameboard.addMouseMotionListener(mouseAction);
+
         gameMenu.setParent(cards);
         gameMenu.setCardLayout(cardLayout);
         gameMenu.setIsNext(false);
-        cards.add(gameMenu);
-        cards.add(gameboard);
+        cards.add("menu", gameMenu);
+        cards.add("board", gameboard);
         //cards.addKeyListener(new GameboardKeyBoardListener(gameboard));
         //cards.setFocusable(true);
         panel.setViewportView(cards);
 //        tempPanel.add(panel);
         gameWindow.add(panel);
-        
         userColor = "";
-        
+
     }
 
     /**
@@ -247,44 +220,6 @@ public class Game {
      */
     private JFrame getGameWindow() {
         return gameWindow;
-    }
-
-    /**
-     * Get the value of playerDomains
-     *
-     * @return the value of playerDomains
-     */
-    public PlayerArea[] getPlayerDomains() {
-        return playerDomains;
-    }
-
-    /**
-     * Set the value of playerDomains
-     *
-     * @param playerDomains new value of playerDomains
-     */
-    public void setPlayerDomains(PlayerArea[] playerDomains) {
-        this.playerDomains = playerDomains;
-    }
-
-    /**
-     * Returns the piece boardSquareColor associated with the user
-     *
-     * @return the userColor
-     */
-    public String getUserColor() {
-        return userColor;
-    }
-
-    /**
-     * Sets the piece boardSquareColor associated with the user
-     *
-     * @param userColor the userColor to set
-     */
-    public void setUserColor(String userColor) {
-        java.lang.String oldUserColor = this.userColor;
-        this.userColor = userColor;
-        propertyChangeSupport.firePropertyChange(PROP_USERCOLOR, oldUserColor, userColor);
     }
 
     /**
@@ -399,19 +334,6 @@ public class Game {
         playerDomains[1].setAreaRows(temp);
     }
 
-
-    /*
-     * Starts the game
-     */
-    /**
-     *
-     */
-    public void launch() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        gameWindow.setVisible(true);
-
-    }
-
     /**
      * Determines which piece boardSquareColor gets associated with the user
      *
@@ -484,10 +406,199 @@ public class Game {
     /**
      *
      */
+    public void changeState() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /**
+     * @return the gameState
+     */
+    public GameStateContext getGameState() {
+        return gameState;
+    }
+
+    /**
+     * Get the value of playerDomains
+     *
+     * @return the value of playerDomains
+     */
+    public PlayerArea[] getPlayerDomains() {
+        return playerDomains;
+    }
+
+    /**
+     * Set the value of playerDomains
+     *
+     * @param playerDomains new value of playerDomains
+     */
+    public void setPlayerDomains(PlayerArea[] playerDomains) {
+        this.playerDomains = playerDomains;
+    }
+
+    /**
+     * Returns the piece boardSquareColor associated with the user
+     *
+     * @return the userColor
+     */
+    public String getUserColor() {
+        return userColor;
+    }
+
+    /**
+     * Sets the piece boardSquareColor associated with the user
+     *
+     * @param userColor the userColor to set
+     */
+    public void setUserColor(String userColor) {
+        java.lang.String oldUserColor = this.userColor;
+        this.userColor = userColor;
+        propertyChangeSupport.firePropertyChange(PROP_USERCOLOR, oldUserColor, userColor);
+    }
+
+    /**
+     * @return the userPlayer
+     */
+    public Player getUserPlayer() {
+        return userPlayer;
+    }
+
+    /**
+     * @param userPlayer the userPlayer to set
+     */
+    public void setUserPlayer(Player userPlayer) {
+        this.userPlayer = userPlayer;
+    }
+
+    /*
+     * Starts the game
+     */
+    /**
+     *
+     */
+    public void launch() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        gameWindow.setVisible(true);
+
+    }
+
+    /**
+     *
+     * @param e
+     * @param gameboardMouseListener
+     */
+    public void processMouseDragged(MouseEvent e, GameboardMouseListener gameboardMouseListener) {
+        //make sure there's a selected piece
+        MouseEvent eMouseEvent = e;
+        Piece selectedGamePiece = gameboardMouseListener.getGamePiece();
+        if (selectedGamePiece != null && selectedGamePiece.isSelected) {
+            //get current mouse x & y
+            int newMouseX = e.getX();
+            int newMouseY = e.getY();
+            int pieceCurrentX = selectedGamePiece.getxPos();
+            int pieceCurrentY = selectedGamePiece.getyPos();
+            int changeY = 0;
+            int changeX = 0;
+            if (gameboardMouseListener.getMouseX() != 0 && gameboardMouseListener.getMouseY() != 0) {
+                changeX = newMouseX - gameboardMouseListener.getMouseX();
+                changeY = newMouseY - gameboardMouseListener.getMouseY();
+            }
+            gameboardMouseListener.setMouseX(newMouseX);
+            gameboardMouseListener.setMouseY(newMouseY);
+            //translate mouse screen coordinates into rows/colum
+            gameboardMouseListener.translateToGrid(newMouseX, newMouseY);
+            //if(newMouseX)
+            //update the piece x/y to match the mouse x/y
+            selectedGamePiece.setxPos(pieceCurrentX + changeX);
+            selectedGamePiece.setyPos(pieceCurrentY + changeY);
+            selectedGamePiece.setHasMoved(true);
+            gameboardMouseListener.prepMoveCopy();
+            gameboardMouseListener.getBoard().repaint();
+            //this.userPlayer.setPieceMoved(true);
+        }
+    }
+
+    /**
+     *
+     * @param e                      the value of e
+     * @param gameboardMouseListener the value of gameboardMouseListener
+     */
+    public void processMousePressed(MouseEvent e, GameboardMouseListener gameboardMouseListener) {
+        gameState.processMouseEvent(gameState, gameboardMouseListener, e, PRESSED);
+    }
+
+    public void processMouseReleased(MouseEvent e, GameboardMouseListener aThis) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+        
+        int currentX;
+        int currentY;
+        Piece existPiece;
+        Piece gamePiece = aThis.getGamePiece();
+        if (gamePiece != null) {
+            currentX = e.getX();
+            currentY = e.getY();
+            aThis.translateToGrid(currentX, currentY);
+            existPiece = aThis.getBoard().checkForGamePiece(aThis.getSquareX(), aThis.getSquareY());
+            if (gamePiece.isHasMoved()) {
+                if (Objects.isNull(existPiece)) {
+                    BoardSquare currentSqre = aThis.getBoard().getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
+                    if (currentSqre.getColor() == Color.BLACK) {
+                        GameBoard board = aThis.getBoard();
+                        board.movePiece(gamePiece, aThis.getMoveCopy(), aThis.getSquareX(), aThis.getSquareY());
+                        aThis.setMoveCopy(null);
+                        gamePiece.setHasMoved(false);
+                        
+                        userPlayer.setMoveComplete();
+                        getGameState().processMouseEvent(gameState, aThis, e, RELEASED);
+//                    changeState();
+                    } else {
+                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
+                        aThis.setMoveCopy(null);
+                        gamePiece.setHasMoved(false);
+                    }
+                } else {
+                    if (gamePiece.IsMoveable()) {
+                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
+                        aThis.setMoveCopy(null);
+                        gamePiece.setHasMoved(false);
+                    }
+                }
+            }
+            aThis.getBoard().repaint();
+        }
+        
+
+    }
+
+    /**
+     * Displays the next card in the card layout of the game menu's parent
+     * container.
+     * <p>
+     * This method checks if the {@code gameMenu} is not {@code null}. If it is
+     * valid, it retrieves the {@link CardLayout} of the parent container of
+     * {@code gameMenu} and moves to the next card in the layout.
+     * </p>
+     *
+     * @throws ClassCastException if the parent container of {@code gameMenu}
+     *                            does not use a {@link CardLayout}.
+     */
+    public void showMenu() {
+        if (gameMenu != null) {
+            CardLayout tempLayout = (CardLayout) gameMenu.getParent().getLayout();
+            tempLayout.next(gameMenu.getParent());
+
+        }
+
+    }
+
+    /**
+     *
+     */
     public void start() {
         try {
             getGameState().setCurrentState(new InitState());
-            getGameState().processState();
+            swapScreens(gameMenu);
+            //getGameState().processState();
             startGame();
         } catch (InterruptedException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -496,6 +607,8 @@ public class Game {
 
     /**
      * Sets the JFrame to visible to display the screen
+     *
+     * @throws java.lang.InterruptedException
      */
     public void startGame() throws InterruptedException {
 
@@ -519,69 +632,59 @@ public class Game {
 
             playerDomains[1].setAreaColor("Red");
             opponent = new ComputerPlayer(playerDomains[1], PLAYER_PIECE_COUNT, null, "Red");
-            getGameState().setCurrentState(new OpponentState());
+            OpponentState opponentState = new OpponentState(opponent);
+            getGameState().setCurrentState(opponentState);
         } else {
             playerDomains[0].setAreaColor("Yellow");
             opponent = new ComputerPlayer(playerDomains[0], PLAYER_PIECE_COUNT, null, "Yellow");
-            getGameState().setCurrentState(new PlayerState());
+            PlayerState playerState = new PlayerState();
+            getGameState().setCurrentState(playerState);
         }
 
         userPlayer.playerPieces = setPlayerPieces(getUserPlayer());
         opponent.playerPieces = setPlayerPieces(opponent);
-        getGameState().processState();
-//         while (!haveWinner) {
-//            //darker boardSquareColor goes first
-//            if (turnCount == 1) {
-//                if ("Red".equals(userPlayer.getPlayerColor())) {
-//                    userPlayer.makeMove(this.gameboard);
-//                    if (moveMade) {
-//                        lastPlayed = 0;
-//                    }
-//                } 
-//                else {
-//                    opponent.makeMove(this.gameboard);
-//                    if (moveMade) {
-//                        lastPlayed = 1;
-//                        this.gameboard.repaint();
-//                    }
-//                }
-//
-//                //now the other player goes
-//                switch (lastPlayed) {
-//                    case 0 -> {
-//                        opponent.makeMove(this.gameboard);
-//                        checkForWinner(userPlayer, opponent);
-//                        lastPlayed = 1;
-//                    }
-//
-//                    case 1 -> {
-//                        userPlayer.makeMove(this.gameboard);
-//                        checkForWinner(userPlayer, opponent);
-//                        lastPlayed = 0;
-//                    }
-//                }
-//            }
-//            //for all other turns
-//            switch (lastPlayed) {
-//                case 0 -> {
-//                    opponent.makeMove(this.gameboard);
-//                    if (moveMade) {
-//                        checkForWinner(userPlayer, opponent);
-//                        lastPlayed = 1;
-//                    }
-//                }
-//
-//                case 1 -> {
-//
-//                    userPlayer.makeMove(this.gameboard);
-//                    if (moveMade) {
-//                        checkForWinner(userPlayer, opponent);
-//                        lastPlayed = 0;
-//                    }
-//                }
-//            }
-//            turnCount++;
-//        }
+
+        getGameState().startGame();
+
+    }
+
+    /**
+     *
+     * @param gameMenu the value of gameMenu
+     */
+    public void swapScreens(GameMenu gameMenu) {
+        CardLayout tempLayout = (CardLayout) gameMenu.getParent().getLayout();
+        tempLayout.next(gameMenu.getParent());
+
+    }
+
+    /**
+     *
+     */
+    public void resume() {
+        swapScreens(gameMenu);
+    }
+
+    /**
+     * Determines whether the game is over.
+     * <p>
+     * This method always returns {@code false}, indicating that the game is
+     * never over. Override this method in subclasses to implement actual
+     * game-over logic.
+     * </p>
+     *
+     * @return {@code false}, indicating the game is not over.
+     */
+    public boolean isGameOver() {
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ComputerPlayer getOpponentPlayer() {
+        return this.opponent;
     }
 
 }

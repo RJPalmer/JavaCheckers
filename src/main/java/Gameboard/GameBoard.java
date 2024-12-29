@@ -11,18 +11,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.swing.AbstractAction;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
@@ -134,7 +130,7 @@ public class GameBoard extends JPanel {
         // this.setBackground(Color.red);
         resizer = new GameboardResizeListener();
 //      mouseAction = new GameboardMouseListener(this);
-        kbAction = new GameboardKeyBoardListener(this);
+//        kbAction = new GameboardKeyBoardListener(this);
         //mouseAction.setBoard(this);
         //this.addMouseListener(mouseAction);
         //this.addMouseMotionListener(mouseAction);

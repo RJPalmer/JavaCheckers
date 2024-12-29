@@ -1,6 +1,6 @@
 Gameboard/Square.class
+com/mycompany/javacheckers/GameStateContext.class
 Gameboard/GameMenu$1.class
-com/mycompany/javacheckers/GameState.class
 com/mycompany/javacheckers/Game$1.class
 com/mycompany/javacheckers/ComputerPlayer.class
 com/mycompany/javacheckers/PausedState.class

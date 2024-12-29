@@ -22,6 +22,8 @@ import java.util.Random;
  */
 public class ComputerPlayer extends Player {
 
+    private boolean moveMade;
+
     /**
      *
      * @param pieceArea
@@ -41,6 +43,7 @@ public class ComputerPlayer extends Player {
      */
     ComputerPlayer(int PLAYER_PIECE_COUNT, Piece[] object, String yellow) {
         super(PLAYER_PIECE_COUNT, object, yellow);
+        this.moveMade = false;
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -49,9 +52,9 @@ public class ComputerPlayer extends Player {
      */
     @Override
     public void makeMove(GameBoard gameboard) {
-        boolean moveMade = false;
+        moveMade = false;
         practiceMove(gameboard);
-        moveMade = !moveMade;
+        moveMade = !isMoveMade();
 //        return moveMade; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
 
@@ -131,6 +134,13 @@ public class ComputerPlayer extends Player {
         }
         //</editor-fold>
         //that's it
+    }
+
+    /**
+     * @return the moveMade
+     */
+    public boolean isMoveMade() {
+        return moveMade;
     }
 
 }

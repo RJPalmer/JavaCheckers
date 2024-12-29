@@ -5,6 +5,8 @@
 package Gameboard;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 /**
  * Represents a square on the game board
@@ -92,5 +94,6 @@ public class BoardSquare {
     public void setColor(Color color) {
         this.Color = color;
     }
+   
 
 }

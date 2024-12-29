@@ -4,7 +4,7 @@
  */
 package Gameboard;
 
-import Gameboard.*;
+import com.mycompany.javacheckers.Game;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -16,6 +16,26 @@ import java.awt.event.KeyListener;
 public class GameboardKeyBoardListener implements KeyListener {
 
     private GameBoard gameObj;
+
+    private Game checkersGame;
+
+    /**
+     * Get the value of checkersGame
+     *
+     * @return the value of checkersGame
+     */
+    public Game getCheckersGame() {
+        return checkersGame;
+    }
+
+    /**
+     * Set the value of checkersGame
+     *
+     * @param checkersGame new value of checkersGame
+     */
+    public void setCheckersGame(Game checkersGame) {
+        this.checkersGame = checkersGame;
+    }
 
     /**
      * Get the value of gameObj
@@ -36,7 +56,7 @@ public class GameboardKeyBoardListener implements KeyListener {
     }
 
     /**
-     *
+     * Empty Constructor
      */
     public GameboardKeyBoardListener() {
     }
@@ -45,9 +65,9 @@ public class GameboardKeyBoardListener implements KeyListener {
      *
      * @param gameObj
      */
-    public GameboardKeyBoardListener(GameBoard gameObj) {
+    public GameboardKeyBoardListener(com.mycompany.javacheckers.Game gameObj) {
         
-        this.gameObj = gameObj;
+        this.checkersGame = gameObj;
     }
 
     /**
@@ -67,7 +87,7 @@ public class GameboardKeyBoardListener implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             System.out.println("Enter key pressed!");
-            gameObj.pauseGame();
+            checkersGame.getGameState().pauseGame();
         }
     }
 
