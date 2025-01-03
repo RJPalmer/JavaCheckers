@@ -91,6 +91,12 @@ public class GameStateContext {
     /*
      *
      */
+
+    /**
+     *
+     * @return
+     */
+
     public String getState() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return currentState.getState();
@@ -119,6 +125,13 @@ public class GameStateContext {
     /*
      * Performs the actions associated with the given state
      */
+
+    /**
+     *
+     * @param state
+     * @param command
+     */
+
     public void processState(GameStateContext state, String command) {
         currentState.handleRequest(this, command);
     }
@@ -126,6 +139,11 @@ public class GameStateContext {
     /*
      * Switches to either PlayerState or OpponentState
      */
+
+    /**
+     *
+     */
+
     public void startGame() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //        setCurrentState(new PlayerState());

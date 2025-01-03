@@ -526,6 +526,11 @@ public class Game {
         gameState.processMouseEvent(gameState, gameboardMouseListener, e, PRESSED);
     }
 
+    /**
+     *
+     * @param e
+     * @param aThis
+     */
     public void processMouseReleased(MouseEvent e, GameboardMouseListener aThis) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 

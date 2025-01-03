@@ -38,22 +38,41 @@ public class OpponentState implements State {
         this.playerLogic = playerLogic;
     }
 
+    /**
+     *
+     */
     public OpponentState() {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getState() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return "Opponent Turn";
     }
 
+    /**
+     *
+     * @param gameState
+     * @param gameboardMouseListener
+     * @param e
+     * @param pressed
+     */
     @Override
     public void handleMouseRequest(GameStateContext gameState, GameboardMouseListener gameboardMouseListener, MouseEvent e, String pressed) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 
     }
 
+    /**
+     *
+     * @param gs
+     * @param command
+     */
     @Override
     public void handleRequest(com.mycompany.javacheckers.GameStateContext gs, java.lang.String command) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -90,11 +109,19 @@ public class OpponentState implements State {
         }
     }
 
+    /**
+     *
+     * @param gs
+     */
     @Override
     public void changeState(com.mycompany.javacheckers.GameStateContext gs) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    /**
+     *
+     * @param gameState
+     */
     @Override
     public void switchToPause(GameStateContext gameState) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

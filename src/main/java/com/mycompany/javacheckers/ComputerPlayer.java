@@ -69,17 +69,67 @@ public class ComputerPlayer extends Player {
         String myColor = this.getPlayerColor();
         //identify player area
         PlayerArea temp = this.getPieceArea();
-        //identify the front row
-        int front_row;
+
+        //piece that will be moved
         Piece pieceToMove = new Piece();
+
+        //
         Piece pieceOnceMoved = new Piece();
-        
         pieceOnceMoved.setPieceColor(pieceToMove.getPieceColor());
         pieceOnceMoved.setHeight(pieceToMove.getHeight());
-        List<Point> pieceOptions = new ArrayList<>();
+
+        //used to create a random number
         var rand = new Random();
         //identify pieces in the front row
+        pieceToMove = selectPieceToMove(myColor, temp, rand, pieceToMove, gameboard);
 
+        movePiece(gameboard, pieceToMove, rand);
+    }
+
+    private void movePiece(GameBoard gameboard, Piece pieceToMove, Random rand) {
+        List<Point> pieceOptions;
+        //<editor-fold defaultstate="collapsed" desc="move piece one space forward">
+        //find out if the piece is blocked
+        if (!gameboard.isBlocked(pieceToMove)) {
+            //where can the piece move
+            pieceOptions = gameboard.moveOptions(pieceToMove);
+            //if options are available
+            if (!pieceOptions.isEmpty()) {
+                //one option
+                if (pieceOptions.size() == 1) {
+                    Point destination = pieceOptions.getFirst();
+
+                    //move the piece
+                    //gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
+                    gameboard.movePieceToSquare(pieceToMove, destination);
+                } //multiple options
+                else {
+                    //pick one
+                    Point destination = pieceOptions.get(rand.nextInt(pieceOptions.size()));
+
+                    //move the piece
+//                    gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
+                    gameboard.movePieceToSquare(pieceToMove, destination);
+                }
+            }
+
+            //move the piece
+        } else {
+
+        }
+        //</editor-fold>
+        //that's it
+    }
+
+    /**
+     * Selects a piece from the front row based on the player color.
+     *
+     * @param gameboard The game board where the game is being played.
+     *
+     * @return The selected piece from the front row.
+     */
+    private Piece selectPieceToMove(String myColor, PlayerArea temp, Random rand, Piece pieceToMove, GameBoard gameboard) {
+        int front_row;
         //<editor-fold defaultstate="collapsed" desc="pick a random piece">
         if (this.piecesCount != 0) {
 
@@ -102,38 +152,7 @@ public class ComputerPlayer extends Player {
             }
         }
         //</editor-fold>
-
-        //<editor-fold defaultstate="collapsed" desc="move piece one space forward">
-        //find out if the piece is blocked
-        if (!gameboard.isBlocked(pieceToMove)) {
-            //where can the piece move
-            pieceOptions = gameboard.moveOptions(pieceToMove);
-            //if options are available
-            if (!pieceOptions.isEmpty()) {
-                //one option 
-               if (pieceOptions.size() == 1) {
-                    Point destination = pieceOptions.getFirst();
-                    
-                    //move the piece
-                    //gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
-                    gameboard.movePieceToSquare(pieceToMove, destination);
-                } //multiple options
-                else {
-                    //pick one
-                    Point destination = pieceOptions.get(rand.nextInt(pieceOptions.size()));
-
-                    //move the piece
-//                    gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
-                    gameboard.movePieceToSquare(pieceToMove, destination);
-                }
-            }
-
-            //move the piece
-        } else {
-
-        }
-        //</editor-fold>
-        //that's it
+        return pieceToMove;
     }
 
     /**
