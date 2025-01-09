@@ -30,17 +30,14 @@ public class GameBoard extends JPanel {
     private static int BOARD_COLUMNS = 8;
     private static int BOARD_ROWS = 8;
 
-    public void addMouseListener(GameboardMouseListener mouseAction, Game aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
     /*
-     * 
+     *
      */
-    void highlightPossibleJumps(Piece gamePiece) {
+    private void highlightPossibleJumps(Piece gamePiece) {
         int selectedX = gamePiece.getxCol();
         int selectedY = gamePiece.getyRow();
-        
+
     }
 
     /**
@@ -129,11 +126,8 @@ public class GameBoard extends JPanel {
     private void initComponents() {
         // this.setBackground(Color.red);
         resizer = new GameboardResizeListener();
-//      mouseAction = new GameboardMouseListener(this);
-//        kbAction = new GameboardKeyBoardListener(this);
-        //mouseAction.setBoard(this);
-        //this.addMouseListener(mouseAction);
-        //this.addMouseMotionListener(mouseAction);
+        setRows(BOARD_ROWS);
+        setColumns(BOARD_COLUMNS);
         this.addComponentListener(resizer);
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -143,15 +137,6 @@ public class GameBoard extends JPanel {
             }
 
         });
-        //this.addKeyListener(kbAction);
-//        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction(){
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                   CardLayout cl = (CardLayout) parentPanel.getLayout();
-//                    cl.next(parentPanel);
-//            }
-//            
-//        });
 
         rows = getBOARD_ROWS();
         columns = getBOARD_COLUMNS();
@@ -517,8 +502,8 @@ public class GameBoard extends JPanel {
         //set the piece to the new position
         newState.setxPos(squareWidth * squareX);
         newState.setyPos(squareWidth * squareY);
-        newState.setxCol(squareY);
-        newState.setyRow(squareX);
+        newState.setxCol(squareX);
+        newState.setyRow(squareY);
         newState.isSelected = !newState.isSelected;
 
         //update the new square to indicate that the piece is there
@@ -527,7 +512,7 @@ public class GameBoard extends JPanel {
         newStateSqr.setCurrentPiece(newState);
 
         //update the old square to indicate that the piece is no longer there
-        BoardSquare oldStateSqr = getBoardSquare(oldState.getyRow(), oldState.getxCol());
+        BoardSquare oldStateSqr = getBoardSquare(oldState.getxCol(), oldState.getyRow());
         oldStateSqr.setHasPiece(false);
         oldStateSqr.setCurrentPiece(null);
 
@@ -536,9 +521,19 @@ public class GameBoard extends JPanel {
     }
 
     /**
+     * Resets the state of a given piece to match the state of another piece.
+     * <p>
+     * <p>
+     * This method copies the positional attributes (xPos, yPos, xCol, yRow)
+     * from the {@code oldState} piece to the {@code newState} piece. If the
+     * {@code newState} piece is currently selected, its selection state will be
+     * toggled off.</p>
      *
-     * @param newState
-     * @param oldState
+     * @param newState the piece whose state will be updated
+     * @param oldState the piece whose state will be copied
+     *
+     * @throws IllegalArgumentException if {@code newState} or {@code oldState}
+     *                                  is {@code null}
      */
     public void resetPiece(Piece newState, Piece oldState) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -561,7 +556,7 @@ public class GameBoard extends JPanel {
      *
      * @return
      */
-     public Piece checkForGamePiece(int squareX, int squareY) {
+    public Piece checkForGamePiece(int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
         if (selectedSquare.isHasPiece()) {
@@ -579,9 +574,10 @@ public class GameBoard extends JPanel {
      * @return
      */
     public boolean isBlocked(Piece pieceToMove) {
+
         boolean isPieceBlocked = false;
         Piece movingPiece = pieceToMove;
-        movingPiece.setPieceDirection("NEGATIVE");
+//        movingPiece.setPieceDirection("NEGATIVE");
         int pieceCol = movingPiece.getxCol();
         int pieceRow = movingPiece.getyRow();
         String pieceDirection = movingPiece.getPieceDirection();
@@ -589,7 +585,7 @@ public class GameBoard extends JPanel {
         BoardSquare fwdRight;
         switch (pieceDirection) {
             //the piece is moving towards the bottom 
-            case "POSITIVE" -> {
+            case POSITIVE -> {
                 fwdLeft = gameDataBoard[pieceCol - 1][pieceRow + 1];
                 fwdRight = gameDataBoard[pieceCol + 1][pieceRow + 1];
 
@@ -602,10 +598,10 @@ public class GameBoard extends JPanel {
                 if (fwdLeft != null && fwdRight != null) {
                     if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
                         isPieceBlocked = false;
+                    } else if (fwdLeft.isHasPiece() && fwdRight.isHasPiece()) {
+                        isPieceBlocked = true;
                     } else {
-                        if (!fwdLeft.isHasPiece()) {
-                            isPieceBlocked = false;
-                        } else {
+                        if (!fwdLeft.isHasPiece() || !fwdRight.isHasPiece()) {
                             isPieceBlocked = false;
                         }
                     }
@@ -637,13 +633,19 @@ public class GameBoard extends JPanel {
      *
      */
     private BoardSquare squareLookUp(int pieceRow, int pieceCol) {
-        if (pieceRow >= this.rows || pieceCol >= this.columns) {
+        if (withinBounds(pieceRow, pieceCol)) {
             return null;
         }
         return gameDataBoard[pieceRow][pieceCol];
     }
 
+    private boolean withinBounds(int pieceRow, int pieceCol) {
+        return pieceRow < 0 || pieceRow >= this.rows || pieceCol < 0 || pieceCol >= this.columns;
+    }
+
     /**
+     *
+     * Return a list of positions that the given piece can move to
      *
      * @param pieceToMove the piece that has been selected for movement
      *
@@ -653,10 +655,8 @@ public class GameBoard extends JPanel {
     public List<Point> moveOptions(Piece pieceToMove) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         List<Point> optionList = new ArrayList<>();
-        Map<Integer, Integer> map = new HashMap<>();
-        List<BoardSquare> optionSqr = new ArrayList<>();
         Piece movingPiece = pieceToMove;
-        movingPiece.setPieceDirection("NEGATIVE");
+        //movingPiece.setPieceDirection(NEGATIVE);
         int pieceCol = movingPiece.getxCol();
         int pieceRow = movingPiece.getyRow();
         String pieceDirection = movingPiece.getPieceDirection();
@@ -667,53 +667,15 @@ public class GameBoard extends JPanel {
         int col_pos_id = pieceCol + 1;
         switch (pieceDirection) {
             //the piece is moving towards the bottom 
-            case "POSITIVE" -> {
+            case POSITIVE -> {
                 fwdLeft = gameDataBoard[col_neg_id][row_id];
                 fwdRight = gameDataBoard[col_pos_id][row_id];
-
+                checkNearbySquares(pieceRow + 1, col_neg_id, col_pos_id, optionList);
             }
 
             //the piece is moving towards the top
-            case "NEGATIVE" -> {
-                int row_neg_id = pieceRow;
-                fwdLeft = squareLookUp(row_id, col_neg_id);
-                fwdRight = squareLookUp(row_id, col_pos_id);
-                if (fwdLeft != null && fwdRight != null) {
-                    if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
-//                        map.put(col_neg_id, row_id);
-//                        map.put(col_pos_id, row_id);
-//                        optionSqr.add(fwdLeft);
-//                        optionSqr.add(fwdRight);
-                        optionList.add(new Point(row_id, col_neg_id));
-                        optionList.add(new Point(row_id, col_pos_id));
-                    } else {
-                        if (!fwdLeft.isHasPiece()) {
-//                            map.put(col_neg_id, row_id);
-//                            optionSqr.add(fwdLeft);
-                            optionList.add(new Point(row_id, col_neg_id));
-                        } else {
-//                            optionSqr.add(fwdRight);
-//                            map.put(col_pos_id, row_id);
-                            optionList.add(new Point(row_id, col_pos_id));
-                        }
-                    }
-                } else {
-                    if (fwdLeft != null) {
-                        if (!fwdLeft.isHasPiece()) {
-                            //map.put(row_id, row_id);
-//                            optionSqr.add(fwdLeft);
-                            optionList.add(new Point(row_id, col_neg_id));
-                        }
-                    } else if (fwdRight != null) {
-                        if (!fwdRight.isHasPiece()) {
-//                            optionSqr.add(fwdRight);
-                            optionList.add(new Point(row_id, col_pos_id));
-//                            destCell.setLocation(col_pos_id, row_id);
-//                            map.put(col_pos_id, row_id);
-                        }
-                    }
-
-                }
+            case NEGATIVE -> {
+                checkNearbySquares(row_id, col_neg_id, col_pos_id, optionList);
             }
 
             default -> {
@@ -726,18 +688,49 @@ public class GameBoard extends JPanel {
 
     }
 
+    private void checkNearbySquares(int row_id, int col_neg_id, int col_pos_id, List<Point> optionList) {
+        BoardSquare fwdLeft;
+        BoardSquare fwdRight;
+        fwdLeft = squareLookUp(row_id, col_neg_id);
+        fwdRight = squareLookUp(row_id, col_pos_id);
+        if (fwdLeft != null && fwdRight != null) {
+            if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
+                optionList.add(new Point(col_neg_id, row_id));
+                optionList.add(new Point(col_pos_id, row_id));
+            } else {
+                if (!fwdLeft.isHasPiece()) {
+                    optionList.add(new Point(col_neg_id, row_id));
+                } else {
+                    optionList.add(new Point(col_pos_id, row_id));
+                }
+            }
+        } else {
+            if (fwdLeft != null) {
+                if (!fwdLeft.isHasPiece()) {
+                    optionList.add(new Point(col_neg_id, row_id));
+                }
+            } else if (fwdRight != null) {
+                if (!fwdRight.isHasPiece()) {
+                    optionList.add(new Point(col_pos_id, row_id));
+//                            destCell.setLocation(col_pos_id, row_id);
+//                            map.put(col_pos_id, row_id);
+                }
+            }
+
+        }
+    }
+    private static final String POSITIVE = "POSITIVE";
+    private static final String NEGATIVE = "NEGATIVE";
+
     /**
      *
      * @param pieceToMove
      * @param destination
      */
     public void movePieceToSquare(Piece pieceToMove, Point destination) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Piece newState = new Piece();
-        int ptmXCol = pieceToMove.getyRow();
-        int ptmYRow = pieceToMove.getxCol();
+        int ptmXCol = pieceToMove.getxCol();
+        int ptmYRow = pieceToMove.getyRow();
         BoardSquare oldStateSqr = getBoardSquare(ptmXCol, ptmYRow);
-        int pieceIndex = ArrayUtils.indexOf(this.getPieces(), oldStateSqr.getCurrentPiece());
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
 
@@ -745,11 +738,11 @@ public class GameBoard extends JPanel {
         oldStateSqr.setCurrentPiece(null);
 
         //set the piece to the new position
-        pieceToMove = this.getPiece(pieceIndex);
-        pieceToMove.setxPos(squareWidth * destination.y - 1);
-        pieceToMove.setyPos(squareWidth * destination.x - 1);
-        pieceToMove.setxCol(destination.y);
-        pieceToMove.setyRow(destination.x);
+        //pieceToMove = this.getPiece(pieceIndex);
+        pieceToMove.setxPos(squareWidth * destination.x - 1);
+        pieceToMove.setyPos(squareWidth * destination.y - 1);
+        pieceToMove.setxCol(destination.x);
+        pieceToMove.setyRow(destination.y);
         //pieceToMove.isSelected = !newState.isSelected;
 
         //decouple the piece from its current square
@@ -765,19 +758,19 @@ public class GameBoard extends JPanel {
     }
 
     /**
+     * Retrieves a piece from the array based on the specified index.
      *
-     * @param pieceIndex
+     * @param pieceIndex the index of the piece to retrieve.
      *
-     * @return
+     * @return the piece at the specified index.
+     *
+     * @throws IllegalArgumentException if the index is out of bounds.
      */
     public Piece getPiece(int pieceIndex) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        try {
-            return this.pieces[pieceIndex];
-        } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
-            System.out.println("Alert: Index " + pieceIndex + " is out of bounds!");
+        if (pieceIndex < 0 || pieceIndex >= pieces.length) {
+            throw new IllegalArgumentException("Invalid piece index: " + pieceIndex);
         }
-        return this.pieces[0];
+        return this.pieces[pieceIndex];
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

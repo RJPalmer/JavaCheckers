@@ -295,6 +295,7 @@ public class Game {
                     gamePieces[pieceIndex].setxCol(colIndex);
                     gamePieces[pieceIndex].setyRow(rowIndex);
                     gamePieces[pieceIndex].setPieceColor(pieceColor1);
+                    gamePieces[pieceIndex].setPieceDirection(POSITIVE);
                     placePiece(rowIndex, colIndex, dataGameBoard[rowIndex][colIndex],
                             gamePieces[pieceIndex]);
                     pieceIndex++;
@@ -318,7 +319,7 @@ public class Game {
                 if (color.equals(Color.black)) {
                     gamePieces[pieceIndex].setxCol(colIndex);
                     gamePieces[pieceIndex].setyRow(rowIndex);
-
+                    gamePieces[pieceIndex].setPieceDirection("NEGATIVE");
                     gamePieces[pieceIndex].setPieceColor(pieceColor2);
                     placePiece(rowIndex, colIndex, dataGameBoard[rowIndex][colIndex],
                             gamePieces[pieceIndex]);
@@ -333,6 +334,7 @@ public class Game {
         temp = rows.stream().mapToInt(Integer::intValue).toArray();
         playerDomains[1].setAreaRows(temp);
     }
+    private static final String POSITIVE = "POSITIVE";
 
     /**
      * Determines which piece boardSquareColor gets associated with the user

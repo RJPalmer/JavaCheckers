@@ -130,28 +130,43 @@ public class ComputerPlayer extends Player {
      */
     private Piece selectPieceToMove(String myColor, PlayerArea temp, Random rand, Piece pieceToMove, GameBoard gameboard) {
         int front_row;
-        //<editor-fold defaultstate="collapsed" desc="pick a random piece">
-        if (this.piecesCount != 0) {
+        //<editor-fold defaultstate="collapsed" desc="pick a random piece from the front row">
+        /*
+         * if (this.piecesCount != 0) {
+         *
+         * switch (myColor) { case "Red" -> { front_row = temp.getAreaRows()[0];
+         * var eligible = Arrays.stream(playerPieces).filter(piece ->
+         * piece.getyRow() == front_row).toArray();
+         *
+         * int randIndex = rand.nextInt((eligible.length - 1) + 1) + 0;
+         * pieceToMove = (Piece) eligible[randIndex];
+         * gameboard.checkForGamePiece(pieceToMove.getyRow(),
+         * pieceToMove.getxCol()); }
+         *
+         * case "Yellow" -> { front_row =
+         * temp.getAreaRows()[temp.getAreaRows().length - 1]; Object[] eligible
+         * = Arrays.stream(playerPieces).filter(piece -> piece.getyRow() ==
+         * front_row).toArray(); int randIndex = rand.nextInt((eligible.length -
+         * 0) + 1) + 0; pieceToMove = (Piece) eligible[randIndex]; } } } return
+         * pieceToMove;
+         */
+//</editor-fold>  
+        List<Piece> eligiblePieces = new ArrayList<>();
+        int[] rows = temp.getAreaRows();
 
-            switch (myColor) {
-                case "Red" -> {
-                    front_row = temp.getAreaRows()[0];
-                    var eligible = Arrays.stream(playerPieces).filter(piece -> piece.getyRow() == front_row).toArray();
-
-                    int randIndex = rand.nextInt((eligible.length - 1) + 1) + 0;
-                    pieceToMove = (Piece) eligible[randIndex];
-                    gameboard.checkForGamePiece(pieceToMove.getyRow(), pieceToMove.getxCol());
-                }
-
-                case "Yellow" -> {
-                    front_row = temp.getAreaRows()[temp.getAreaRows().length - 1];
-                    Object[] eligible = Arrays.stream(playerPieces).filter(piece -> piece.getyRow() == front_row).toArray();
-                    int randIndex = rand.nextInt((eligible.length - 0) + 1) + 0;
-                    pieceToMove = (Piece) eligible[randIndex];
-                }
-            }
+        // Collect all eligible pieces from the player area
+        for (int row : rows) {
+            eligiblePieces.addAll(Arrays.asList(playerPieces).stream()
+                    .filter(piece -> piece.getyRow() == row && !gameboard.isBlocked(piece))
+                    .toList());
         }
-        //</editor-fold>
+
+        // Pick a random piece from the list of eligible pieces
+        if (!eligiblePieces.isEmpty()) {
+            int randIndex = rand.nextInt(eligiblePieces.size());
+            pieceToMove = eligiblePieces.get(randIndex);
+        }
+
         return pieceToMove;
     }
 

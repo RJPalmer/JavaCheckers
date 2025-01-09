@@ -8,6 +8,7 @@ package Gameboard;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 /**
  * Piece.java - Represents a piece to be placed on the game board
@@ -39,6 +40,20 @@ public class Piece {
 
 
         private Color selected_Piece_color = Color.GREEN;
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        
+        Piece temp = (Piece) obj;
+        return xCol == temp.getxCol() && yRow == temp.getyRow() && pieceColor.equals(temp.getPieceColor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, xCol, yRow); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
 
 
         private String pieceDirection;

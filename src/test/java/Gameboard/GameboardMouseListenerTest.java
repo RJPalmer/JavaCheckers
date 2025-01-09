@@ -35,10 +35,10 @@ public class GameboardMouseListenerTest {
     
     @BeforeAll
     public static void setUpClass() {
-        GameBoard.setBOARD_COLUMNS(10);
-        GameBoard.setBOARD_ROWS(10);
+        GameBoard.setBOARD_COLUMNS(8);
+        GameBoard.setBOARD_ROWS(8);
         board = new GameBoard();
-        dataBoard = new BoardSquare[10][10];
+        dataBoard = new BoardSquare[8][8];
         gameObject = new Game();
         gameObject.setUserColor("Red");
         gameObject.setUserPlayer(new Player());

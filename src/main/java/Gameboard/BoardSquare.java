@@ -94,6 +94,22 @@ public class BoardSquare {
     public void setColor(Color color) {
         this.Color = color;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        BoardSquare person = (BoardSquare) obj;
+        if(Objects.isNull(this.currentPiece) && Objects.isNull(person.currentPiece) ) return true;
+        return Color == person.Color && Objects.equals(currentPiece, person.currentPiece) && hasPiece == person.hasPiece;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Color, currentPiece, hasPiece);
+    }
    
 
 }
+    
