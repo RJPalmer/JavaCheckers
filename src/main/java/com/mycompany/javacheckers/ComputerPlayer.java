@@ -121,13 +121,16 @@ public class ComputerPlayer extends Player {
         //that's it
     }
 
-    /**
-     * Selects a piece from the front row based on the player color.
-     *
-     * @param gameboard The game board where the game is being played.
-     *
-     * @return The selected piece from the front row.
-     */
+  /**
+ * Selects a piece from the front row based on the player color.
+ *
+ * @param myColor    The color of the player pieces.
+ * @param temp       The player area.
+ * @param rand       The random generator for selecting a piece.
+ * @param pieceToMove The piece to be moved.
+ * @param gameboard  The game board where the game is being played.
+ * @return The selected piece from the front row.
+ */
     private Piece selectPieceToMove(String myColor, PlayerArea temp, Random rand, Piece pieceToMove, GameBoard gameboard) {
         int front_row;
         //<editor-fold defaultstate="collapsed" desc="pick a random piece from the front row">
