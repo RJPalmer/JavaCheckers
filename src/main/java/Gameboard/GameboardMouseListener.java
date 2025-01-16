@@ -20,18 +20,100 @@ import java.util.Objects;
  */
 public class GameboardMouseListener implements MouseListener, MouseInputListener, MouseMotionListener {
 
-    /**
-     * @param mouseX the mouseX to set
-     */
-    public void setMouseX(int mouseX) {
-        this.mouseX = mouseX;
+    private GameBoard board;
+    private Game checkersGame;
+    private Piece gamePiece;
+    private int mouseX = 0;
+    private int mouseY = 0;
+    private Piece moveCopy;
+    private int squareX = 0;
+    private int squareY = 0;
+
+    public GameboardMouseListener(GameBoard aThis, Game aThis1) {
+        this.checkersGame = aThis1;
+        this.board = aThis;
+        setCurrentPlayer(aThis1.getUserPlayer());
+    }
+
+    private Boolean checkOwnership(Piece gamePiece1) {
+        //gamePiece.setPieceColor(Color.green);
+        if (checkersGame.getUserPlayer().checkPiece(gamePiece1)) {
+//            gamePiece1.isSelected = !gamePiece1.isSelected; 
+           return true;
+        } else {
+            //gamePiece1 = null;
+            return false;
+        }
+//                board.repaint();
     }
 
     /**
-     * @param mouseY the mouseY to set
+     * @param currentPlayer the currentPlayer to set
      */
-    public void setMouseY(int mouseY) {
-        this.mouseY = mouseY;
+    private void setCurrentPlayer(Player currentPlayer) {
+    }
+
+    @Deprecated
+    private void processMouseDragged(MouseEvent e) {
+        checkersGame.processMouseDragged(e, this);
+    }
+
+    /**
+     *
+     * @param e the value of e
+     *
+     * @deprecated Moved to
+     * {@link com.mycompany.javacheckers.Game#processMousePressed}
+     */
+    @Deprecated
+    private void processMousePressed(MouseEvent e) {
+        checkersGame.processMousePressed(e, this);
+    }
+
+    /**
+     *
+     * @param e the value of e
+     *
+     * @deprecated Moved to {@link Gameboard.BoardSquare#processMouseReleased}
+     */
+    @Deprecated
+    private void processMouseReleased(MouseEvent e) {
+        checkersGame.processMouseReleased(e, this);
+    }
+
+    /**
+     * @return the board
+     */
+    public GameBoard getBoard() {
+        return board;
+    }
+
+    /**
+     * @param board the board to set
+     */
+    public void setBoard(GameBoard board) {
+        this.board = board;
+    }
+
+    /**
+     * @param checkersGame the checkersGame to set
+     */
+    public void setCheckersGame(Game checkersGame) {
+        this.checkersGame = checkersGame;
+    }
+
+    /**
+     * @return the gamePiece
+     */
+    public Piece getGamePiece() {
+        return gamePiece;
+    }
+
+    /**
+     * @param gamePiece the gamePiece to set
+     */
+    public void setGamePiece(Piece gamePiece) {
+        this.gamePiece = gamePiece;
     }
 
     /**
@@ -42,22 +124,38 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
     }
 
     /**
+     * @param mouseX the mouseX to set
+     */
+    public void setMouseX(int mouseX) {
+        this.mouseX = mouseX;
+    }
+
+    /**
      * @return the mouseY
      */
     public int getMouseY() {
         return mouseY;
     }
 
-    public GameboardMouseListener(GameBoard aThis, Game aThis1) {
-        this.checkersGame = aThis1;
-        this.board = aThis;
-        setCurrentPlayer(aThis1.getUserPlayer());
+    /**
+     * @param mouseY the mouseY to set
+     */
+    public void setMouseY(int mouseY) {
+        this.mouseY = mouseY;
     }
 
     /**
-     * @param currentPlayer the currentPlayer to set
+     * @return the moveCopy
      */
-    private void setCurrentPlayer(Player currentPlayer) {
+    public Piece getMoveCopy() {
+        return moveCopy;
+    }
+
+    /**
+     * @param moveCopy the moveCopy to set
+     */
+    public void setMoveCopy(Piece moveCopy) {
+        this.moveCopy = moveCopy;
     }
 
     /**
@@ -88,15 +186,6 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         this.squareY = squareY;
     }
 
-    private GameBoard board;
-    private Game checkersGame;
-    private Piece gamePiece;
-    private Piece moveCopy;
-    private int squareX = 0;
-    private int squareY = 0;
-    private int mouseX = 0;
-    private int mouseY = 0;
-
     /**
      *
      * @param e
@@ -106,43 +195,42 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
 
     }
 
-    /*
-     * @param gamePiece the piece to be selected
+    /**
+     * Processes the event of dragging the mouse.
      *
+     * @param e
      */
-    public Piece selectPiece(Gameboard.Piece gamePiece) {
-        if (gamePiece != null) {
-            if (gamePiece.isSelected) {
-                //gamePiece.setPieceColor(Color.yellow);
-                gamePiece.isSelected = !gamePiece.isSelected;
-//                board.repaint();
-                return gamePiece;
-            } 
-            else {
-                if (checkOwnership(gamePiece)) {
-                   return gamePiece;
-                }
-                else{
-                    return null;
-                }
-            }
+    @Override
+    public void mouseDragged(MouseEvent e) {
 
-        } 
-        else {
-            return gamePiece;
-        }
+        processMouseDragged(e);
     }
 
-    private Boolean checkOwnership(Piece gamePiece1) {
-        //gamePiece.setPieceColor(Color.green);
-        if (checkersGame.getUserPlayer().checkPiece(gamePiece1)) {
-            gamePiece1.isSelected = !gamePiece1.isSelected;
-            return true;
-        } else {
-            gamePiece1 = null;
-            return false;
-        }
-//                board.repaint();
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
@@ -160,14 +248,18 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
 
     /**
      *
-     * @param e the value of e
-     * @deprecated Moved to {@link com.mycompany.javacheckers.Game#processMousePressed}
+     * @param e
      */
-    @Deprecated
-    private void processMousePressed(MouseEvent e) {
-        checkersGame.processMousePressed(e, this);
+    @Override
+    public void mouseReleased(MouseEvent e) {
+//throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        processMouseReleased(e);
     }
 
+    /*
+     * Sets the attribute values of the moveCopy property to the attribute
+     * values of the selected game piece
+     */
     public void prepMoveCopy() {
         setMoveCopy(new Piece());
         getMoveCopy().setxPos(getGamePiece().getxPos());
@@ -176,65 +268,18 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         getMoveCopy().setyRow(getGamePiece().getyRow());
     }
 
-    /**
+    /*
+     * @param gamePiece the piece to be selected
      *
-     * @param e
      */
-    @Override
-    public void mouseReleased(MouseEvent e) {
-//throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                processMouseReleased(e);
-    }
-
-    /**
-     *
-     * @param e the value of e
-     * @deprecated Moved to {@link Gameboard.BoardSquare#processMouseReleased}
-     */
-    @Deprecated
-    private void processMouseReleased(MouseEvent e) {
-        checkersGame.processMouseReleased(e, this);
-    }
-
-    /**
-     *
-     * @param e
-     */
-    @Override
-    public void mouseExited(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    /**
-     * Processes the event of dragging the mouse.
-     *
-     * @param e
-     */
-    @Override
-    public void mouseDragged(MouseEvent e) {
-
-        processMouseDragged(e);
-    }
-
-    @Deprecated
-    private void processMouseDragged(MouseEvent e) {
-        checkersGame.processMouseDragged(e, this);
-    }
-
-    /**
-     *
-     * @param e
-     */
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    /**
-     * @param board the board to set
-     */
-    public void setBoard(GameBoard board) {
-        this.board = board;
+    public void selectPiece() {
+        if (gamePiece != null && checkOwnership(gamePiece)) {
+            gamePiece.isSelected = !gamePiece.isSelected;
+        }
+        else{
+            throw new NullPointerException("The Game Piece has not been set or there was an issue checking ownership.");
+        }
+        getBoard().repaint();
     }
 
     /**
@@ -247,57 +292,6 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         setSquareY((mouseX / getBoard().getSquareWidth()));
         setSquareX((mouseY / getBoard().getSquareWidth()));
 
-    }
-
-    /**
-     *
-     * @param e
-     */
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    /**
-     * @param checkersGame the checkersGame to set
-     */
-    public void setCheckersGame(Game checkersGame) {
-        this.checkersGame = checkersGame;
-    }
-
-    /**
-     * @return the gamePiece
-     */
-    public Piece getGamePiece() {
-        return gamePiece;
-    }
-
-    /**
-     * @param gamePiece the gamePiece to set
-     */
-    public void setGamePiece(Piece gamePiece) {
-        this.gamePiece = gamePiece;
-    }
-
-    /**
-     * @return the board
-     */
-    public GameBoard getBoard() {
-        return board;
-    }
-
-    /**
-     * @return the moveCopy
-     */
-    public Piece getMoveCopy() {
-        return moveCopy;
-    }
-
-    /**
-     * @param moveCopy the moveCopy to set
-     */
-    public void setMoveCopy(Piece moveCopy) {
-        this.moveCopy = moveCopy;
     }
 
 }

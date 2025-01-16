@@ -16,6 +16,8 @@ import java.awt.event.MouseEvent;
  */
 public class PlayerState implements State {
 
+    private static final String START = "START";
+
     private boolean hasMoved;
 
     /**
@@ -54,43 +56,52 @@ public class PlayerState implements State {
     @Override
     public void handleMouseRequest(GameStateContext gameState, GameboardMouseListener gameboardMouseListener, MouseEvent e, String pressed) {
         switch (pressed) {
-            case "Pressed":
-                MouseEvent eMouseEvent = e;
+            case "Pressed" -> {
+                MouseEvent eMouseEvent;
+                eMouseEvent = e;
 
                 int eMouseEventX = eMouseEvent.getX();
-                //Getting current mouse screen coordinates
-                gameboardMouseListener.setMouseX(eMouseEventX);
                 int eMouseEventY = eMouseEvent.getY();
+                int squareX;
+                int squareY;
+
+                gameboardMouseListener.setMouseX(eMouseEventX);
                 gameboardMouseListener.setMouseY(eMouseEventY);
+
                 //translate mouse screen coordinates into rows/colum
-                gameboardMouseListener.translateToGrid(gameboardMouseListener.getMouseX(), gameboardMouseListener.getMouseY());
-                int squareX = gameboardMouseListener.getSquareX();
-                int squareY = gameboardMouseListener.getSquareY();
+                gameboardMouseListener.translateToGrid(eMouseEventX, eMouseEventY);
+
+                squareY = gameboardMouseListener.getSquareY();
+                squareX = gameboardMouseListener.getSquareX();
+                //Getting current mouse screen coordinates
+
                 GameBoard board = gameboardMouseListener.getBoard();
+                Piece checkForGamePiece = board.checkForGamePiece(squareX, squareY);
+                //Piece gamePiece;
                 //check the board to see if there's a piece there
-                gameboardMouseListener.setGamePiece(board.checkForGamePiece(squareX, squareY));
-                Piece gamePiece = gameboardMouseListener.getGamePiece();
-                gameboardMouseListener.setGamePiece(gameboardMouseListener.selectPiece(gamePiece));
+                gameboardMouseListener.setGamePiece(checkForGamePiece);
+                gameboardMouseListener.selectPiece();
                 //        var object = board.getPieces(); new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
 
-                break;
 
-            case "Dragged":
-                break;
-                
-            case "Released":
+            case "Dragged" -> {
+//                gameboardMouseListener.getGamePiece();
+            }
+
+            case "Released" -> {
                 Player userPlayer = gameState.getCheckersGame().getUserPlayer();
-                
+
                 if (userPlayer.isTurnComplete) {
                     //userPlayer.isTurnComplete = true;
                     OpponentState opponentPlayer = new OpponentState(gameState.getCheckersGame().getOpponentPlayer());
-                    
+
                     userPlayer.setMoveComplete();
                     gameState.setCurrentState(opponentPlayer);
                     gameState.processState(gameState, "YOUR_TURN");
                 }
-                break;
-            default:
+            }
+            default ->
                 throw new AssertionError();
         }
     }
@@ -116,7 +127,6 @@ public class PlayerState implements State {
             hasMoved = false;
         }
     }
-    private static final String START = "START";
 
     /**
      * Get the value of hasMoved

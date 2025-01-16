@@ -40,6 +40,26 @@ public class GameBoard extends JPanel {
 
     }
 
+    public void clearSquare(BoardSquare currentSqr) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        currentSqr.setCurrentPiece(null);
+        currentSqr.setHasPiece(false);
+    }
+
+    public void setPieceAtSquare(Piece currentSqr) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+        BoardSquare sqr;
+        
+        sqr = this.getBoardSquare(currentSqr.getxCol(), currentSqr.getyRow());
+        sqr.setCurrentPiece(currentSqr);
+        sqr.setHasPiece(true);
+        
+        currentSqr.setxPos(currentSqr.getyRow() * getSquareWidth());
+        currentSqr.setyPos(currentSqr.getxCol() * getSquareWidth());
+        
+    }
+
     /**
      *
      */
@@ -558,9 +578,10 @@ public class GameBoard extends JPanel {
      */
     public Piece checkForGamePiece(int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
+            BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
         if (selectedSquare.isHasPiece()) {
-            return selectedSquare.getCurrentPiece();
+            Piece currentPiece = selectedSquare.getCurrentPiece();
+            return currentPiece;
         } else {
             return null;
         }
@@ -728,21 +749,21 @@ public class GameBoard extends JPanel {
      * @param destination
      */
     public void movePieceToSquare(Piece pieceToMove, Point destination) {
-        int ptmXCol = pieceToMove.getxCol();
-        int ptmYRow = pieceToMove.getyRow();
+        int ptmXCol = pieceToMove.getyRow();
+        int ptmYRow = pieceToMove.getxCol();
         BoardSquare oldStateSqr = getBoardSquare(ptmXCol, ptmYRow);
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
 
         oldStateSqr.setHasPiece(false);
         oldStateSqr.setCurrentPiece(null);
-
+        
         //set the piece to the new position
         //pieceToMove = this.getPiece(pieceIndex);
-        pieceToMove.setxPos(squareWidth * destination.x - 1);
-        pieceToMove.setyPos(squareWidth * destination.y - 1);
-        pieceToMove.setxCol(destination.x);
-        pieceToMove.setyRow(destination.y);
+        pieceToMove.setxPos(squareWidth * (destination.x - 1));
+        pieceToMove.setyPos(squareWidth * (destination.y - 1));
+        pieceToMove.setxCol(destination.y);
+        pieceToMove.setyRow(destination.x);
         //pieceToMove.isSelected = !newState.isSelected;
 
         //decouple the piece from its current square

@@ -8,6 +8,7 @@ import Gameboard.*;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -344,7 +345,7 @@ public class Game {
     private Player pickUserPlayer() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         Player chosenPlayer;
-        String[] pieceColors = {"Yellow", "Red"};
+        String[] pieceColors = {PLAYER_COLOR_YELLOW, PLAYER_COLOR_RED};
 
         //have the user pick which boardSquareColor they want
         int choice = JOptionPane.showOptionDialog(null, "Choose A Color",
@@ -494,8 +495,8 @@ public class Game {
         Piece selectedGamePiece = gameboardMouseListener.getGamePiece();
         if (selectedGamePiece != null && selectedGamePiece.isSelected) {
             //get current mouse x & y
-            int newMouseX = e.getX();
-            int newMouseY = e.getY();
+            int newMouseX = eMouseEvent.getX();
+            int newMouseY = eMouseEvent.getY();
             int pieceCurrentX = selectedGamePiece.getxPos();
             int pieceCurrentY = selectedGamePiece.getyPos();
             int changeY = 0;
@@ -512,7 +513,9 @@ public class Game {
             //update the piece x/y to match the mouse x/y
             selectedGamePiece.setxPos(pieceCurrentX + changeX);
             selectedGamePiece.setyPos(pieceCurrentY + changeY);
-            selectedGamePiece.setHasMoved(true);
+            if (changeX > gameboard.getSquareWidth() || changeY > gameboard.getSquareWidth()) {
+                selectedGamePiece.setHasMoved(true);
+            }
             gameboardMouseListener.prepMoveCopy();
             gameboardMouseListener.getBoard().repaint();
             //this.userPlayer.setPieceMoved(true);
@@ -536,7 +539,6 @@ public class Game {
     public void processMouseReleased(MouseEvent e, GameboardMouseListener aThis) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 
-        
         int currentX;
         int currentY;
         Piece existPiece;
@@ -545,35 +547,48 @@ public class Game {
             currentX = e.getX();
             currentY = e.getY();
             aThis.translateToGrid(currentX, currentY);
-            existPiece = aThis.getBoard().checkForGamePiece(aThis.getSquareX(), aThis.getSquareY());
-            if (gamePiece.isHasMoved()) {
-                if (Objects.isNull(existPiece)) {
-                    BoardSquare currentSqre = aThis.getBoard().getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
-                    if (currentSqre.getColor() == Color.BLACK) {
-                        GameBoard board = aThis.getBoard();
-                        board.movePiece(gamePiece, aThis.getMoveCopy(), aThis.getSquareX(), aThis.getSquareY());
-                        aThis.setMoveCopy(null);
-                        gamePiece.setHasMoved(false);
-                        
-                        userPlayer.setMoveComplete();
-                        getGameState().processMouseEvent(gameState, aThis, e, RELEASED);
-//                    changeState();
-                    } else {
-                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
-                        aThis.setMoveCopy(null);
-                        gamePiece.setHasMoved(false);
-                    }
-                } else {
-                    if (gamePiece.IsMoveable()) {
-                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
-                        aThis.setMoveCopy(null);
-                        gamePiece.setHasMoved(false);
-                    }
-                }
+            GameBoard board = aThis.getBoard();
+            existPiece = board.checkForGamePiece(aThis.getSquareX(), aThis.getSquareY());
+            boolean nothingThere = Objects.isNull(existPiece);
+            //<editor-fold defaultstate="collapsed" desc="old release logic">
+//            if (gamePiece.isHasMoved()) {
+//                if (Objects.isNull(existPiece)) {
+//                    BoardSquare currentSqre = aThis.getBoard().getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
+//                    if (currentSqre.getColor() == Color.BLACK) {
+//                        GameBoard board = aThis.getBoard();
+//                        board.movePiece(gamePiece, aThis.getMoveCopy(), aThis.getSquareX(), aThis.getSquareY());
+//                        aThis.setMoveCopy(null);
+//                        gamePiece.setHasMoved(false);
+//                        
+//                        userPlayer.setMoveComplete();
+//                        getGameState().processMouseEvent(gameState, aThis, e, RELEASED);
+////                    changeState();
+//                    } else {
+//                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
+//                        aThis.setMoveCopy(null);
+//                        gamePiece.setHasMoved(false);
+//                    }
+//                } else {
+//                    if (gamePiece.IsMoveable()) {
+//                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
+//                        aThis.setMoveCopy(null);
+//                        gamePiece.setHasMoved(false);
+//                    }
+//                }
+//            }
+//</editor-fold>
+            if (nothingThere) {
+                BoardSquare oldSqr;
+                Piece moveCopy = aThis.getMoveCopy();
+                oldSqr = board.getBoardSquare(moveCopy.getyRow(), moveCopy.getxCol());
+                board.getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
+                board.clearSquare(oldSqr);
+                board.movePieceToSquare(gamePiece, new Point(aThis.getSquareX(), aThis.getSquareY()));
+                gamePiece.isSelected = !gamePiece.isSelected;
             }
-            aThis.getBoard().repaint();
+            aThis.setGamePiece(gamePiece);
+            board.repaint();
         }
-        
 
     }
 
@@ -630,20 +645,20 @@ public class Game {
         setUserPlayer(pickUserPlayer());
         userPlayer.isUserPlayer = true;
 
-        getUserColor();
+//        getUserColor();
         playerColor = getUserPlayer().getPlayerColor();
 //setup the other player
         setUserColor(playerColor);
 
-        if (playerColor.equals("Yellow")) {
+        if (playerColor.equals(PLAYER_COLOR_YELLOW)) {
 
-            playerDomains[1].setAreaColor("Red");
-            opponent = new ComputerPlayer(playerDomains[1], PLAYER_PIECE_COUNT, null, "Red");
+            playerDomains[1].setAreaColor(PLAYER_COLOR_RED);
+            opponent = new ComputerPlayer(playerDomains[1], PLAYER_PIECE_COUNT, null, PLAYER_COLOR_RED);
             OpponentState opponentState = new OpponentState(opponent);
             getGameState().setCurrentState(opponentState);
         } else {
-            playerDomains[0].setAreaColor("Yellow");
-            opponent = new ComputerPlayer(playerDomains[0], PLAYER_PIECE_COUNT, null, "Yellow");
+            playerDomains[0].setAreaColor(PLAYER_COLOR_YELLOW);
+            opponent = new ComputerPlayer(playerDomains[0], PLAYER_PIECE_COUNT, null, PLAYER_COLOR_YELLOW);
             PlayerState playerState = new PlayerState();
             getGameState().setCurrentState(playerState);
         }
@@ -654,6 +669,8 @@ public class Game {
         getGameState().startGame();
 
     }
+    private static final String PLAYER_COLOR_RED = "RED";
+    private static final String PLAYER_COLOR_YELLOW = "YELLOW";
 
     /**
      *

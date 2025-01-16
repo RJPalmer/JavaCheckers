@@ -11,6 +11,7 @@ import java.awt.Color;
  * @author robertpalmer
  */
 public class Player {
+
     /**
      * Determines if the player has completed their turn.
      */
@@ -28,7 +29,6 @@ public class Player {
      * The number of the pieces that the player has
      */
     public int piecesCount;
-
 
     /**
      * The piece color associated with the player
@@ -49,6 +49,7 @@ public class Player {
         this.isUserPlayer = isUserPlayer;
         this.isTurnComplete = isTurnComplete;
     }
+
     public Player(PlayerArea pieceArea, int piecesCount, Piece[] playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
         this.pieceArea = pieceArea;
         this.piecesCount = piecesCount;
@@ -92,6 +93,7 @@ public class Player {
         this.playerPieces = playerPieces;
         this.playerColor = playerColor;
     }
+
     /**
      *
      *
@@ -105,20 +107,22 @@ public class Player {
         Move[] availableMoves = null;
 //        if (gameBoard.isBlocked(gameboardMouseListener)) {
 //        }
-return availableMoves;
+        return availableMoves;
     }
+
     public Boolean checkPiece(Piece gamePiece) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         boolean canMove = false;
         Color pieceColor = gamePiece.getPieceColor();
-        Color color = Color.YELLOW;
-        
+        Color color = ColorConverter.stringToColor(playerColor);
+
         if (pieceColor.equals(color)) {
             canMove = !canMove;
         }
-        
+
         return canMove;
     }
+
     /**
      * Get the value of myGame
      *
@@ -127,6 +131,7 @@ return availableMoves;
     public Game getMyGame() {
         return myGame;
     }
+
     /**
      * Set the value of myGame
      *
@@ -135,6 +140,7 @@ return availableMoves;
     public void setMyGame(Game myGame) {
         this.myGame = myGame;
     }
+
     /**
      * Get the value of pieceArea
      *
@@ -143,6 +149,7 @@ return availableMoves;
     public PlayerArea getPieceArea() {
         return pieceArea;
     }
+
     /**
      * Set the value of pieceArea
      *
@@ -165,18 +172,21 @@ return availableMoves;
     public void setPiecesCount(int piecesCount) {
         this.piecesCount = piecesCount;
     }
+
     /**
      * @return the playerColor
      */
     public String getPlayerColor() {
         return playerColor;
     }
+
     /**
      * @param playerColor the playerColor to set
      */
     public void setPlayerColor(String playerColor) {
         this.playerColor = playerColor;
     }
+
     /**
      *
      */
@@ -231,6 +241,7 @@ return availableMoves;
         }
         //return moveMade;
     }
+
     /**
      *
      * @param piece
