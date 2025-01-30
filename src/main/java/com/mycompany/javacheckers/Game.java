@@ -490,36 +490,71 @@ public class Game {
      * @param gameboardMouseListener
      */
     public void processMouseDragged(MouseEvent e, GameboardMouseListener gameboardMouseListener) {
-        //make sure there's a selected piece
-        MouseEvent eMouseEvent = e;
+        //<editor-fold defaultstate="collapsed" desc="comment">
+        /*
+         * //make sure there's a selected piece MouseEvent eMouseEvent = e;
+         * Piece selectedGamePiece = gameboardMouseListener.getGamePiece(); if
+         * (selectedGamePiece != null && selectedGamePiece.isSelected) { //get
+         * current mouse x & y int newMouseX = eMouseEvent.getX(); int newMouseY
+         * = eMouseEvent.getY(); int pieceCurrentX =
+         * selectedGamePiece.getxPos(); int pieceCurrentY =
+         * selectedGamePiece.getyPos(); int changeY = 0; int changeX = 0; if
+         * (gameboardMouseListener.getMouseX() != 0 &&
+         * gameboardMouseListener.getMouseY() != 0) { changeX = newMouseX -
+         * gameboardMouseListener.getMouseX(); changeY = newMouseY -
+         * gameboardMouseListener.getMouseY(); }
+         * gameboardMouseListener.setMouseX(newMouseX);
+         * gameboardMouseListener.setMouseY(newMouseY); //translate mouse screen
+         * coordinates into rows/colum
+         * gameboardMouseListener.translateToGrid(newMouseX, newMouseY);
+         * //if(newMouseX) //update the piece x/y to match the mouse x/y
+         * selectedGamePiece.setxPos(pieceCurrentX + changeX);
+         * selectedGamePiece.setyPos(pieceCurrentY + changeY); if (changeX >
+         * gameboard.getSquareWidth() || changeY > gameboard.getSquareWidth()) {
+         * selectedGamePiece.setHasMoved(true); }
+         * gameboardMouseListener.prepMoveCopy();
+         * gameboardMouseListener.getBoard().repaint();
+         * //this.userPlayer.setPieceMoved(true);
+         * }
+         */
+//</editor-fold>
+
+        // Ensure there is a selected piece
         Piece selectedGamePiece = gameboardMouseListener.getGamePiece();
-        if (selectedGamePiece != null && selectedGamePiece.isSelected) {
-            //get current mouse x & y
-            int newMouseX = eMouseEvent.getX();
-            int newMouseY = eMouseEvent.getY();
-            int pieceCurrentX = selectedGamePiece.getxPos();
-            int pieceCurrentY = selectedGamePiece.getyPos();
-            int changeY = 0;
-            int changeX = 0;
-            if (gameboardMouseListener.getMouseX() != 0 && gameboardMouseListener.getMouseY() != 0) {
-                changeX = newMouseX - gameboardMouseListener.getMouseX();
-                changeY = newMouseY - gameboardMouseListener.getMouseY();
-            }
-            gameboardMouseListener.setMouseX(newMouseX);
-            gameboardMouseListener.setMouseY(newMouseY);
-            //translate mouse screen coordinates into rows/colum
-            gameboardMouseListener.translateToGrid(newMouseX, newMouseY);
-            //if(newMouseX)
-            //update the piece x/y to match the mouse x/y
-            selectedGamePiece.setxPos(pieceCurrentX + changeX);
-            selectedGamePiece.setyPos(pieceCurrentY + changeY);
-            if (changeX > gameboard.getSquareWidth() || changeY > gameboard.getSquareWidth()) {
-                selectedGamePiece.setHasMoved(true);
-            }
-            gameboardMouseListener.prepMoveCopy();
-            gameboardMouseListener.getBoard().repaint();
-            //this.userPlayer.setPieceMoved(true);
+        if (selectedGamePiece == null || !selectedGamePiece.isSelected) {
+            return; // Exit early to avoid unnecessary processing
         }
+
+        // Get current mouse position
+        int newMouseX = e.getX();
+        int newMouseY = e.getY();
+        int prevMouseX = gameboardMouseListener.getMouseX();
+        int prevMouseY = gameboardMouseListener.getMouseY();
+
+        // Calculate movement change
+        int changeX = (prevMouseX != 0) ? newMouseX - prevMouseX : 0;
+        int changeY = (prevMouseY != 0) ? newMouseY - prevMouseY : 0;
+
+        // Update mouse position
+        gameboardMouseListener.setMouseX(newMouseX);
+        gameboardMouseListener.setMouseY(newMouseY);
+
+        // Translate screen coordinates to grid position
+        gameboardMouseListener.translateToGrid(newMouseX, newMouseY);
+
+        // Move the selected piece
+        selectedGamePiece.setxPos(selectedGamePiece.getxPos() + changeX);
+        selectedGamePiece.setyPos(selectedGamePiece.getyPos() + changeY);
+
+        // Mark piece as moved if it moves beyond a square's width
+        if (Math.abs(changeX) > gameboard.getSquareWidth() || Math.abs(changeY) > gameboard.getSquareWidth()) {
+            selectedGamePiece.setHasMoved(true);
+        }
+
+        // Prepare the move copy and repaint the board
+        gameboardMouseListener.prepMoveCopy();
+        gameboardMouseListener.getBoard().repaint();
+
     }
 
     /**
@@ -539,6 +574,7 @@ public class Game {
     public void processMouseReleased(MouseEvent e, GameboardMouseListener aThis) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 
+        gameState.processMouseEvent(gameState, aThis, e, RELEASED);
         int currentX;
         int currentY;
         Piece existPiece;
@@ -580,8 +616,8 @@ public class Game {
             if (nothingThere) {
                 BoardSquare oldSqr;
                 Piece moveCopy = aThis.getMoveCopy();
-                oldSqr = board.getBoardSquare(moveCopy.getyRow(), moveCopy.getxCol());
-                board.getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
+                oldSqr = board.getBoardSquare(moveCopy.getxCol(), moveCopy.getyRow());
+                //BoardSquare boardSquare = board.getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
                 board.clearSquare(oldSqr);
                 board.movePieceToSquare(gamePiece, new Point(aThis.getSquareX(), aThis.getSquareY()));
                 gamePiece.isSelected = !gamePiece.isSelected;

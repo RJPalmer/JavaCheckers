@@ -111,16 +111,15 @@ public class Player {
     }
 
     public Boolean checkPiece(Piece gamePiece) {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        boolean canMove = false;
-        Color pieceColor = gamePiece.getPieceColor();
-        Color color = ColorConverter.stringToColor(playerColor);
-
-        if (pieceColor.equals(color)) {
-            canMove = !canMove;
+        if (gamePiece == null) {
+            return false; // Or handle as appropriate (e.g., throw an exception)
         }
 
-        return canMove;
+        Color pieceColor = gamePiece.getPieceColor();
+        Color playerPieceColor = ColorConverter.stringToColor(playerColor);
+
+        // Return true if the piece's color matches the player's color
+        return pieceColor.equals(playerPieceColor);
     }
 
     /**
@@ -270,6 +269,7 @@ public class Player {
      */
     public void setPieceMoved(boolean pieceMoved) {
         this.pieceMoved = pieceMoved;
+        
     }
 
 }

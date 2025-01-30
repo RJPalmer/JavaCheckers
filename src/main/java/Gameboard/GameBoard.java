@@ -4,7 +4,6 @@
  */
 package Gameboard;
 
-import com.mycompany.javacheckers.Game;
 import com.mycompany.javacheckers.Player;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -14,12 +13,9 @@ import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import javax.swing.JPanel;
-import org.apache.commons.lang.ArrayUtils;
 
 /**
  *
@@ -50,14 +46,14 @@ public class GameBoard extends JPanel {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 
         BoardSquare sqr;
-        
+
         sqr = this.getBoardSquare(currentSqr.getxCol(), currentSqr.getyRow());
         sqr.setCurrentPiece(currentSqr);
         sqr.setHasPiece(true);
-        
+
         currentSqr.setxPos(currentSqr.getyRow() * getSquareWidth());
         currentSqr.setyPos(currentSqr.getxCol() * getSquareWidth());
-        
+
     }
 
     /**
@@ -481,16 +477,16 @@ public class GameBoard extends JPanel {
 
     /**
      *
-     * @param squareX
-     * @param squareY
+     * @param col_index
+     * @param row_index
      *
-     * @return
+     * @return the Gameboard.BoardSquare
      */
-    public BoardSquare getBoardSquare(int squareX, int squareY) {
+    public BoardSquare getBoardSquare(int col_index, int row_index) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         BoardSquare clickSqure;
-        System.out.println(String.format("%d, %d", squareX, squareY));
-        clickSqure = gameDataBoard[squareX][squareY];
+        System.out.println(String.format("Retreiving Square %d, %d", col_index, row_index));
+        clickSqure = gameDataBoard[row_index][col_index];
 
         return clickSqure;
     }
@@ -506,7 +502,7 @@ public class GameBoard extends JPanel {
      * @param squareToAdd
      */
     public void setBoardSquare(int squareX, int squareY, BoardSquare squareToAdd) {
-        gameDataBoard[squareX][squareY] = squareToAdd;
+        gameDataBoard[squareY][squareX] = squareToAdd;
     }
 
     /**
@@ -578,7 +574,7 @@ public class GameBoard extends JPanel {
      */
     public Piece checkForGamePiece(int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
+        BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
         if (selectedSquare.isHasPiece()) {
             Piece currentPiece = selectedSquare.getCurrentPiece();
             return currentPiece;
@@ -607,15 +603,15 @@ public class GameBoard extends JPanel {
         switch (pieceDirection) {
             //the piece is moving towards the bottom 
             case POSITIVE -> {
-                fwdLeft = gameDataBoard[pieceCol - 1][pieceRow + 1];
-                fwdRight = gameDataBoard[pieceCol + 1][pieceRow + 1];
+                fwdLeft = gameDataBoard[pieceRow + 1][pieceCol - 1];
+                fwdRight = gameDataBoard[pieceRow + 1][pieceCol + 1];
 
             }
 
             //the piece is moving towards the top
             case "NEGATIVE" -> {
-                fwdLeft = squareLookUp(pieceRow - 1, pieceCol - 1);
-                fwdRight = squareLookUp(pieceRow - 1, pieceCol + 1);
+                fwdLeft = squareLookUp(pieceCol - 1, pieceRow - 1);
+                fwdRight = squareLookUp(pieceCol + 1, pieceRow - 1);
                 if (fwdLeft != null && fwdRight != null) {
                     if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
                         isPieceBlocked = false;
@@ -632,8 +628,10 @@ public class GameBoard extends JPanel {
                             isPieceBlocked = true;
                         }
                     } else {
-                        if (fwdRight.isHasPiece()) {
-                            isPieceBlocked = true;
+                        if (!Objects.isNull(fwdRight)) {
+                            if (fwdRight.isHasPiece()) {
+                                isPieceBlocked = true;
+                            }
                         }
                     }
 
@@ -653,7 +651,7 @@ public class GameBoard extends JPanel {
     /*
      *
      */
-    private BoardSquare squareLookUp(int pieceRow, int pieceCol) {
+    private BoardSquare squareLookUp(int pieceCol, int pieceRow) {
         if (withinBounds(pieceRow, pieceCol)) {
             return null;
         }
@@ -681,17 +679,13 @@ public class GameBoard extends JPanel {
         int pieceCol = movingPiece.getxCol();
         int pieceRow = movingPiece.getyRow();
         String pieceDirection = movingPiece.getPieceDirection();
-        BoardSquare fwdLeft;
-        BoardSquare fwdRight;
         int col_neg_id = pieceCol - 1;
         int row_id = pieceRow - 1;
         int col_pos_id = pieceCol + 1;
         switch (pieceDirection) {
             //the piece is moving towards the bottom 
             case POSITIVE -> {
-                fwdLeft = gameDataBoard[col_neg_id][row_id];
-                fwdRight = gameDataBoard[col_pos_id][row_id];
-                checkNearbySquares(pieceRow + 1, col_neg_id, col_pos_id, optionList);
+                checkNearbySquares(row_id, col_neg_id, col_pos_id, optionList);
             }
 
             //the piece is moving towards the top
@@ -710,35 +704,48 @@ public class GameBoard extends JPanel {
     }
 
     private void checkNearbySquares(int row_id, int col_neg_id, int col_pos_id, List<Point> optionList) {
-        BoardSquare fwdLeft;
-        BoardSquare fwdRight;
-        fwdLeft = squareLookUp(row_id, col_neg_id);
-        fwdRight = squareLookUp(row_id, col_pos_id);
-        if (fwdLeft != null && fwdRight != null) {
-            if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
-                optionList.add(new Point(col_neg_id, row_id));
-                optionList.add(new Point(col_pos_id, row_id));
-            } else {
-                if (!fwdLeft.isHasPiece()) {
-                    optionList.add(new Point(col_neg_id, row_id));
-                } else {
-                    optionList.add(new Point(col_pos_id, row_id));
-                }
-            }
-        } else {
-            if (fwdLeft != null) {
-                if (!fwdLeft.isHasPiece()) {
-                    optionList.add(new Point(col_neg_id, row_id));
-                }
-            } else if (fwdRight != null) {
-                if (!fwdRight.isHasPiece()) {
-                    optionList.add(new Point(col_pos_id, row_id));
-//                            destCell.setLocation(col_pos_id, row_id);
-//                            map.put(col_pos_id, row_id);
-                }
-            }
+        //<editor-fold defaultstate="collapsed" desc="(old) - code for checking squares for possible moves">
+//        BoardSquare fwdLeft;
+//        BoardSquare fwdRight;
+//        fwdLeft = squareLookUp(col_neg_id, row_id);
+//        fwdRight = squareLookUp(col_pos_id, row_id);
+//        if (fwdLeft != null && fwdRight != null) {
+//            if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
+//                optionList.add(new Point(col_neg_id,row_id));
+//                optionList.add(new Point(col_pos_id, row_id));
+//            } else {
+//                if (!fwdLeft.isHasPiece()) {
+//                    optionList.add(new Point(col_neg_id, row_id));
+//                } else {
+//                    optionList.add(new Point(col_pos_id, row_id));
+//                }
+//            }
+//        } else {
+//            if (fwdLeft != null) {
+//                if (!fwdLeft.isHasPiece()) {
+//                    optionList.add(new Point(col_neg_id, row_id));
+//                }
+//            } else if (fwdRight != null) {
+//                if (!fwdRight.isHasPiece()) {
+//                    optionList.add(new Point(col_pos_id, row_id));
+////                            destCell.setLocation(col_pos_id, row_id);
+////                            map.put(col_pos_id, row_id);
+//                }
+//            }
+//            
+//        }
+//</editor-fold>
 
+        BoardSquare fwdLeft = squareLookUp(col_neg_id, row_id);
+        BoardSquare fwdRight = squareLookUp(col_pos_id, row_id);
+
+        if (fwdLeft != null && !fwdLeft.isHasPiece()) {
+            optionList.add(new Point(col_neg_id, row_id));
         }
+        if (fwdRight != null && !fwdRight.isHasPiece()) {
+            optionList.add(new Point(col_pos_id, row_id));
+        }
+
     }
     private static final String POSITIVE = "POSITIVE";
     private static final String NEGATIVE = "NEGATIVE";
@@ -749,21 +756,21 @@ public class GameBoard extends JPanel {
      * @param destination
      */
     public void movePieceToSquare(Piece pieceToMove, Point destination) {
-        int ptmXCol = pieceToMove.getyRow();
-        int ptmYRow = pieceToMove.getxCol();
+        int ptmXCol = pieceToMove.getxCol();
+        int ptmYRow = pieceToMove.getyRow();
         BoardSquare oldStateSqr = getBoardSquare(ptmXCol, ptmYRow);
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
 
         oldStateSqr.setHasPiece(false);
         oldStateSqr.setCurrentPiece(null);
-        
+
         //set the piece to the new position
         //pieceToMove = this.getPiece(pieceIndex);
         pieceToMove.setxPos(squareWidth * (destination.x - 1));
         pieceToMove.setyPos(squareWidth * (destination.y - 1));
-        pieceToMove.setxCol(destination.y);
-        pieceToMove.setyRow(destination.x);
+        pieceToMove.setxCol(destination.x);
+        pieceToMove.setyRow(destination.y);
         //pieceToMove.isSelected = !newState.isSelected;
 
         //decouple the piece from its current square
@@ -772,10 +779,9 @@ public class GameBoard extends JPanel {
         oldStateSqr.setCurrentPiece(null);
 
         //update the new square to indicate that the piece is there
-        BoardSquare newStateSqr = getBoardSquare(destination.x, destination.y);
-        newStateSqr.setHasPiece(true);
-        newStateSqr.setCurrentPiece(pieceToMove);
-
+//        BoardSquare newStateSqr = getBoardSquare(destination.x, destination.y);
+//        newStateSqr.setHasPiece(true);
+//        newStateSqr.setCurrentPiece(pieceToMove);
     }
 
     /**

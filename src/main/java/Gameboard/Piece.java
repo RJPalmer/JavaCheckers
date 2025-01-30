@@ -15,7 +15,12 @@ import java.util.Objects;
  *
  * @author Palmer
  */
-public class Piece {
+public class Piece implements Cloneable {
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
 
     /**
      * Whether or not the piece is moveable

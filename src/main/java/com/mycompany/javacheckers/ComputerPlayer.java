@@ -52,9 +52,9 @@ public class ComputerPlayer extends Player {
      */
     @Override
     public void makeMove(GameBoard gameboard) {
-        moveMade = false;
+
         practiceMove(gameboard);
-        moveMade = !isMoveMade();
+        //moveMade = !isMoveMade();
 //        return moveMade; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
 
@@ -74,66 +74,80 @@ public class ComputerPlayer extends Player {
         Piece pieceToMove = new Piece();
 
         //
-        Piece pieceOnceMoved = new Piece();
-        pieceOnceMoved.setPieceColor(pieceToMove.getPieceColor());
-        pieceOnceMoved.setHeight(pieceToMove.getHeight());
-
+//        Piece pieceOnceMoved = new Piece();
+//        pieceOnceMoved.setPieceColor(pieceToMove.getPieceColor());
+//        pieceOnceMoved.setHeight(pieceToMove.getHeight());
         //used to create a random number
         var rand = new Random();
         //identify pieces in the front row
-        pieceToMove = selectPieceToMove(myColor, temp, rand, pieceToMove, gameboard);
+        pieceToMove = selectPieceToMove(temp, rand, pieceToMove, gameboard);
 
         movePiece(gameboard, pieceToMove, rand);
+        gameboard.repaint();
+
     }
 
     private void movePiece(GameBoard gameboard, Piece pieceToMove, Random rand) {
         List<Point> pieceOptions;
         //<editor-fold defaultstate="collapsed" desc="move piece one space forward">
         //find out if the piece is blocked
+        System.out.println("Preparing to move");
         if (!gameboard.isBlocked(pieceToMove)) {
             //where can the piece move
-            pieceOptions = gameboard.moveOptions(pieceToMove);
+
             //if options are available
-            if (!pieceOptions.isEmpty()) {
-                //one option
-                if (pieceOptions.size() == 1) {
-                    Point destination = pieceOptions.getFirst();
+            while (!moveMade) {
+                pieceOptions = gameboard.moveOptions(pieceToMove);
+                if (!pieceOptions.isEmpty()) {
+                    System.out.println("Options available");
+                    //one option
+                    if (pieceOptions.size() == 1) {
+                        Point destination = pieceOptions.getFirst();
 
-                    //move the piece
-                    //gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
-                    gameboard.movePieceToSquare(pieceToMove, destination);
-                } //multiple options
-                else {
-                    //pick one
-                    Point destination = pieceOptions.get(rand.nextInt(pieceOptions.size()));
+                        //move the piece
+                        //gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
+                        gameboard.movePieceToSquare(pieceToMove, destination);
+                        System.out.printf("Piece moved to (%d, %d)\n", destination.x, destination.y);
+                        this.moveMade = true;
+                    } //multiple options
+                    else {
+                        //pick one
+                        Point destination = pieceOptions.get(rand.nextInt(pieceOptions.size()));
 
-                    //move the piece
+                        //move the piece
 //                    gameboard.movePiece(pieceOnceMoved, pieceToMove, pieceOnceMoved.getxPos(), pieceOnceMoved.getyPos());
-                    gameboard.movePieceToSquare(pieceToMove, destination);
+                        gameboard.movePieceToSquare(pieceToMove, destination);
+                        System.out.printf("Piece moved to (%d, %d)\n", destination.x, destination.y);
+                        this.moveMade = true;
+                    }
+                } else {
+System.out.println("Don't have any pieces to move.");
                 }
             }
-
             //move the piece
         } else {
-
+            System.out.println("Unable to move any pieces.");
+            System.out.printf("Attempted to move piece (%d, %d)", pieceToMove.getxCol(), pieceToMove.getyRow());
         }
         //</editor-fold>
         //that's it
     }
 
-  /**
- * Selects a piece from the front row based on the player color.
- *
- * @param myColor    The color of the player pieces.
- * @param temp       The player area.
- * @param rand       The random generator for selecting a piece.
- * @param pieceToMove The piece to be moved.
- * @param gameboard  The game board where the game is being played.
- * @return The selected piece from the front row.
- */
-    private Piece selectPieceToMove(String myColor, PlayerArea temp, Random rand, Piece pieceToMove, GameBoard gameboard) {
-        int front_row;
-        //<editor-fold defaultstate="collapsed" desc="pick a random piece from the front row">
+    /**
+     * Selects a piece from the front row based on the player color.
+     *
+     * @param myColor     The color of the player pieces.
+     * @param temp        The player area.
+     * @param rand        The random generator for selecting a piece.
+     * @param pieceToMove The piece to be moved.
+     * @param gameboard   The game board where the game is being played.
+     *
+     * @return The selected piece from the front row.
+     */
+    private Piece selectPieceToMove(PlayerArea temp, Random rand, Piece pieceToMove, GameBoard gameboard) {
+
+        System.out.println("Selecting Piece to move");
+        //<editor-fold defaultstate="collapsed" desc="(OLD) pick a random piece from the front row">
         /*
          * if (this.piecesCount != 0) {
          *
@@ -153,7 +167,8 @@ public class ComputerPlayer extends Player {
          * 0) + 1) + 0; pieceToMove = (Piece) eligible[randIndex]; } } } return
          * pieceToMove;
          */
-//</editor-fold>  
+//</editor-fold>
+
         List<Piece> eligiblePieces = new ArrayList<>();
         int[] rows = temp.getAreaRows();
 
@@ -169,15 +184,25 @@ public class ComputerPlayer extends Player {
             int randIndex = rand.nextInt(eligiblePieces.size());
             pieceToMove = eligiblePieces.get(randIndex);
         }
-
+        System.out.printf("Selected the piece at (%d, %d)\n", pieceToMove.getxCol(), pieceToMove.getyRow());
         return pieceToMove;
-    }
+    } 
 
     /**
      * @return the moveMade
      */
     public boolean isMoveMade() {
         return moveMade;
+    }
+
+    /**
+     * Sets the value of the moveMade property
+     * 
+     * @param b the Boolean value to be set
+     */
+    public void setMoveMade(boolean b) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.moveMade = b;
     }
 
 }

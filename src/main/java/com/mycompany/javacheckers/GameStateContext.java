@@ -115,11 +115,11 @@ public class GameStateContext {
      * @param gameState
      * @param gameboardMouseListener the value of gameboardMouseListener
      * @param e
-     * @param pressed
+     * @param mouseAction
      */
-    public void processMouseEvent(GameStateContext gameState, GameboardMouseListener gameboardMouseListener, MouseEvent e, String pressed) {
+    public void processMouseEvent(GameStateContext gameState, GameboardMouseListener gameboardMouseListener, MouseEvent e, String mouseAction) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        currentState.handleMouseRequest(gameState, gameboardMouseListener, e, pressed);
+        currentState.handleMouseRequest(gameState, gameboardMouseListener, e, mouseAction);
     }
 
     /*

@@ -4,10 +4,13 @@
  */
 package com.mycompany.javacheckers;
 
+import Gameboard.BoardSquare;
 import Gameboard.GameBoard;
 import Gameboard.GameboardMouseListener;
 import Gameboard.Piece;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 /**
  * A State that represents the player's turn
@@ -71,28 +74,34 @@ public class PlayerState implements State {
                 //translate mouse screen coordinates into rows/colum
                 gameboardMouseListener.translateToGrid(eMouseEventX, eMouseEventY);
 
-                squareY = gameboardMouseListener.getSquareY();
                 squareX = gameboardMouseListener.getSquareX();
+                squareY = gameboardMouseListener.getSquareY();
                 //Getting current mouse screen coordinates
 
                 GameBoard board = gameboardMouseListener.getBoard();
                 Piece checkForGamePiece = board.checkForGamePiece(squareX, squareY);
                 //Piece gamePiece;
-                //check the board to see if there's a piece there
-                gameboardMouseListener.setGamePiece(checkForGamePiece);
-                gameboardMouseListener.selectPiece();
+                
+                if (Objects.nonNull(checkForGamePiece)) {
+                    //check the board to see if there's a piece there
+                    gameboardMouseListener.setGamePiece(checkForGamePiece);
+                    gameboardMouseListener.selectPiece();
+                }
                 //        var object = board.getPieces(); new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
             }
-
 
             case "Dragged" -> {
 //                gameboardMouseListener.getGamePiece();
             }
 
             case "Released" -> {
-                Player userPlayer = gameState.getCheckersGame().getUserPlayer();
+                releaseGamePiece(gameboardMouseListener, e);
+                Piece gamePiece = gameboardMouseListener.getGamePiece();
+                boolean hasMoved1 = gamePiece.isHasMoved();
 
-                if (userPlayer.isTurnComplete) {
+                if (hasMoved1) {
+                    Player userPlayer = gameState.getCheckersGame().getUserPlayer();
+                    gamePiece.setHasMoved(!hasMoved);
                     //userPlayer.isTurnComplete = true;
                     OpponentState opponentPlayer = new OpponentState(gameState.getCheckersGame().getOpponentPlayer());
 
@@ -100,10 +109,82 @@ public class PlayerState implements State {
                     gameState.setCurrentState(opponentPlayer);
                     gameState.processState(gameState, "YOUR_TURN");
                 }
+
             }
+
+
             default ->
                 throw new AssertionError();
         }
+    }
+
+    /*
+     *
+     */
+    private void releaseGamePiece(GameboardMouseListener gameboardMouseListener, MouseEvent e) {
+        int currentX;
+        int currentY;
+        Piece existPiece;
+        Piece gamePiece = gameboardMouseListener.getGamePiece();
+        if (gamePiece != null) {
+            currentX = e.getX();
+            currentY = e.getY();
+            gameboardMouseListener.translateToGrid(currentX, currentY);
+            GameBoard board = gameboardMouseListener.getBoard();
+            int squareX = gameboardMouseListener.getSquareX();
+            int squareY = gameboardMouseListener.getSquareY();
+            existPiece = board.checkForGamePiece(squareX, squareY);
+            boolean nothingThere = Objects.isNull(existPiece);
+            //<editor-fold defaultstate="collapsed" desc="old release logic">
+//            if (gamePiece.isHasMoved()) {
+//                if (Objects.isNull(existPiece)) {
+//                    BoardSquare currentSqre = aThis.getBoard().getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
+//                    if (currentSqre.getColor() == Color.BLACK) {
+//                        GameBoard board = aThis.getBoard();
+//                        board.movePiece(gamePiece, aThis.getMoveCopy(), aThis.getSquareX(), aThis.getSquareY());
+//                        aThis.setMoveCopy(null);
+//                        gamePiece.setHasMoved(false);
+//                        
+//                        userPlayer.setMoveComplete();
+//                        getGameState().processMouseEvent(gameState, aThis, e, RELEASED);
+////                    changeState();
+//                    } else {
+//                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
+//                        aThis.setMoveCopy(null);
+//                        gamePiece.setHasMoved(false);
+//                    }
+//                } else {
+//                    if (gamePiece.IsMoveable()) {
+//                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
+//                        aThis.setMoveCopy(null);
+//                        gamePiece.setHasMoved(false);
+//                    }
+//                }
+//            }
+//</editor-fold>
+            if (nothingThere) {
+                BoardSquare oldSqr;
+                BoardSquare boardSquare = board.getBoardSquare(squareX, squareY);
+                Piece moveCopy = gameboardMouseListener.getMoveCopy();
+
+                oldSqr = board.getBoardSquare(moveCopy.getxCol(), moveCopy.getyRow());
+
+                board.clearSquare(oldSqr);
+                board.movePieceToSquare(gamePiece, new Point(squareX, squareY));
+                gamePiece.isSelected = !gamePiece.isSelected;
+                gamePiece.setHasMoved(!gamePiece.isHasMoved());
+
+                boardSquare.setHasPiece(true);
+                boardSquare.setCurrentPiece(gamePiece);
+
+            }
+            gameboardMouseListener.setGamePiece(gamePiece);
+            if (gamePiece.isSelected) {
+                gamePiece.isSelected = !gamePiece.isSelected;
+            }
+            board.repaint();
+        }
+
     }
 
     /**

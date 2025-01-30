@@ -12,6 +12,8 @@ import java.awt.event.MouseListener;
 import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Handles events involving the actions of the mouse on the Gameboard
@@ -37,13 +39,8 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
 
     private Boolean checkOwnership(Piece gamePiece1) {
         //gamePiece.setPieceColor(Color.green);
-        if (checkersGame.getUserPlayer().checkPiece(gamePiece1)) {
-//            gamePiece1.isSelected = !gamePiece1.isSelected; 
-           return true;
-        } else {
-            //gamePiece1 = null;
-            return false;
-        }
+        return checkersGame.getUserPlayer().checkPiece(gamePiece1);//            gamePiece1.isSelected = !gamePiece1.isSelected;
+        //gamePiece1 = null;
 //                board.repaint();
     }
 
@@ -243,7 +240,7 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         processMousePressed(e);
 
         getBoard().repaint();
-        System.out.printf("Mousex: %d, MouseY: %d\n SquareX: %d, SquareY: %d\n", getMouseX(), getMouseY(), squareX, squareY);
+        System.out.printf("Mouse Pressed\nMousex: %d, MouseY: %d\n SquareX: %d, SquareY: %d\n", getMouseX(), getMouseY(), squareX, squareY);
     }
 
     /**
@@ -253,6 +250,7 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
     @Override
     public void mouseReleased(MouseEvent e) {
 //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        System.out.printf("Mouse Released\nMousex: %d, MouseY: %d\n SquareX: %d, SquareY: %d\n", getMouseX(), getMouseY(), squareX, squareY);
         processMouseReleased(e);
     }
 
@@ -261,11 +259,20 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
      * values of the selected game piece
      */
     public void prepMoveCopy() {
-        setMoveCopy(new Piece());
-        getMoveCopy().setxPos(getGamePiece().getxPos());
-        getMoveCopy().setyPos(getGamePiece().getyPos());
-        getMoveCopy().setxCol(getGamePiece().getxCol());
-        getMoveCopy().setyRow(getGamePiece().getyRow());
+        Piece moveCopy = new Piece();
+        try {
+            moveCopy = (Piece) this.getGamePiece().clone();
+//        Piece currentPiece = getGamePiece();
+//
+//        moveCopy.setxPos(currentPiece.getxPos());
+//        moveCopy.setyPos(currentPiece.getyPos());
+//        moveCopy.setxCol(currentPiece.getxCol());
+//        moveCopy.setyRow(currentPiece.getyRow());
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(GameboardMouseListener.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        setMoveCopy(moveCopy);
     }
 
     /*
@@ -273,10 +280,12 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
      *
      */
     public void selectPiece() {
-        if (gamePiece != null && checkOwnership(gamePiece)) {
-            gamePiece.isSelected = !gamePiece.isSelected;
-        }
-        else{
+        
+        Boolean hasOwnership = checkOwnership(this.gamePiece);
+        if (this.gamePiece != null && hasOwnership) {
+            this.gamePiece.isSelected = !this.gamePiece.isSelected;
+        } else {
+            System.out.println("Ownership = " +  hasOwnership);
             throw new NullPointerException("The Game Piece has not been set or there was an issue checking ownership.");
         }
         getBoard().repaint();
@@ -289,9 +298,9 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
      */
     public void translateToGrid(int mouseX, int mouseY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        setSquareY((mouseX / getBoard().getSquareWidth()));
-        setSquareX((mouseY / getBoard().getSquareWidth()));
-
+        setSquareX((mouseX / getBoard().getSquareWidth()));
+        setSquareY((mouseY / getBoard().getSquareWidth()));
+        System.out.printf("Translated Co-ordinates (x,y): %d, %d\n", getSquareX(), getSquareY());
     }
 
 }

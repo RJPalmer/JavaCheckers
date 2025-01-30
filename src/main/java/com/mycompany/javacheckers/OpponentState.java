@@ -83,6 +83,7 @@ public class OpponentState implements State {
                     GameBoard gameboard = gs.getCheckersGame().gameboard;
                     playerLogic.makeMove(gameboard);
                     if (playerLogic.isMoveMade()) {
+                        playerLogic.setMoveMade(false);
                         gs.setCurrentState(new PlayerState());
                         gs.processState(gs, "YOUR_TURN");
                     }
@@ -99,7 +100,7 @@ public class OpponentState implements State {
                 GameBoard gameboard = gs.getCheckersGame().gameboard;
                 playerLogic.makeMove(gameboard);
                 if (playerLogic.isMoveMade()) {
-                    
+                    playerLogic.setMoveMade(false); 
                     gs.setCurrentState(new PlayerState());
                     gs.processState(gs, "YOUR_TURN");
                 }
