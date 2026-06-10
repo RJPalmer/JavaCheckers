@@ -23,6 +23,27 @@ import java.util.Random;
 public class ComputerPlayer extends Player {
 
     private boolean moveMade;
+    private final Random rand;
+
+    /**
+     *
+     * @param rand
+     */
+    public ComputerPlayer(Random rand) {
+        this.rand = rand;
+    }
+
+    /**
+     *
+     * @param rand
+     * @param piecesCount
+     * @param playerPieces
+     * @param playerColor
+     */
+    public ComputerPlayer(Random rand, int piecesCount, List<Piece> playerPieces, String playerColor) {
+        super(piecesCount, playerPieces, playerColor);
+        this.rand = rand;
+    }
 
     /**
      *
@@ -31,8 +52,9 @@ public class ComputerPlayer extends Player {
      * @param playerPieces
      * @param playerColor
      */
-    public ComputerPlayer(PlayerArea pieceArea, int piecesCount, Piece[] playerPieces, String playerColor) {
+    public ComputerPlayer(PlayerArea pieceArea, int piecesCount, List<Piece> playerPieces, String playerColor) {
         super(pieceArea, piecesCount, playerPieces, playerColor);
+        this.rand = null;
     }
 
     /**
@@ -41,10 +63,24 @@ public class ComputerPlayer extends Player {
      * @param object
      * @param yellow
      */
-    ComputerPlayer(int PLAYER_PIECE_COUNT, Piece[] object, String yellow) {
+    public ComputerPlayer(int PLAYER_PIECE_COUNT, List<Piece> object, String yellow) {
         super(PLAYER_PIECE_COUNT, object, yellow);
         this.moveMade = false;
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.rand = null;
+    }
+
+    /**
+     *
+     * @param randomGenVar
+     * @param playerDomain
+     * @param PLAYER_PIECE_COUNT
+     * @param object
+     * @param PLAYER_COLOR_RED
+     */
+    ComputerPlayer(Random randomGenVar, PlayerArea playerDomain, int PLAYER_PIECE_COUNT, List<Piece> object, String PLAYER_COLOR_RED) {
+        super(playerDomain, PLAYER_PIECE_COUNT, object, PLAYER_COLOR_RED);
+        this.rand = randomGenVar;
     }
 
     /**
@@ -73,15 +109,13 @@ public class ComputerPlayer extends Player {
         //piece that will be moved
         Piece pieceToMove = new Piece();
 
-        //
-//        Piece pieceOnceMoved = new Piece();
-//        pieceOnceMoved.setPieceColor(pieceToMove.getPieceColor());
-//        pieceOnceMoved.setHeight(pieceToMove.getHeight());
-        //used to create a random number
-        var rand = new Random();
         //identify pieces in the front row
-        pieceToMove = selectPieceToMove(temp, rand, pieceToMove, gameboard);
+        pieceToMove = selectPieceToMove(rand, pieceToMove, gameboard);
 
+        if (pieceToMove == null) {
+            System.out.println("Unable to move any pieces");
+            return;
+        }
         movePiece(gameboard, pieceToMove, rand);
         gameboard.repaint();
 
@@ -121,7 +155,7 @@ public class ComputerPlayer extends Player {
                         this.moveMade = true;
                     }
                 } else {
-System.out.println("Don't have any pieces to move.");
+                    System.out.println("Don't have any pieces to move.");
                 }
             }
             //move the piece
@@ -136,15 +170,15 @@ System.out.println("Don't have any pieces to move.");
     /**
      * Selects a piece from the front row based on the player color.
      *
-     * @param myColor     The color of the player pieces.
-     * @param temp        The player area.
-     * @param rand        The random generator for selecting a piece.
+     * @param myColor The color of the player pieces.
+     * @param temp The player area.
+     * @param rand The random generator for selecting a piece.
      * @param pieceToMove The piece to be moved.
-     * @param gameboard   The game board where the game is being played.
+     * @param gameboard The game board where the game is being played.
      *
      * @return The selected piece from the front row.
      */
-    private Piece selectPieceToMove(PlayerArea temp, Random rand, Piece pieceToMove, GameBoard gameboard) {
+    Piece selectPieceToMove(Random rand, Piece pieceToMove, GameBoard gameboard) {
 
         System.out.println("Selecting Piece to move");
         //<editor-fold defaultstate="collapsed" desc="(OLD) pick a random piece from the front row">
@@ -170,23 +204,32 @@ System.out.println("Don't have any pieces to move.");
 //</editor-fold>
 
         List<Piece> eligiblePieces = new ArrayList<>();
-        int[] rows = temp.getAreaRows();
 
-        // Collect all eligible pieces from the player area
-        for (int row : rows) {
-            eligiblePieces.addAll(Arrays.asList(playerPieces).stream()
-                    .filter(piece -> piece.getyRow() == row && !gameboard.isBlocked(piece))
-                    .toList());
-        }
+        //Filter pieces that are able to move
+        eligiblePieces.addAll(playerPieces.stream()
+                .filter(piece -> !gameboard.isBlocked(piece))
+                .toList());
 
+        //debug code
+        playerPieces.forEach(piece
+                -> System.out.printf(
+                        "Piece (%d,%d) blocked=%s%n",
+                        piece.getxCol(),
+                        piece.getyRow(),
+                        gameboard.isBlocked(piece)
+                )
+        );
         // Pick a random piece from the list of eligible pieces
         if (!eligiblePieces.isEmpty()) {
             int randIndex = rand.nextInt(eligiblePieces.size());
             pieceToMove = eligiblePieces.get(randIndex);
+        } else {
+            return null;
         }
+
         System.out.printf("Selected the piece at (%d, %d)\n", pieceToMove.getxCol(), pieceToMove.getyRow());
         return pieceToMove;
-    } 
+    }
 
     /**
      * @return the moveMade
@@ -197,7 +240,7 @@ System.out.println("Don't have any pieces to move.");
 
     /**
      * Sets the value of the moveMade property
-     * 
+     *
      * @param b the Boolean value to be set
      */
     public void setMoveMade(boolean b) {

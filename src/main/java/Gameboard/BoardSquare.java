@@ -45,6 +45,7 @@ public class BoardSquare {
      */
     public void setCurrentPiece(Piece currentPiece) {
         this.currentPiece = currentPiece;
+        this.hasPiece = true;
     }
 
     /**
@@ -109,7 +110,6 @@ public class BoardSquare {
     public int hashCode() {
         return Objects.hash(Color, currentPiece, hasPiece);
     }
-   
 
 }
     

@@ -13,6 +13,8 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +30,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class GameBoardTest {
 
+    private int originalRows;
+
+    private int originalCols;
+
     public GameBoardTest() {
     }
 
@@ -41,12 +47,17 @@ public class GameBoardTest {
 
     @BeforeEach
     public void setUp() {
+        originalRows = GameBoard.getBOARD_ROWS();
+
+        originalCols = GameBoard.getBOARD_COLUMNS();
     }
 
     @AfterEach
     public void tearDown() {
-    }
+        GameBoard.setBOARD_ROWS(originalRows);
 
+        GameBoard.setBOARD_COLUMNS(originalCols);
+    }
 
     /**
      * Test of highlightPossibleJumps method, of class GameBoard.
@@ -137,7 +148,7 @@ public class GameBoardTest {
     @Test
     public void testGetBOARD_ROWS() {
         System.out.println("getBOARD_ROWS");
-        int expResult = 0;
+        int expResult = 8;
         int result = GameBoard.getBOARD_ROWS();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -165,11 +176,14 @@ public class GameBoardTest {
     public void testGetRows() {
         System.out.println("getRows");
         GameBoard instance = new GameBoard();
-        int expResult = 0;
+        int expResult = 8;
         int result = instance.getRows();
         assertEquals(expResult, result, "The BOARD_ROWS value should be returned correctly by the getter method");
         // TODO review the generated test code and remove the default call to fail.
-        ////fail("The test case is a prototype.");
+
+    
+
+    ////fail("The test case is a prototype.");
     }
 
     /**
@@ -192,7 +206,7 @@ public class GameBoardTest {
     public void testGetColumns() {
         System.out.println("getColumns");
         GameBoard instance = new GameBoard();
-        int expResult = 0;
+        int expResult = 8;
         int result = instance.getColumns();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -206,9 +220,9 @@ public class GameBoardTest {
     public void testGetPieces() {
         System.out.println("getPieces");
         GameBoard instance = new GameBoard();
-        Piece[] expResult = null;
-        Piece[] result = instance.getPieces();
-        assertArrayEquals(expResult, result);
+        List<Piece> expResult = new ArrayList<Piece>();
+        List<Piece> result = instance.getPieces();
+        assertTrue(expResult.containsAll(result));
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
@@ -244,9 +258,10 @@ public class GameBoardTest {
     @Test
     public void testSetPieces() {
         System.out.println("setPieces");
-        Piece[] pieces = null;
+        List<Piece> testPieces = new ArrayList<Piece>();
         GameBoard instance = new GameBoard();
-        instance.setPieces(pieces);
+        instance.setPieces(testPieces);
+        assertNotNull(instance.getPieces());
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
@@ -344,20 +359,31 @@ public class GameBoardTest {
     @Test
     public void testMovePiece() {
         System.out.println("movePiece");
+
+        //the starting location (3,3)
         int testX = 3;
         int testY = 3;
-        Piece newState = generatePiece(testX, testY);
-        Piece oldState = generatePiece(testX, testY);
-        int squareX = 4;
-        int squareY = 5;
+        Piece testPiece = this.generatePiece(testX, testY);
+
+        //the ending location
+        Point moveTestLocation = new Point(2, 4);
+
+        //Generate a gameboard
         BoardSquare[][] generatedItem = generateDataBoard();
-        BoardSquare testSquare1 = generatedItem[2][2];
-        testSquare1.setCurrentPiece(oldState);
+
+        //Get the square that represents the location (3,3)
+        BoardSquare testSquare1 = generatedItem[testX][testY];
+
+        //put the piece at the square
+        testSquare1.setCurrentPiece(testPiece);
         testSquare1.setHasPiece(true);
-        
+
         GameBoard instance = new GameBoard();
         instance.setGameBoard(generatedItem);
-        instance.movePiece(newState, oldState, squareX, squareY);
+        instance.getPieces().add(testPiece);
+        //move the piece to the location
+        instance.movePieceToSquare(testPiece, moveTestLocation);
+
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
         testSquare1 = instance.getBoardSquare(testX, testY);
@@ -370,7 +396,7 @@ public class GameBoardTest {
     @Test
     public void testResetPiece() {
         System.out.println("resetPiece");
-        Piece newState = generatePiece(3,3);
+        Piece newState = generatePiece(3, 3);
         Piece oldState = generatePiece(5, 5);
         GameBoard instance = new GameBoard();
         instance.resetPiece(newState, oldState);
@@ -402,22 +428,159 @@ public class GameBoardTest {
      * Test of isBlocked method, of class GameBoard.
      */
     @Test
-    public void testIsBlocked() {
-        System.out.println("isBlocked");
-        Piece pieceToMove = generatePiece(3, 3);
+    public void testIsBlockedNoPieces() {
+        int testX, testY;
+        testX = 3;
+        testY = 3;
+        System.out.println("isBlocked: No Pieces");
+        Piece pieceToMove = generatePiece(testX, testY);
         BoardSquare[][] generatedDataBoard = generateDataBoard();
-        testSquare = generatedDataBoard[2][2];
+        testSquare = generatedDataBoard[testX][testY];
         testSquare.setCurrentPiece(pieceToMove);
+        generatedDataBoard[testX][testY] = testSquare;
+
         GameBoard instance = new GameBoard();
         boolean expResult = false;
         instance.setGameBoard(generatedDataBoard);
-        
+
+        boolean result = instance.isBlocked(pieceToMove);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isBlocked method with one blocking Piece
+     */
+    @Test
+    public void testIsBlockedOnePiecePositive() {
+
+        BoardSquare blockSqr;
+
+        System.out.println("isBlocked: One Piece");
+        Piece pieceToMove = generatePiece(3, 3);
+        Piece block1 = generatePiece(2, 4);
+        BoardSquare[][] generatedDataBoard = generateDataBoard();
+        testSquare = generatedDataBoard[3][3];
+        testSquare.setCurrentPiece(pieceToMove);
+
+        blockSqr = generatedDataBoard[2][4];
+        blockSqr.setCurrentPiece(block1);
+        generatedDataBoard[3][3] = testSquare;
+        generatedDataBoard[2][4] = blockSqr;
+
+        GameBoard instance = new GameBoard();
+        boolean expResult = false;
+        instance.setGameBoard(generatedDataBoard);
+
+        boolean result = instance.isBlocked(pieceToMove);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
+
+    @Test
+    public void testIsBlockedOnePieceNegative() {
+        BoardSquare blockSqr;
+
+        System.out.println("isBlocked: One Piece Negative");
+        Piece pieceToMove = generatePiece(3, 3);
+        pieceToMove.setPieceDirection("NEGATIVE");
+        Piece block1 = generatePiece(2, 2);
+        BoardSquare[][] generatedDataBoard = generateDataBoard();
+        testSquare = generatedDataBoard[3][3];
+        testSquare.setCurrentPiece(pieceToMove);
+
+        blockSqr = generatedDataBoard[2][2];
+        blockSqr.setCurrentPiece(block1);
+        generatedDataBoard[3][3] = testSquare;
+        generatedDataBoard[2][2] = blockSqr;
+
+        GameBoard instance = new GameBoard();
+        boolean expResult = false;
+        instance.setGameBoard(generatedDataBoard);
+
         boolean result = instance.isBlocked(pieceToMove);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
     private BoardSquare testSquare;
+
+    @Test
+    public void testIsBlockedTwoPiecesPositive() {
+        BoardSquare blockSqr1;
+        BoardSquare blockSqr2;
+
+        System.out.println("isBlocked: Two Pieces Positive");
+
+        System.out.println("Rows = " + GameBoard.getBOARD_ROWS());
+        System.out.println("Cols = " + GameBoard.getBOARD_COLUMNS());
+        Piece pieceToMove = generatePiece(3, 3);
+        Piece block1 = generatePiece(2, 4);
+        Piece block2 = generatePiece(4, 4);
+        BoardSquare[][] generatedDataBoard = generateDataBoard();
+        BoardSquare testSquareInstance = generatedDataBoard[3][3];
+        testSquareInstance.setCurrentPiece(pieceToMove);
+
+        blockSqr1 = generatedDataBoard[2][4];
+        blockSqr1.setCurrentPiece(block1);
+
+        blockSqr2 = generatedDataBoard[4][4];
+        blockSqr2.setCurrentPiece(block2);
+
+        generatedDataBoard[3][3] = testSquareInstance;
+        generatedDataBoard[2][4] = blockSqr1;
+        generatedDataBoard[4][4] = blockSqr2;
+
+        GameBoard instance = new GameBoard();
+        boolean expResult = true;
+        instance.setGameBoard(generatedDataBoard);
+
+        boolean result = instance.isBlocked(pieceToMove);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
+
+    @Test
+    public void testIsBlockedTwoPiecesNegative() {
+        BoardSquare blockSqr1;
+        BoardSquare blockSqr2;
+
+        System.out.println("isBlocked: Two Pieces Negative");
+        Piece pieceToMove = generatePiece(3, 7);
+        pieceToMove.setPieceDirection("NEGATIVE");
+        Piece block1 = generatePiece(4, 6);
+        Piece block2 = generatePiece(2, 6);
+        BoardSquare[][] generatedDataBoard = generateDataBoard();
+        BoardSquare testSquareInstance = generatedDataBoard[3][7];
+        testSquareInstance.setCurrentPiece(pieceToMove);
+
+        blockSqr1 = generatedDataBoard[2][6];
+        blockSqr1.setCurrentPiece(block1);
+
+        blockSqr2 = generatedDataBoard[4][6];
+        blockSqr2.setCurrentPiece(block2);
+
+        generatedDataBoard[3][7] = testSquareInstance;
+        generatedDataBoard[2][6] = blockSqr1;
+        generatedDataBoard[4][6] = blockSqr2;
+
+        GameBoard instance = new GameBoard();
+        boolean expResult = true;
+        instance.setGameBoard(generatedDataBoard);
+
+        //verify setup
+        assertSame(pieceToMove, generatedDataBoard[3][7].getCurrentPiece());
+        assertSame(block1, generatedDataBoard[2][6].getCurrentPiece());
+        assertSame(block2, generatedDataBoard[4][6].getCurrentPiece());
+
+        boolean result = instance.isBlocked(pieceToMove);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
 
     /*
      * 
@@ -474,16 +637,25 @@ public class GameBoardTest {
     @Test
     public void testMovePieceToSquare() {
         System.out.println("movePieceToSquare");
+        List<Piece> pieces = new ArrayList<Piece>();
         Piece pieceToMove = generatePiece(3, 3);
-        Point destination = new Point(3,4);
-        
+        Point destination = new Point(2, 4);
+        pieces.add(pieceToMove);
+
         BoardSquare[][] generatedDataBoard = generateDataBoard();
-        generatedDataBoard[2][2].setCurrentPiece(pieceToMove);
-        generatedDataBoard[2][2].setHasPiece(true);
-        
+        generatedDataBoard[3][3].setCurrentPiece(pieceToMove);
+        generatedDataBoard[3][3].setHasPiece(true);
+
         GameBoard instance = new GameBoard();
         instance.setGameBoard(generatedDataBoard);
+        instance.getPieces().add(pieceToMove);
         instance.movePieceToSquare(pieceToMove, destination);
+
+        BoardSquare oldLocation = generatedDataBoard[3][3];
+        BoardSquare newLocation = generatedDataBoard[2][4];
+        assertAll("Verifying Piece Movement",
+                () -> assertFalse(oldLocation.isHasPiece(), "Piece no longer at 3,3"),
+                () -> assertTrue(newLocation.isHasPiece(), "Piece located at 2, 4"));
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
@@ -493,13 +665,21 @@ public class GameBoardTest {
      */
     @Test
     public void testGetPiece() {
-        System.out.println("getPiece");
-        int pieceIndex = 0;
+        System.out.println("Test: getPiece");
+
+        //test index
+        int testPieceIndex = 1;
+
+        //generate two pieces
+        Piece testPiece1 = new Piece();
+        Piece testPiece2 = new Piece();
+
         GameBoard instance = new GameBoard();
-        Piece[] testPieces = new Piece[1];
-        instance.setPieces(testPieces);
-        Piece expResult = null;
-        Piece result = instance.getPiece(pieceIndex);
+        instance.getPieces().add(testPiece1);
+        instance.getPieces().add(testPiece2);
+
+        Piece expResult = new Piece();
+        Piece result = instance.getPiece(testPieceIndex);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
@@ -532,4 +712,3 @@ public class GameBoardTest {
         //fail("The test case is a prototype.");
     }
 }
-

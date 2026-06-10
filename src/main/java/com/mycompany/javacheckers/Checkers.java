@@ -9,8 +9,7 @@ import Gameboard.GameboardResizeListener;
 import javax.swing.JPanel;
 
 import Gameboard.Piece;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.swing.JFrame;
 
 /**
@@ -27,7 +26,7 @@ public class Checkers {
     /**
      * gamePieces
      */
-    private Piece[] gamePieces;
+    private List<Piece> gamePieces;
     /**
      * players
      */
@@ -59,7 +58,7 @@ public class Checkers {
      * @param gamePieces
      * @param players 
      */
-    public Checkers(GameBoard board, Piece[] gamePieces, Player[] players) {
+    public Checkers(GameBoard board, List<Piece> gamePieces, Player[] players) {
         this.board = board;
         this.gamePieces = gamePieces;
         this.players = players;
@@ -113,7 +112,7 @@ public class Checkers {
         //container.add(loadingScreen);
         
         
-        gamePieces = new Piece[GAME_PIECE_COUNT];
+//        gamePieces = new Piece[GAME_PIECE_COUNT];
         players = new Player[PLAYER_COUNT];
         gameGUI = new JFrame("Welcome to Checkers");
         gameGUI.setSize(900, 900);

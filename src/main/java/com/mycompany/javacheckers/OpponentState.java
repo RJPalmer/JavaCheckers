@@ -16,9 +16,30 @@ public class OpponentState implements State {
 
     private ComputerPlayer playerLogic;
 
-    OpponentState(ComputerPlayer opponent) {
+    public OpponentState(ComputerPlayer opponent, GameBoard gameboard) {
         this.playerLogic = opponent;
+        
     }
+    private GameBoard gameboard;
+
+    /**
+     * Get the value of gameboard
+     *
+     * @return the value of gameboard
+     */
+    public GameBoard getGameboard() {
+        return gameboard;
+    }
+
+    /**
+     * Set the value of gameboard
+     *
+     * @param gameboard new value of gameboard
+     */
+    public void setGameboard(GameBoard gameboard) {
+        this.gameboard = gameboard;
+    }
+
 
     /**
      * Get the value of playerLogic
@@ -84,7 +105,7 @@ public class OpponentState implements State {
                     playerLogic.makeMove(gameboard);
                     if (playerLogic.isMoveMade()) {
                         playerLogic.setMoveMade(false);
-                        gs.setCurrentState(new PlayerState());
+                        gs.setCurrentState(new PlayerState(gameboard));
                         gs.processState(gs, "YOUR_TURN");
                     }
 
@@ -101,7 +122,7 @@ public class OpponentState implements State {
                 playerLogic.makeMove(gameboard);
                 if (playerLogic.isMoveMade()) {
                     playerLogic.setMoveMade(false); 
-                    gs.setCurrentState(new PlayerState());
+                    gs.setCurrentState(new PlayerState(gameboard));
                     gs.processState(gs, "YOUR_TURN");
                 }
                 break;

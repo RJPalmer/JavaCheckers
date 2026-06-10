@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.JPanel;
@@ -121,11 +122,8 @@ public class GameBoard extends JPanel {
      */
     private Gameboard.BoardSquare[][] gameDataBoard;
     private Gameboard.GameboardResizeListener resizer;
-    private Gameboard.GameboardMouseListener mouseAction;
-    private int selectedPiece;
     // private JPanel checkerBoard;
-    private Piece[] pieces;
-    private GameboardKeyBoardListener kbAction;
+    private List<Piece> pieces;
     private Player userPlayer;
 
     /**
@@ -156,7 +154,7 @@ public class GameBoard extends JPanel {
 
         rows = getBOARD_ROWS();
         columns = getBOARD_COLUMNS();
-
+        pieces = new ArrayList<Piece>();
     }
 
     /**
@@ -181,7 +179,7 @@ public class GameBoard extends JPanel {
 
 //    @Override
 //    public void mouseClicked(MouseEvent e) {
-////        int squareX = 0;
+    ////        int squareX = 0;
 ////        int squareY = 0;
 ////        MouseEvent eMouseEvent = e;
 ////
@@ -252,7 +250,7 @@ public class GameBoard extends JPanel {
     /**
      * @return the pieces
      */
-    public Piece[] getPieces() {
+    public List<Piece> getPieces() {
         return pieces;
     }
 
@@ -331,7 +329,7 @@ public class GameBoard extends JPanel {
      *
      * @param pieces
      */
-    public void setPieces(Piece[] pieces) {
+    public void setPieces(List<Piece> pieces) {
         this.pieces = pieces;
     }
 
@@ -420,8 +418,9 @@ public class GameBoard extends JPanel {
         int pieceX;
         int pieceY;
         int squareWidth1 = this.getSquareWidth();
-        if (!Objects.isNull(pieces)) {
-            for (Piece piece : getPieces()) {
+        if (pieces != null) {
+            List<Piece> gamePieces = getPieces();
+            for (Piece piece : gamePieces) {
                 pieceX = piece.getxCol();
                 pieceY = piece.getyRow();
 
@@ -502,15 +501,15 @@ public class GameBoard extends JPanel {
      * @param squareToAdd
      */
     public void setBoardSquare(int squareX, int squareY, BoardSquare squareToAdd) {
-        gameDataBoard[squareY][squareX] = squareToAdd;
+        gameDataBoard[squareX][squareY] = squareToAdd;
     }
 
     /**
      *
      * @param newState the piece in the new position
      * @param oldState the piece in the current position
-     * @param squareX  the x pos of the piece in the new position
-     * @param squareY  the y pos of the piece in the new position
+     * @param squareX the x pos of the piece in the new position
+     * @param squareY the y pos of the piece in the new position
      */
     public void movePiece(Piece newState, Piece oldState, int squareX, int squareY) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -549,7 +548,7 @@ public class GameBoard extends JPanel {
      * @param oldState the piece whose state will be copied
      *
      * @throws IllegalArgumentException if {@code newState} or {@code oldState}
-     *                                  is {@code null}
+     * is {@code null}
      */
     public void resetPiece(Piece newState, Piece oldState) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -567,14 +566,14 @@ public class GameBoard extends JPanel {
 
     /**
      *
-     * @param squareX
-     * @param squareY
+     * @param rowNum
+     * @param colNum
      *
      * @return
      */
-    public Piece checkForGamePiece(int squareX, int squareY) {
+    public Piece checkForGamePiece(int colNum, int rowNum) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        BoardSquare selectedSquare = getBoardSquare(squareX, squareY);
+        BoardSquare selectedSquare = getBoardSquare(colNum, rowNum);
         if (selectedSquare.isHasPiece()) {
             Piece currentPiece = selectedSquare.getCurrentPiece();
             return currentPiece;
@@ -603,15 +602,75 @@ public class GameBoard extends JPanel {
         switch (pieceDirection) {
             //the piece is moving towards the bottom 
             case POSITIVE -> {
-                fwdLeft = gameDataBoard[pieceRow + 1][pieceCol - 1];
-                fwdRight = gameDataBoard[pieceRow + 1][pieceCol + 1];
 
+                fwdLeft = squareLookUp(pieceCol - 1, pieceRow + 1);
+                fwdRight = squareLookUp(pieceCol + 1, pieceRow + 1);
+
+                if (fwdLeft != null && fwdRight != null) {
+                    if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
+                        isPieceBlocked = false;
+                    } else if (fwdLeft.isHasPiece() && fwdRight.isHasPiece()) {
+                        isPieceBlocked = true;
+                    } else {
+                        if (!fwdLeft.isHasPiece() || !fwdRight.isHasPiece()) {
+                            isPieceBlocked = false;
+                        }
+                    }
+                } else {
+                    if (fwdLeft != null) {
+                        if (fwdLeft.isHasPiece()) {
+                            isPieceBlocked = true;
+                        }
+                    } else {
+                        if (!Objects.isNull(fwdRight)) {
+                            if (fwdRight.isHasPiece()) {
+                                isPieceBlocked = true;
+                            }
+                        }
+                    }
+
+                }
             }
 
             //the piece is moving towards the top
             case "NEGATIVE" -> {
+                System.out.printf(
+                        "Checking piece (%d,%d)%n",
+                        pieceToMove.getxCol(),
+                        pieceToMove.getyRow()
+                );
+
                 fwdLeft = squareLookUp(pieceCol - 1, pieceRow - 1);
                 fwdRight = squareLookUp(pieceCol + 1, pieceRow - 1);
+
+                if (fwdLeft != null) {
+                    System.out.printf(
+                            "Left diagonal (%d,%d) - occupied=%b%n",
+                            pieceCol - 1,
+                            pieceRow - 1,
+                            fwdLeft.isHasPiece()
+                    );
+                } else {
+                    System.out.printf(
+                            "Left diagonal (%d,%d) - OUT OF BOUNDS%n",
+                            pieceCol - 1,
+                            pieceRow - 1
+                    );
+                }
+                if (fwdRight != null) {
+                    System.out.printf(
+                            "Right diagonal (%d,%d) - occupied=%b%n",
+                            pieceCol + 1,
+                            pieceRow - 1,
+                            fwdRight.isHasPiece()
+                    );
+                } else {
+                    System.out.printf(
+                            "Right diagonal (%d,%d) - OUT OF BOUNDS%n",
+                            pieceCol + 1,
+                            pieceRow - 1
+                    );
+                }
                 if (fwdLeft != null && fwdRight != null) {
                     if (!fwdLeft.isHasPiece() && !fwdRight.isHasPiece()) {
                         isPieceBlocked = false;
@@ -652,10 +711,10 @@ public class GameBoard extends JPanel {
      *
      */
     private BoardSquare squareLookUp(int pieceCol, int pieceRow) {
-        if (withinBounds(pieceRow, pieceCol)) {
+        if (withinBounds(pieceCol, pieceRow)) {
             return null;
         }
-        return gameDataBoard[pieceRow][pieceCol];
+        return gameDataBoard[pieceCol][pieceRow];
     }
 
     private boolean withinBounds(int pieceRow, int pieceCol) {
@@ -728,7 +787,7 @@ public class GameBoard extends JPanel {
 //            } else if (fwdRight != null) {
 //                if (!fwdRight.isHasPiece()) {
 //                    optionList.add(new Point(col_pos_id, row_id));
-////                            destCell.setLocation(col_pos_id, row_id);
+        ////                            destCell.setLocation(col_pos_id, row_id);
 ////                            map.put(col_pos_id, row_id);
 //                }
 //            }
@@ -758,30 +817,40 @@ public class GameBoard extends JPanel {
     public void movePieceToSquare(Piece pieceToMove, Point destination) {
         int ptmXCol = pieceToMove.getxCol();
         int ptmYRow = pieceToMove.getyRow();
+
         BoardSquare oldStateSqr = getBoardSquare(ptmXCol, ptmYRow);
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
-
-        oldStateSqr.setHasPiece(false);
-        oldStateSqr.setCurrentPiece(null);
+        clearSquare(oldStateSqr);
+        this.gameDataBoard[ptmXCol][ptmYRow] = oldStateSqr;
 
         //set the piece to the new position
         //pieceToMove = this.getPiece(pieceIndex);
-        pieceToMove.setxPos(squareWidth * (destination.x - 1));
-        pieceToMove.setyPos(squareWidth * (destination.y - 1));
+        pieceToMove.setxPos(squareWidth * (destination.x));
+        pieceToMove.setyPos(squareWidth * (destination.y));
         pieceToMove.setxCol(destination.x);
         pieceToMove.setyRow(destination.y);
-        //pieceToMove.isSelected = !newState.isSelected;
+        updatePieces(pieceToMove);
 
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
-        oldStateSqr.setHasPiece(false);
-        oldStateSqr.setCurrentPiece(null);
-
+//        oldStateSqr.setHasPiece(false);
+//        oldStateSqr.setCurrentPiece(null);
+        //setBoardSquare(ptmXCol, ptmYRow, oldStateSqr);
         //update the new square to indicate that the piece is there
-//        BoardSquare newStateSqr = getBoardSquare(destination.x, destination.y);
-//        newStateSqr.setHasPiece(true);
-//        newStateSqr.setCurrentPiece(pieceToMove);
+        BoardSquare newStateSqr = getBoardSquare(destination.x, destination.y);
+        newStateSqr.setHasPiece(true);
+        newStateSqr.setCurrentPiece(pieceToMove);
+        setBoardSquare(destination.x, destination.y, newStateSqr);
+
+    }
+
+    public void updatePieces(Piece pieceToMove) {
+        List<Piece> currentStatePieces = getPieces();
+        int indexOf = currentStatePieces.indexOf(pieceToMove);
+        currentStatePieces.set(indexOf, pieceToMove);
+        setPieces(currentStatePieces);
+        //pieceToMove.isSelected = !newState.isSelected;
     }
 
     /**
@@ -794,10 +863,10 @@ public class GameBoard extends JPanel {
      * @throws IllegalArgumentException if the index is out of bounds.
      */
     public Piece getPiece(int pieceIndex) {
-        if (pieceIndex < 0 || pieceIndex >= pieces.length) {
+        if (pieceIndex < 0 || pieceIndex >= pieces.size()) {
             throw new IllegalArgumentException("Invalid piece index: " + pieceIndex);
         }
-        return this.pieces[pieceIndex];
+        return this.getPieces().get(pieceIndex);
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

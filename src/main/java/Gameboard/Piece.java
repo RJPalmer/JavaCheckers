@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * @author Palmer
  */
-public class Piece implements Cloneable {
+public class Piece implements Cloneable, Comparable {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
@@ -27,6 +27,19 @@ public class Piece implements Cloneable {
      */
     private boolean isMoveable;
     private boolean hasMoved;
+
+    @Override
+    public int compareTo(Object o) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Piece object1 = (Piece)o;
+        
+        // Compare by xCol first, then yRow
+        int cmp = Integer.compare(this.xCol, object1.xCol);
+        if (cmp == 0) {
+            cmp = Integer.compare(this.yRow, object1.yRow);
+        }
+        return cmp;
+    }
 
     /**
      * @return the hasMoved

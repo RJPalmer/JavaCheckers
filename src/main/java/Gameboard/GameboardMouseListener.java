@@ -6,12 +6,10 @@ package Gameboard;
 
 import com.mycompany.javacheckers.Game;
 import com.mycompany.javacheckers.Player;
-import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +33,8 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
         this.checkersGame = aThis1;
         this.board = aThis;
         setCurrentPlayer(aThis1.getUserPlayer());
+        this.savedPieceX = 0; 
+        this.savedPieceY = 0;
     }
 
     private Boolean checkOwnership(Piece gamePiece1) {
@@ -245,6 +245,7 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
 
     /**
      *
+     * The Mouse has been released. Process
      * @param e
      */
     @Override
@@ -252,6 +253,7 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
 //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         System.out.printf("Mouse Released\nMousex: %d, MouseY: %d\n SquareX: %d, SquareY: %d\n", getMouseX(), getMouseY(), squareX, squareY);
         processMouseReleased(e);
+//        this.checkersGame.processMouseReleased(e, this);
     }
 
     /*
@@ -259,9 +261,9 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
      * values of the selected game piece
      */
     public void prepMoveCopy() {
-        Piece moveCopy = new Piece();
+        Piece copiedPiece = new Piece();
         try {
-            moveCopy = (Piece) this.getGamePiece().clone();
+            copiedPiece = (Piece) this.getGamePiece().clone();
 //        Piece currentPiece = getGamePiece();
 //
 //        moveCopy.setxPos(currentPiece.getxPos());
@@ -272,20 +274,67 @@ public class GameboardMouseListener implements MouseListener, MouseInputListener
             Logger.getLogger(GameboardMouseListener.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        setMoveCopy(moveCopy);
+        this.setMoveCopy(copiedPiece);
     }
+
+    public void savePieceState() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        setSavedPieceX(this.getGamePiece().getxPos());
+        setSavedPieceY(this.getGamePiece().getyPos());
+                
+    }
+    private int savedPieceY;
+
+    /**
+     * Get the value of savedPieceY
+     *
+     * @return the value of savedPieceY
+     */
+    public int getSavedPieceY() {
+        return savedPieceY;
+    }
+
+    /**
+     * Set the value of savedPieceY
+     *
+     * @param savedPieceY new value of savedPieceY
+     */
+    public void setSavedPieceY(int savedPieceY) {
+        this.savedPieceY = savedPieceY;
+    }
+
+    private int savedPieceX;
+
+    /**
+     * Get the value of savedPieceX
+     *
+     * @return the value of savedPieceX
+     */
+    public int getSavedPieceX() {
+        return savedPieceX;
+    }
+
+    /**
+     * Set the value of savedPieceX
+     *
+     * @param savedPieceX new value of savedPieceX
+     */
+    public void setSavedPieceX(int savedPieceX) {
+        this.savedPieceX = savedPieceX;
+    }
+
 
     /*
      * @param gamePiece the piece to be selected
      *
      */
     public void selectPiece() {
-        
+
         Boolean hasOwnership = checkOwnership(this.gamePiece);
         if (this.gamePiece != null && hasOwnership) {
             this.gamePiece.isSelected = !this.gamePiece.isSelected;
         } else {
-            System.out.println("Ownership = " +  hasOwnership);
+            System.out.println("Ownership = " + hasOwnership);
             throw new NullPointerException("The Game Piece has not been set or there was an issue checking ownership.");
         }
         getBoard().repaint();

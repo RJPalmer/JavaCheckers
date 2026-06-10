@@ -5,6 +5,7 @@ import Gameboard.Move;
 import Gameboard.Piece;
 import Gameboard.GameboardMouseListener;
 import java.awt.Color;
+import java.util.List;
 
 /**
  *
@@ -37,10 +38,11 @@ public class Player {
     /**
      * The pieces that belong to the player
      */
-    public Piece[] playerPieces;
+        public List<Piece> playerPieces;
+
     private boolean pieceMoved;
 
-    public Player(PlayerArea pieceArea, Game myGame, int piecesCount, Piece[] playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
+    public Player(PlayerArea pieceArea, Game myGame, int piecesCount, List<Piece> playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
         this.pieceArea = pieceArea;
         this.myGame = myGame;
         this.piecesCount = piecesCount;
@@ -50,7 +52,7 @@ public class Player {
         this.isTurnComplete = isTurnComplete;
     }
 
-    public Player(PlayerArea pieceArea, int piecesCount, Piece[] playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
+    public Player(PlayerArea pieceArea, int piecesCount, List<Piece> playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
         this.pieceArea = pieceArea;
         this.piecesCount = piecesCount;
         this.playerPieces = playerPieces;
@@ -72,7 +74,7 @@ public class Player {
      * @param playerPieces
      * @param playerColor
      */
-    public Player(int piecesCount, Piece[] playerPieces, String playerColor) {
+    public Player(int piecesCount, List<Piece> playerPieces, String playerColor) {
         this.piecesCount = piecesCount;
         this.playerPieces = playerPieces;
         this.playerColor = playerColor;
@@ -87,7 +89,7 @@ public class Player {
      * @param playerPieces
      * @param playerColor
      */
-    public Player(PlayerArea pieceArea, int piecesCount, Piece[] playerPieces, String playerColor) {
+    public Player(PlayerArea pieceArea, int piecesCount, List<Piece> playerPieces, String playerColor) {
         this.pieceArea = pieceArea;
         this.piecesCount = piecesCount;
         this.playerPieces = playerPieces;
@@ -110,6 +112,20 @@ public class Player {
         return availableMoves;
     }
 
+    /**
+     * Checks whether the given game piece belongs to the player.
+     * <p>
+     * <p>
+     * This method compares the color of the provided game piece to the player's
+     * assigned color. If the colors match, the method returns {@code true},
+     * indicating that the piece belongs to the player. If the game piece is
+     * {@code null}, it returns {@code false}.</p>
+     *
+     * @param gamePiece The {@link Piece} to check.
+     *
+     * @return {@code true} if the piece belongs to the player, {@code false}
+     * otherwise.
+     */
     public Boolean checkPiece(Piece gamePiece) {
         if (gamePiece == null) {
             return false; // Or handle as appropriate (e.g., throw an exception)
@@ -269,7 +285,7 @@ public class Player {
      */
     public void setPieceMoved(boolean pieceMoved) {
         this.pieceMoved = pieceMoved;
-        
+
     }
 
 }

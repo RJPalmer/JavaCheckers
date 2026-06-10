@@ -8,8 +8,12 @@ import Gameboard.BoardSquare;
 import Gameboard.GameBoard;
 import Gameboard.GameboardMouseListener;
 import Gameboard.Piece;
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,13 +24,42 @@ import java.util.Objects;
 public class PlayerState implements State {
 
     private static final String START = "START";
+    private GameBoard gameboard;
 
     private boolean hasMoved;
+
+    private Player gamePlayer;
+
+    PlayerState(GameBoard gameboard) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super();
+        this.gamePlayer = new Player();
+        this.gameboard = gameboard;
+    }
+
+    /**
+     * Get the value of gamePlayer
+     *
+     * @return the value of gamePlayer
+     */
+    public Player getGamePlayer() {
+        return gamePlayer;
+    }
+
+    /**
+     * Set the value of gamePlayer
+     *
+     * @param gamePlayer new value of gamePlayer
+     */
+    public void setGamePlayer(Player gamePlayer) {
+        this.gamePlayer = gamePlayer;
+    }
 
     /**
      *
      */
     public PlayerState() {
+        gamePlayer = new Player();
     }
 
     /**
@@ -78,10 +111,10 @@ public class PlayerState implements State {
                 squareY = gameboardMouseListener.getSquareY();
                 //Getting current mouse screen coordinates
 
-                GameBoard board = gameboardMouseListener.getBoard();
+                GameBoard board = getGameboard();
                 Piece checkForGamePiece = board.checkForGamePiece(squareX, squareY);
                 //Piece gamePiece;
-                
+
                 if (Objects.nonNull(checkForGamePiece)) {
                     //check the board to see if there's a piece there
                     gameboardMouseListener.setGamePiece(checkForGamePiece);
@@ -91,7 +124,9 @@ public class PlayerState implements State {
             }
 
             case "Dragged" -> {
-//                gameboardMouseListener.getGamePiece();
+                if (handleMouseDrag(gameboardMouseListener, e)) {
+                    return;
+                }
             }
 
             case "Released" -> {
@@ -103,7 +138,8 @@ public class PlayerState implements State {
                     Player userPlayer = gameState.getCheckersGame().getUserPlayer();
                     gamePiece.setHasMoved(!hasMoved);
                     //userPlayer.isTurnComplete = true;
-                    OpponentState opponentPlayer = new OpponentState(gameState.getCheckersGame().getOpponentPlayer());
+                    gameState.getCheckersGame().gameboard = getGameboard();
+                    OpponentState opponentPlayer = new OpponentState(gameState.getCheckersGame().getOpponentPlayer(), getGameboard());
 
                     userPlayer.setMoveComplete();
                     gameState.setCurrentState(opponentPlayer);
@@ -111,26 +147,113 @@ public class PlayerState implements State {
                 }
 
             }
-
-
             default ->
                 throw new AssertionError();
         }
     }
 
+    /**
+     * Handles the mouse drag event for moving a selected game piece on the
+     * board.
+     * <p>
+     * <p>
+     * This method updates the position of a selected game piece based on the
+     * mouse movement. It calculates the change in position, updates the piece's
+     * coordinates, and marks it as moved if the movement exceeds a square's
+     * width. The method also updates the mouse position and repaints the game
+     * board.</p>
+     *
+     * @param gameboardMouseListener The listener that tracks the game board
+     *                               state and mouse events.
+     * @param e                      The MouseEvent containing the current mouse
+     *                               coordinates.
+     *
+     * @return {@code true} if there is no selected piece, otherwise
+     *         {@code false}.
+     */
+    private boolean handleMouseDrag(GameboardMouseListener gameboardMouseListener, MouseEvent e) {
+        int gamePieceX;
+        int gamePieceY;
+
+        // Ensure there is a selected piece
+        gameboardMouseListener.savePieceState();
+        Piece selectedGamePiece = gameboardMouseListener.getGamePiece();
+        Piece originState = new Piece();
+
+        originState.setxPos(gameboardMouseListener.getSavedPieceX());
+        originState.setyPos(gameboardMouseListener.getSavedPieceY());
+
+        GameBoard board = getGameboard();
+        if (!selectedGamePiece.isSelected) {
+            return true; // Exit early to avoid unnecessary processing
+        }
+        // Get current mouse position
+        int newMouseX = e.getX();
+        int newMouseY = e.getY();
+        int prevMouseX = gameboardMouseListener.getMouseX();
+        int prevMouseY = gameboardMouseListener.getMouseY();
+        // Calculate movement change
+        int changeX = (prevMouseX != 0) ? newMouseX - prevMouseX : 0;
+        int changeY = (prevMouseY != 0) ? newMouseY - prevMouseY : 0;
+//        int originX = originState.getxPos();
+//        int originY = originState.getyPos();
+//        int originChngeX;
+//        int originChngeY;
+
+        // Update mouse position
+        gameboardMouseListener.setMouseX(newMouseX);
+        gameboardMouseListener.setMouseY(newMouseY);
+
+        // Translate screen coordinates to grid position
+        gameboardMouseListener.translateToGrid(newMouseX, newMouseY);
+
+        gamePieceX = selectedGamePiece.getxPos();
+        gamePieceY = selectedGamePiece.getyPos();
+
+        // Move the selected piece
+        selectedGamePiece.setxPos(gamePieceX + changeX);
+        selectedGamePiece.setyPos(gamePieceY + changeY);
+
+        int squareX = gameboardMouseListener.getSquareX();
+        int squareY = gameboardMouseListener.getSquareY();
+
+        gamePieceX = selectedGamePiece.getxPos();
+        gamePieceY = selectedGamePiece.getyPos();
+
+//        originChngeX = gamePieceX - originX;
+//        originChngeY = gamePieceY - originY;
+        // Mark piece as moved if it moves beyond a square's width
+        if (Math.abs(changeX) > board.getSquareWidth() || Math.abs(changeY) > board.getSquareWidth()) {
+            selectedGamePiece.setHasMoved(true);
+
+            //check if there's a piece at this location
+            Piece checkForGamePiece = board.checkForGamePiece(squareX, squareY);
+            Player gamePlayer1 = this.getGamePlayer();
+            if (!Objects.isNull(checkForGamePiece) && !gamePlayer1.checkPiece(checkForGamePiece)) {
+                System.out.println("Passing over enemy piece");
+            }
+        }
+        // Prepare the move copy and repaint the board
+        gameboardMouseListener.prepMoveCopy();
+        gameboardMouseListener.getBoard().repaint();
+        return false;
+    }
+
     /*
      *
      */
-    private void releaseGamePiece(GameboardMouseListener gameboardMouseListener, MouseEvent e) {
+    private void releaseGamePiece(GameboardMouseListener gameboardMouseListener, MouseEvent e) 
+    {
         int currentX;
         int currentY;
         Piece existPiece;
         Piece gamePiece = gameboardMouseListener.getGamePiece();
-        if (gamePiece != null) {
+        if (gamePiece != null) 
+        {
             currentX = e.getX();
             currentY = e.getY();
             gameboardMouseListener.translateToGrid(currentX, currentY);
-            GameBoard board = gameboardMouseListener.getBoard();
+            GameBoard board = this.getGameboard();
             int squareX = gameboardMouseListener.getSquareX();
             int squareY = gameboardMouseListener.getSquareY();
             existPiece = board.checkForGamePiece(squareX, squareY);
@@ -162,26 +285,95 @@ public class PlayerState implements State {
 //                }
 //            }
 //</editor-fold>
-            if (nothingThere) {
+            if (nothingThere) 
+            {
+                BoardSquare currentSqre = board.getBoardSquare(squareX, squareY);
                 BoardSquare oldSqr;
                 BoardSquare boardSquare = board.getBoardSquare(squareX, squareY);
                 Piece moveCopy = gameboardMouseListener.getMoveCopy();
 
-                oldSqr = board.getBoardSquare(moveCopy.getxCol(), moveCopy.getyRow());
+                // Get the starting and ending positions
+                if (currentSqre.getColor() == Color.BLACK)
+                {
+                    int oldX = moveCopy.getxCol();
+                    int oldY = moveCopy.getyRow();
 
-                board.clearSquare(oldSqr);
-                board.movePieceToSquare(gamePiece, new Point(squareX, squareY));
-                gamePiece.isSelected = !gamePiece.isSelected;
-                gamePiece.setHasMoved(!gamePiece.isHasMoved());
+                    int newX = squareX;
+                    int newY = squareY;
 
-                boardSquare.setHasPiece(true);
-                boardSquare.setCurrentPiece(gamePiece);
+                    // Calculate how far the piece moved
+                    int deltaX = Math.abs(newX - oldX);
+                    int deltaY = Math.abs(newY - oldY);
+
+                    oldSqr = board.getBoardSquare(oldX, oldY);
+
+                    // If it's a jump move (moved two squares in any direction)
+                    if (deltaX == 2 && deltaY == 2) 
+                    {
+                        // Find the middle square (the piece being jumped over)
+                        int midX = (oldX + newX) / 2;
+                        int midY = (oldY + newY) / 2;
+
+                        BoardSquare middleSquare = board.getBoardSquare(midX, midY);
+
+                        if (middleSquare.isHasPiece()) 
+                        {
+                            Piece jumpedPiece = middleSquare.getCurrentPiece();
+
+                            // Optionally: Check if it's an opponent's piece before removing
+                            if (jumpedPiece != null && jumpedPiece.getPieceColor() != gamePiece.getPieceColor()) 
+                            {
+                                // Remove the opponent's piece
+                                
+                                
+                                board.clearSquare(middleSquare);
+                                
+                                List<Piece> pieceIndex = this.gameboard.getPieces();
+                                pieceIndex.remove(jumpedPiece);
+                                this.getGameboard().setPieces(pieceIndex);
+                                // You could also add it to a "captured pieces" list if you want to track
+                                System.out.println("Jumped over and removed opponent's piece at: (" + midX + ", " + midY + ")");
+
+                                // Clear the old square
+                                board.clearSquare(oldSqr);
+
+                                
+
+                                // Update the piece state
+                                gamePiece.isSelected = !gamePiece.isSelected;
+                                gamePiece.setHasMoved(!gamePiece.isHasMoved());
+                                
+                                // Move the piece to the new square
+                                board.movePieceToSquare(gamePiece, new Point(newX, newY));
+                            }
+                        }
+                    } 
+                    else if (deltaX == 1 && deltaY == 1) 
+                    {
+                        // Clear the old square
+                        board.clearSquare(oldSqr);
+
+                        // Update the piece state
+                        gamePiece.isSelected = !gamePiece.isSelected;
+                        gamePiece.setHasMoved(!gamePiece.isHasMoved());
+
+                        // Move the piece to the new square
+                        board.movePieceToSquare(gamePiece, new Point(newX, newY));
+                    } 
+                    else 
+                    {
+                        board.resetPiece(gamePiece, gameboardMouseListener.getMoveCopy());
+                        gamePiece.setHasMoved(false);
+                    }
+                } 
+                else 
+                {
+                    board.resetPiece(gamePiece, gameboardMouseListener.getMoveCopy());
+                    gamePiece.setHasMoved(false);
+                }
 
             }
-            gameboardMouseListener.setGamePiece(gamePiece);
-            if (gamePiece.isSelected) {
-                gamePiece.isSelected = !gamePiece.isSelected;
-            }
+            
             board.repaint();
         }
 
@@ -235,6 +427,20 @@ public class PlayerState implements State {
     public void switchToPause(GameStateContext gameState) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 
+    }
+
+    /**
+     * @return the gameboard
+     */
+    public GameBoard getGameboard() {
+        return gameboard;
+    }
+
+    /**
+     * @param gameboard the gameboard to set
+     */
+    public void setGameboard(GameBoard gameboard) {
+        this.gameboard = gameboard;
     }
 
 }
