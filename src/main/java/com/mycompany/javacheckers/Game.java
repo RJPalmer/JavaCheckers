@@ -254,7 +254,7 @@ public class Game {
         int pieceCounter = 0;
         for (int rowIndex = rowStartPoint; rowIndex < playerRowCount; rowIndex++) {
             for (int colIndex = 0; colIndex < COLUMN_COUNT; colIndex++) {
-                BoardSquare dataBoardSquare = dataGameBoard[colIndex][rowIndex];
+                BoardSquare dataBoardSquare = dataGameBoard[rowIndex][colIndex];
                 Color boardSquareColor = dataBoardSquare.getColor();
                 if (boardSquareColor.equals(Color.black)) {
                     final Piece currentPiece = gamePieces.get(pieceIndex);
