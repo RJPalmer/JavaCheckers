@@ -4,16 +4,11 @@
  */
 package Gameboard;
 
-import Gameboard.BoardSquare;
-import Gameboard.GameBoard;
-import Gameboard.Piece;
-import com.mycompany.javacheckers.Game;
 import com.mycompany.javacheckers.Player;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -523,14 +518,14 @@ public class GameBoardTest {
         BoardSquare testSquareInstance = generatedDataBoard[3][3];
         testSquareInstance.setCurrentPiece(pieceToMove);
 
-        blockSqr1 = generatedDataBoard[2][4];
+        blockSqr1 = generatedDataBoard[4][2];
         blockSqr1.setCurrentPiece(block1);
 
         blockSqr2 = generatedDataBoard[4][4];
         blockSqr2.setCurrentPiece(block2);
 
         generatedDataBoard[3][3] = testSquareInstance;
-        generatedDataBoard[2][4] = blockSqr1;
+        generatedDataBoard[4][2] = blockSqr1;
         generatedDataBoard[4][4] = blockSqr2;
 
         GameBoard instance = new GameBoard();
@@ -554,27 +549,27 @@ public class GameBoardTest {
         Piece block1 = generatePiece(4, 6);
         Piece block2 = generatePiece(2, 6);
         BoardSquare[][] generatedDataBoard = generateDataBoard();
-        BoardSquare testSquareInstance = generatedDataBoard[3][7];
+        BoardSquare testSquareInstance = generatedDataBoard[7][3];
         testSquareInstance.setCurrentPiece(pieceToMove);
 
-        blockSqr1 = generatedDataBoard[2][6];
+        blockSqr1 = generatedDataBoard[6][2];
         blockSqr1.setCurrentPiece(block1);
 
-        blockSqr2 = generatedDataBoard[4][6];
+        blockSqr2 = generatedDataBoard[6][4];
         blockSqr2.setCurrentPiece(block2);
 
-        generatedDataBoard[3][7] = testSquareInstance;
-        generatedDataBoard[2][6] = blockSqr1;
-        generatedDataBoard[4][6] = blockSqr2;
+        generatedDataBoard[7][3] = testSquareInstance;
+        generatedDataBoard[6][2] = blockSqr1;
+        generatedDataBoard[6][4] = blockSqr2;
 
         GameBoard instance = new GameBoard();
         boolean expResult = true;
         instance.setGameBoard(generatedDataBoard);
 
         //verify setup
-        assertSame(pieceToMove, generatedDataBoard[3][7].getCurrentPiece());
-        assertSame(block1, generatedDataBoard[2][6].getCurrentPiece());
-        assertSame(block2, generatedDataBoard[4][6].getCurrentPiece());
+        assertSame(pieceToMove, generatedDataBoard[7][3].getCurrentPiece());
+        assertSame(block1, generatedDataBoard[6][2].getCurrentPiece());
+        assertSame(block2, generatedDataBoard[6][4].getCurrentPiece());
 
         boolean result = instance.isBlocked(pieceToMove);
         assertEquals(expResult, result);
@@ -652,7 +647,7 @@ public class GameBoardTest {
         instance.movePieceToSquare(pieceToMove, destination);
 
         BoardSquare oldLocation = generatedDataBoard[3][3];
-        BoardSquare newLocation = generatedDataBoard[2][4];
+        BoardSquare newLocation = generatedDataBoard[4][2];
         assertAll("Verifying Piece Movement",
                 () -> assertFalse(oldLocation.isHasPiece(), "Piece no longer at 3,3"),
                 () -> assertTrue(newLocation.isHasPiece(), "Piece located at 2, 4"));
@@ -708,6 +703,73 @@ public class GameBoardTest {
         Player expResult = null;
         Player result = instance.getUserPlayer();
         assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of clearSquare method, of class GameBoard.
+     */
+    @org.junit.Test
+    public void testClearSquare() {
+        System.out.println("clearSquare");
+        BoardSquare currentSqr = null;
+        GameBoard instance = new GameBoard();
+        instance.clearSquare(currentSqr);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setPieceAtSquare method, of class GameBoard.
+     */
+    @org.junit.Test
+    public void testSetPieceAtSquare() {
+        System.out.println("setPieceAtSquare");
+        Piece currentSqr = null;
+        GameBoard instance = new GameBoard();
+        instance.setPieceAtSquare(currentSqr);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of paintComponent method, of class GameBoard.
+     */
+    @org.junit.Test
+    public void testPaintComponent() {
+        System.out.println("paintComponent");
+        Graphics g = null;
+        GameBoard instance = new GameBoard();
+        instance.paintComponent(g);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isBlocked method, of class GameBoard.
+     */
+    @org.junit.Test
+    public void testIsBlocked() {
+        System.out.println("isBlocked");
+        Piece pieceToMove = null;
+        GameBoard instance = new GameBoard();
+        boolean expResult = false;
+        boolean result = instance.isBlocked(pieceToMove);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of updatePieces method, of class GameBoard.
+     */
+    @org.junit.Test
+    public void testUpdatePieces() {
+        System.out.println("updatePieces");
+        Piece pieceToMove = null;
+        GameBoard instance = new GameBoard();
+        instance.updatePieces(pieceToMove);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
