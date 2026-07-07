@@ -9,7 +9,7 @@ import Gameboard.GameBoard;
 import Gameboard.GameboardMouseListener;
 import Gameboard.Piece;
 import java.awt.Color;
-import java.awt.Point;  
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Objects;
@@ -435,21 +435,20 @@ public class PlayerState implements State {
         BoardSquare oldSquare = board.getBoardSquare(oldX, oldY);
         boolean forwardMove = isForwardMove(gamePiece, oldY, newY);
 
-        
         // Handle capture move
         if (forwardMove) {
             if (deltaX == 2 && deltaY == 2) {
-                
+
                 int midX = (oldX + newX) / 2;
                 int midY = (oldY + newY) / 2;
-                
+
                 BoardSquare middleSquare = board.getBoardSquare(midX, midY);
                 Piece jumpedPiece = middleSquare.getCurrentPiece();
-                
+
                 boolean validCapture
                         = jumpedPiece != null
                         && jumpedPiece.getPieceColor() != gamePiece.getPieceColor();
-                
+
                 if (!validCapture) {
                     resetMove(board, gamePiece, gameboardMouseListener);
                     board.repaint();
@@ -458,11 +457,11 @@ public class PlayerState implements State {
 
                 // Remove captured piece
                 board.clearSquare(middleSquare);
-                
+
                 List<Piece> pieces = board.getPieces();
                 pieces.remove(jumpedPiece);
                 board.setPieces(pieces);
-                
+
                 completeMove(
                         board,
                         gamePiece,
@@ -471,10 +470,10 @@ public class PlayerState implements State {
                         newY,
                         gameboardMouseListener
                 );
-                
+
             } // Handle normal move
             else if (deltaX == 1 && deltaY == 1) {
-                
+
                 completeMove(
                         board,
                         gamePiece,
@@ -483,15 +482,14 @@ public class PlayerState implements State {
                         newY,
                         gameboardMouseListener
                 );
-                
+
             } // Invalid move
             else {
-                
+
                 resetMove(board, gamePiece, gameboardMouseListener);
-                
+
             }
-        }
-        else{
+        } else {
             resetMove(board, gamePiece, gameboardMouseListener);
         }
         board.repaint();
@@ -572,25 +570,34 @@ public class PlayerState implements State {
     }
 
     /**
-     * Determines whether a move is legal based on piece direction.
+     * Determines whether a move is in the correct forward direction for the
+     * piece.
+     * <p>
+     * Regular pieces may only move forward by one row (normal move) or two rows
+     * (capture). King pieces may move in either direction.
      *
      * @param piece The piece being moved.
-     * @param oldY Starting row.
-     * @param newY Destination row.
-     * @return true if the move direction is legal.
+     * @param oldY The starting row.
+     * @param newY The destination row.
+     * @return {@code true} if the move is in a legal forward direction;
+     * {@code false} otherwise.
      */
     private boolean isForwardMove(Piece piece, int oldY, int newY) {
-        if (piece instanceof KingPiece) {
-            return true;
-        }
 
         int rowChange = newY - oldY;
 
-        if (piece.getPieceColor() == Color.BLACK) {
-            return rowChange > 0;
+        // King pieces may move in either direction.
+        if (piece instanceof KingPiece) {
+            return Math.abs(rowChange) == 1 || Math.abs(rowChange) == 2;
         }
 
-        return rowChange < 0;
+        // Black pieces move toward increasing row numbers.
+        if (piece.getPieceColor() == Color.YELLOW) {
+            return rowChange == 1 || rowChange == 2;
+        }
+
+        // Red pieces move toward decreasing row numbers.
+        return rowChange == -1 || rowChange == -2;
     }
 
     /**
