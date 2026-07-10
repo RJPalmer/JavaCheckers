@@ -2,3 +2,4 @@
 nbactions.xml
 nb-configuration.xml
 *.class
+/hs_err_pid97285.log

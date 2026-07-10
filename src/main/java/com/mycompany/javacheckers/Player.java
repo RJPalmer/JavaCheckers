@@ -3,11 +3,9 @@ package com.mycompany.javacheckers;
 import Gameboard.GameBoard;
 import Gameboard.Move;
 import Gameboard.Piece;
-import java.awt.event.MouseListener;
 import Gameboard.GameboardMouseListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.awt.Color;
+import java.util.List;
 
 /**
  *
@@ -15,7 +13,148 @@ import javax.swing.Timer;
  */
 public class Player {
 
-        public PlayerArea pieceArea;
+    /**
+     * Determines if the player has completed their turn.
+     */
+    public boolean isTurnComplete;
+    /**
+     * Determines if the player is controlled by the user
+     */
+    public boolean isUserPlayer;
+
+    private Game myGame;
+
+    public PlayerArea pieceArea;
+
+    /**
+     * The number of the pieces that the player has
+     */
+    public int piecesCount;
+
+    /**
+     * The piece color associated with the player
+     */
+    public String playerColor;
+    /**
+     * The pieces that belong to the player
+     */
+        public List<Piece> playerPieces;
+
+    private boolean pieceMoved;
+
+    public Player(PlayerArea pieceArea, Game myGame, int piecesCount, List<Piece> playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
+        this.pieceArea = pieceArea;
+        this.myGame = myGame;
+        this.piecesCount = piecesCount;
+        this.playerPieces = playerPieces;
+        this.playerColor = playerColor;
+        this.isUserPlayer = isUserPlayer;
+        this.isTurnComplete = isTurnComplete;
+    }
+
+    public Player(PlayerArea pieceArea, int piecesCount, List<Piece> playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
+        this.pieceArea = pieceArea;
+        this.piecesCount = piecesCount;
+        this.playerPieces = playerPieces;
+        this.playerColor = playerColor;
+        this.isUserPlayer = isUserPlayer;
+        this.isTurnComplete = isTurnComplete;
+    }
+
+    /**
+     * Empty Constructor
+     */
+    public Player() {
+        isTurnComplete = false;
+    }
+
+    /**
+     *
+     * @param piecesCount
+     * @param playerPieces
+     * @param playerColor
+     */
+    public Player(int piecesCount, List<Piece> playerPieces, String playerColor) {
+        this.piecesCount = piecesCount;
+        this.playerPieces = playerPieces;
+        this.playerColor = playerColor;
+
+        isTurnComplete = false;
+    }
+
+    /**
+     *
+     * @param pieceArea
+     * @param piecesCount
+     * @param playerPieces
+     * @param playerColor
+     */
+    public Player(PlayerArea pieceArea, int piecesCount, List<Piece> playerPieces, String playerColor) {
+        this.pieceArea = pieceArea;
+        this.piecesCount = piecesCount;
+        this.playerPieces = playerPieces;
+        this.playerColor = playerColor;
+    }
+
+    /**
+     *
+     *
+     * @param gameboardMouseListener
+     * @param gameBoard
+     *
+     * @return
+     */
+    public Move[] checkForMoves(Piece gameboardMouseListener, GameBoard gameBoard) {
+        //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Move[] availableMoves = null;
+//        if (gameBoard.isBlocked(gameboardMouseListener)) {
+//        }
+        return availableMoves;
+    }
+
+    /**
+     * Checks whether the given game piece belongs to the player.
+     * <p>
+     * <p>
+     * This method compares the color of the provided game piece to the player's
+     * assigned color. If the colors match, the method returns {@code true},
+     * indicating that the piece belongs to the player. If the game piece is
+     * {@code null}, it returns {@code false}.</p>
+     *
+     * @param gamePiece The {@link Piece} to check.
+     *
+     * @return {@code true} if the piece belongs to the player, {@code false}
+     * otherwise.
+     */
+    public Boolean checkPiece(Piece gamePiece) {
+        if (gamePiece == null) {
+            return false; // Or handle as appropriate (e.g., throw an exception)
+        }
+
+        Color pieceColor = gamePiece.getPieceColor();
+        Color playerPieceColor = ColorConverter.stringToColor(playerColor);
+
+        // Return true if the piece's color matches the player's color
+        return pieceColor.equals(playerPieceColor);
+    }
+
+    /**
+     * Get the value of myGame
+     *
+     * @return the value of myGame
+     */
+    public Game getMyGame() {
+        return myGame;
+    }
+
+    /**
+     * Set the value of myGame
+     *
+     * @param myGame new value of myGame
+     */
+    public void setMyGame(Game myGame) {
+        this.myGame = myGame;
+    }
 
     /**
      * Get the value of pieceArea
@@ -35,88 +174,18 @@ public class Player {
         this.pieceArea = pieceArea;
     }
 
-    public Player(PlayerArea pieceArea, int piecesCount, Piece[] playerPieces, String playerColor, boolean isUserPlayer, boolean isTurnComplete) {
-        this.pieceArea = pieceArea;
+    /**
+     * @return the piecesCount
+     */
+    public int getPiecesCount() {
+        return piecesCount;
+    }
+
+    /**
+     * @param piecesCount the piecesCount to set
+     */
+    public void setPiecesCount(int piecesCount) {
         this.piecesCount = piecesCount;
-        this.playerPieces = playerPieces;
-        this.playerColor = playerColor;
-        this.isUserPlayer = isUserPlayer;
-        this.isTurnComplete = isTurnComplete;
-    }
-
-    
-    /**
-     * The number of the pieces that the player has
-     */
-    public int piecesCount;
-
-    /**
-     * The pieces that belong to the player
-     */
-    public Piece[] playerPieces;    
-
-    /**
-     * The piece color associated with the player
-     */
-    public String playerColor;
-    
-    /**
-     * Determines if the player is controlled by the user
-     */
-    public boolean isUserPlayer;
-    
-    /**
-     * Determines if the player has completed their turn.
-     */
-    public boolean isTurnComplete;
-    
-    /**
-     * Empty Constructor
-     */
-    public Player() {
-        isTurnComplete = false;
-    }
-
-    /**
-     * 
-     * @param piecesCount
-     * @param playerPieces
-     * @param playerColor 
-     */
-    public Player(int piecesCount, Piece[] playerPieces, String playerColor) {
-        this.piecesCount = piecesCount;
-        this.playerPieces = playerPieces;
-        this.playerColor = playerColor;
-      
-        isTurnComplete = false;
-    }
-
-    /**
-     * 
-     * @param pieceArea
-     * @param piecesCount
-     * @param playerPieces
-     * @param playerColor 
-     */
-    public Player(PlayerArea pieceArea, int piecesCount, Piece[] playerPieces, String playerColor) {
-        this.pieceArea = pieceArea;
-        this.piecesCount = piecesCount;
-        this.playerPieces = playerPieces;
-        this.playerColor = playerColor;
-    }
-
-    
-    /**
-     *
-     * @param piece
-     */
-    public void movePiece (Piece piece) {
-    }
-
-    /**
-     *
-     */
-    public void kingPiece () {
     }
 
     /**
@@ -134,46 +203,23 @@ public class Player {
     }
 
     /**
-     * @return the piecesCount
-     */
-    public int getPiecesCount() {
-        return piecesCount;
-    }
-
-    /**
-     * @param piecesCount the piecesCount to set
-     */
-    public void setPiecesCount(int piecesCount) {
-        this.piecesCount = piecesCount;
-    }
-
-    /**
      *
-     *
-     * @param gameboardMouseListener
-     * @param gameBoard
-     * @return
      */
-    public Move[] checkForMoves(Piece gameboardMouseListener, GameBoard gameBoard) {
-        //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Move[] availableMoves = null;
-//        if (gameBoard.isBlocked(gameboardMouseListener)) {
-//        }
-        return availableMoves;
+    public void kingPiece() {
     }
 
     /**
-     * @param gameboard the value of gameboard 
+     * @param gameboard the value of gameboard
      */
     public void makeMove(GameBoard gameboard) throws InterruptedException {
-        
+
         boolean moveMade = false;
-        GameboardMouseListener listen = (GameboardMouseListener)gameboard.getMouseListeners()[0];
-        listen.setCurrentPlayer(this);
+        GameboardMouseListener listen = (GameboardMouseListener) gameboard.getMouseListeners()[0];
+        // listen.setCurrentPlayer(this);
         //can the player make a move
-        if(piecesCount != 0){
-                //if this player is controlled by the user
-            if(isUserPlayer){
+        if (piecesCount != 0) {
+            //if this player is controlled by the user
+            if (isUserPlayer) {
                 //piece movement is handled by the mouselistener
                 //move is considered made when 
                 //<editor-fold defaultstate="collapsed" desc="create a separate thread to count">
@@ -181,21 +227,20 @@ public class Player {
                     @Override
                     public void run() {
                         int counter = 0;
-                        while(!isTurnComplete){
+                        while (!isTurnComplete) {
                             counter++;
-                            try{
+                            try {
                                 System.out.print("\rTime Elapsed: " + counter + "s");
                                 Thread.sleep(1000);
-                            }
-                            catch(InterruptedException e){
+                            } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 });
-                
+
                 turnLengthCounter.start();
-   
+
 //                while(!moveMade){
 //                    try{
 //                    Thread.sleep(100);
@@ -205,12 +250,18 @@ public class Player {
 //                }
                 turnLengthCounter.interrupt();
 //</editor-fold>
-            }
-            else{
+            } else {
 
             }
         }
         //return moveMade;
+    }
+
+    /**
+     *
+     * @param piece
+     */
+    public void movePiece(Piece piece) {
     }
 
     /**
@@ -222,6 +273,19 @@ public class Player {
         isTurnComplete = !isTurnComplete;
     }
 
+    /**
+     * @return the pieceMoved
+     */
+    public boolean isPieceMoved() {
+        return pieceMoved;
+    }
+
+    /**
+     * @param pieceMoved the pieceMoved to set
+     */
+    public void setPieceMoved(boolean pieceMoved) {
+        this.pieceMoved = pieceMoved;
+
+    }
 
 }
-

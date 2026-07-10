@@ -5,6 +5,8 @@
 package Gameboard;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 /**
  * Represents a square on the game board
@@ -43,6 +45,7 @@ public class BoardSquare {
      */
     public void setCurrentPiece(Piece currentPiece) {
         this.currentPiece = currentPiece;
+        this.hasPiece = true;
     }
 
     /**
@@ -93,4 +96,20 @@ public class BoardSquare {
         this.Color = color;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        BoardSquare person = (BoardSquare) obj;
+        if(Objects.isNull(this.currentPiece) && Objects.isNull(person.currentPiece) ) return true;
+        return Color == person.Color && Objects.equals(currentPiece, person.currentPiece) && hasPiece == person.hasPiece;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Color, currentPiece, hasPiece);
+    }
+
 }
+    

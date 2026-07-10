@@ -1,15 +1,23 @@
-package checkers;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.javacheckers;
 
-
-// <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-// #[regen=yes,id=DCE.416B4268-F3D8-E1D2-5BC5-EA1DD2F49DA0]
-// </editor-fold> 
+import Gameboard.Piece;
 
 /**
  *
  * @author robertpalmer
  */
-public final class KingPiece {
+public class KingPiece extends Piece {
 
+    public KingPiece() {
+    }
+
+    public KingPiece(int xPos, int yPos, int xCol, int yRow, int width, int height, int startAngle, int endAngle, boolean hasMoved) {
+        super(xPos, yPos, xCol, yRow, width, height, startAngle, endAngle, hasMoved);
+    }
+    
+    
 }
-

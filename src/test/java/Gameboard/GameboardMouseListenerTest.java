@@ -5,6 +5,7 @@
 package Gameboard;
 
 import com.mycompany.javacheckers.Game;
+import com.mycompany.javacheckers.Player;
 import java.awt.event.MouseEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -34,11 +35,14 @@ public class GameboardMouseListenerTest {
     
     @BeforeAll
     public static void setUpClass() {
-        GameBoard.setBOARD_COLUMNS(10);
-        GameBoard.setBOARD_ROWS(10);
+        GameBoard.setBOARD_COLUMNS(8);
+        GameBoard.setBOARD_ROWS(8);
         board = new GameBoard();
-        dataBoard = new BoardSquare[10][10];
-        instance = new GameboardMouseListener(board);
+        dataBoard = new BoardSquare[8][8];
+        gameObject = new Game();
+        gameObject.setUserColor("Red");
+        gameObject.setUserPlayer(new Player());
+        instance = new GameboardMouseListener(board, gameObject);
         gamePiece = new Piece();
         moveCopy = new Piece();
         board.setGameBoard(dataBoard);
@@ -49,8 +53,7 @@ public class GameboardMouseListenerTest {
         board.setGameBoard(dataBoard);
         instance.setBoard(board);
         
-        gameObject = new Game();
-        gameObject.setUserColor("Red");
+        
 
         
         
@@ -133,6 +136,7 @@ public class GameboardMouseListenerTest {
         MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 45, 45,1,false);
         //MouseEvent e = null;
         //GameboardMouseListener instance = new GameboardMouseListener();
+        instance.setCheckersGame(new Game());
         instance.mouseClicked(e);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
@@ -146,6 +150,7 @@ public class GameboardMouseListenerTest {
         System.out.println("mousePressed");
         MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 45, 45,1,false);
         //GameboardMouseListener instance = new GameboardMouseListener();
+        instance.setCheckersGame(new Game());
         instance.mousePressed(e);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
