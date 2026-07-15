@@ -116,6 +116,8 @@ public class Checkers {
         players = new Player[PLAYER_COUNT];
         gameGUI = new JFrame("Welcome to Checkers");
         gameGUI.setSize(900, 900);
+        gameGUI.setLocationRelativeTo(null);
+        //gameGUI.pack();
         gameGUI.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         gameGUI.addComponentListener(resizer);
         newGame = new Game(gameGUI, board, gamePieces, players);

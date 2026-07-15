@@ -27,6 +27,17 @@ public class GameBoard extends JPanel {
     private static int BOARD_COLUMNS = 8;
     private static int BOARD_ROWS = 8;
 
+    private static final int MARGIN_SIZE = 20;
+
+    /**
+     * Get the value of MARGIN_SIZE
+     *
+     * @return the value of MARGIN_SIZE
+     */
+    public static int getMARGIN_SIZE() {
+        return MARGIN_SIZE;
+    }
+
 
     /*
      *
@@ -148,6 +159,8 @@ public class GameBoard extends JPanel {
             public void componentShown(ComponentEvent e) {
                 super.componentShown(e); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
                 e.getComponent().requestFocus();
+                updateSquare();
+                repaint();
             }
 
         });
@@ -166,6 +179,12 @@ public class GameBoard extends JPanel {
         // super.paintComponent(g);
 
         updateSquare();
+
+        // Validate board size before rendering
+        if (!isValidBoardSize()) {
+            // Could log warning or handle gracefully
+            return;
+        }
         drawBoard(g);
         drawPieces(g);
 
@@ -318,10 +337,36 @@ public class GameBoard extends JPanel {
 //        // throw new UnsupportedOperationException("Not supported yet.");
 //    }
     /**
-     * updateSquare - updates the width of the squares on the board.
+     * updateSquare - updates the width of the squares on the board. Calculates
+     * square width based on the available panel width (accounting for any
+     * margin). Ensures the board maintains its square aspect ratio.
      */
     public void updateSquare() {
-        setSquareWidth(this.getWidth() / 8);
+        // Calculate the usable width for the board (after margins handled by parent container)
+        int usableWidth = this.getWidth();
+
+        // Divide by number of columns to get the square width
+        int calculatedSquareWidth = usableWidth / BOARD_COLUMNS;
+
+        // Also calculate based on height to maintain square aspect ratio
+        int usableHeight = this.getHeight();
+        int heightBasedSquareWidth = usableHeight / BOARD_ROWS;
+
+        // Use the smaller value to ensure board fits within bounds
+        int finalSquareWidth = Math.min(calculatedSquareWidth, heightBasedSquareWidth);
+
+        setSquareWidth(finalSquareWidth);
+    }
+
+    /**
+     * Validates that the board dimensions are sufficient for rendering. Ensures
+     * minimum square size for playability.
+     *
+     * @return true if dimensions are valid, false otherwise
+     */
+    private boolean isValidBoardSize() {
+        final int MINIMUM_SQUARE_SIZE = 20;  // Minimum playable square size
+        return squareWidth >= MINIMUM_SQUARE_SIZE;
     }
 
     /**
@@ -372,32 +417,6 @@ public class GameBoard extends JPanel {
         }
     }
 
-    /**
-     * @param g2
-     * @param k
-     * @param swapColor
-     */
-//    private void drawBoardRow(Graphics2D g2, int k, Boolean swapColor) {
-//        if (!swapColor) {
-//            for (int i = 0; i <= getSquareWidth() * 8; i += (2 * getSquareWidth())) {
-//
-//                drawBoardSquare(g2, k, i, boardSquare1);
-//
-//            }
-//            for (int j = getSquareWidth(); j <= getSquareWidth() * 8; j += (2 * getSquareWidth())) {
-//                drawBoardSquare(g2, k, j, boardSquare2);
-//            }
-//        } else {
-//            for (int i = 0; i <= getSquareWidth() * 8; i += (2 * getSquareWidth())) {
-//
-//                drawBoardSquare(g2, k, i, boardSquare2);
-//
-//            }
-//            for (int j = getSquareWidth(); j <= getSquareWidth() * 8; j += (2 * getSquareWidth())) {
-//                drawBoardSquare(g2, k, j, boardSquare1);
-//            }
-//        }
-//    }
     /**
      * @param g2
      * @param k
@@ -501,7 +520,7 @@ public class GameBoard extends JPanel {
      * @param squareToAdd
      */
     public void setBoardSquare(int squareX, int squareY, BoardSquare squareToAdd) {
-        gameDataBoard[squareX][squareY] = squareToAdd;
+        gameDataBoard[squareY][squareX] = squareToAdd;
     }
 
     /**
@@ -714,7 +733,7 @@ public class GameBoard extends JPanel {
         if (withinBounds(pieceCol, pieceRow)) {
             return null;
         }
-        return gameDataBoard[pieceCol][pieceRow];
+        return gameDataBoard[pieceRow][pieceCol];
     }
 
     private boolean withinBounds(int pieceRow, int pieceCol) {
@@ -822,7 +841,7 @@ public class GameBoard extends JPanel {
         //decouple the piece from its current square
         //update the old square to indicate that the piece is no longer there
         clearSquare(oldStateSqr);
-        this.gameDataBoard[ptmXCol][ptmYRow] = oldStateSqr;
+        this.gameDataBoard[ptmYRow][ptmXCol] = oldStateSqr;
 
         //set the piece to the new position
         //pieceToMove = this.getPiece(pieceIndex);
@@ -830,6 +849,7 @@ public class GameBoard extends JPanel {
         pieceToMove.setyPos(squareWidth * (destination.y));
         pieceToMove.setxCol(destination.x);
         pieceToMove.setyRow(destination.y);
+        /*updatePieces_deprecated(pieceToMove);*/
         updatePieces(pieceToMove);
 
         //decouple the piece from its current square
@@ -845,12 +865,25 @@ public class GameBoard extends JPanel {
 
     }
 
+    /**
+     * Updates the stored reference for a game piece.
+     *
+     * @param pieceToMove The piece whose state has changed.
+     */
     public void updatePieces(Piece pieceToMove) {
-        List<Piece> currentStatePieces = getPieces();
-        int indexOf = currentStatePieces.indexOf(pieceToMove);
-        currentStatePieces.set(indexOf, pieceToMove);
-        setPieces(currentStatePieces);
-        //pieceToMove.isSelected = !newState.isSelected;
+
+        if (pieceToMove == null) {
+            return;
+        }
+
+        List<Piece> currentPieces = getPieces();
+
+        int index = currentPieces.indexOf(pieceToMove);
+
+        if (index >= 0) {
+            currentPieces.set(index, pieceToMove);
+            setPieces(currentPieces);
+        }
     }
 
     /**

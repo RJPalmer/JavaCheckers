@@ -114,10 +114,11 @@ public class Game {
         this();
         PLAYER_PIECE_COUNT = 12;
 
+        
         CardLayout cardLayout = new CardLayout();
         JPanel cards = new JPanel(cardLayout);
         JScrollPane panel = new JScrollPane();
-        panel.setPreferredSize(new Dimension(800, 800));
+//        panel.setPreferredSize(new Dimension(800, 800));
 
         gameState = new GameStateContext();
         gameWindow = window;
@@ -179,8 +180,10 @@ public class Game {
         gameMenu.setParent(cards);
         gameMenu.setCardLayout(cardLayout);
         gameMenu.setIsNext(false);
+        
+        BoardContainer boardContainer = new BoardContainer(gameboard);
         cards.add("menu", gameMenu);
-        cards.add("board", gameboard);
+        cards.add("board", boardContainer);
         //cards.addKeyListener(new GameboardKeyBoardListener(gameboard));
         //cards.setFocusable(true);
         panel.setViewportView(cards);
