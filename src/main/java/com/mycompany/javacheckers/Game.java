@@ -242,8 +242,8 @@ public class Game {
         int[] temp = rows.stream().mapToInt(Integer::intValue).toArray();
         playerDomains[0].setAreaRows(temp);
         rows.clear();
-        playerRowCount--;
-        int playerTwoRowStart = ROW_COUNT - playerRowCount;
+        //playerRowCount--;
+        int playerTwoRowStart = ROW_COUNT - 3;
 
         setupGameboardPieces(ROW_COUNT, dataGameBoard, gamePieces, pieceColor2, pieceCount, rows, playerTwoRowStart, pieceIndex, NEGATIVE);
         temp = rows.stream().mapToInt(Integer::intValue).toArray();
