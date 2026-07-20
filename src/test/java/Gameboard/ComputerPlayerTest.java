@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ComputerPlayerTest {
