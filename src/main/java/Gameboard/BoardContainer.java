@@ -6,6 +6,7 @@ package Gameboard;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -39,8 +40,8 @@ public class BoardContainer extends JPanel {
     private void initializeLayout() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         
-        setLayout(new BorderLayout());
-        add(getGameBoard(), BorderLayout.CENTER);
+        setLayout(new GridBagLayout());
+        add(getGameBoard());
         setBorder(new EmptyBorder(20, 20, 20, 20));
         setBackground(Color.DARK_GRAY);
     }
