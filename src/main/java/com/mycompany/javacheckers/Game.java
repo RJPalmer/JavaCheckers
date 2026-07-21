@@ -8,16 +8,12 @@ import Gameboard.*;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -114,10 +110,11 @@ public class Game {
         this();
         PLAYER_PIECE_COUNT = 12;
 
+        
         CardLayout cardLayout = new CardLayout();
         JPanel cards = new JPanel(cardLayout);
         JScrollPane panel = new JScrollPane();
-        panel.setPreferredSize(new Dimension(800, 800));
+//        panel.setPreferredSize(new Dimension(800, 800));
 
         gameState = new GameStateContext();
         gameWindow = window;
@@ -179,8 +176,10 @@ public class Game {
         gameMenu.setParent(cards);
         gameMenu.setCardLayout(cardLayout);
         gameMenu.setIsNext(false);
+        
+        BoardContainer boardContainer = new BoardContainer(gameboard);
         cards.add("menu", gameMenu);
-        cards.add("board", gameboard);
+        cards.add("board", boardContainer);
         //cards.addKeyListener(new GameboardKeyBoardListener(gameboard));
         //cards.setFocusable(true);
         panel.setViewportView(cards);
@@ -239,8 +238,8 @@ public class Game {
         int[] temp = rows.stream().mapToInt(Integer::intValue).toArray();
         playerDomains[0].setAreaRows(temp);
         rows.clear();
-        playerRowCount--;
-        int playerTwoRowStart = ROW_COUNT - playerRowCount;
+        //playerRowCount--;
+        int playerTwoRowStart = ROW_COUNT - 3;
 
         setupGameboardPieces(ROW_COUNT, dataGameBoard, gamePieces, pieceColor2, pieceCount, rows, playerTwoRowStart, pieceIndex, NEGATIVE);
         temp = rows.stream().mapToInt(Integer::intValue).toArray();
