@@ -4,6 +4,10 @@
  */
 package Gameboard;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 /**
@@ -12,4 +16,62 @@ import javax.swing.JPanel;
  */
 public class CapturedPieceContainer extends JPanel {
     
+    private CapturedPieceDisplay opponentCapturedPieces;
+    
+    private CapturedPieceDisplay playerCapturedPieces;
+
+    
+    public CapturedPieceContainer() {
+        
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        opponentCapturedPieces = new CapturedPieceDisplay();
+        opponentCapturedPieces.setBorder(BorderFactory.createLineBorder(Color.RED));
+        
+        playerCapturedPieces = new CapturedPieceDisplay();
+        playerCapturedPieces.setBorder(BorderFactory.createLineBorder(Color.yellow));
+        
+        add(opponentCapturedPieces);
+        add(playerCapturedPieces);
+//        setLayout(B);
+    }
+    
+    
+
+    /**
+     * Get the value of playerCapturedPieces
+     *
+     * @return the value of playerCapturedPieces
+     */
+    public CapturedPieceDisplay getPlayerCapturedPieces() {
+        return playerCapturedPieces;
+    }
+
+    /**
+     * Set the value of playerCapturedPieces
+     *
+     * @param playerCapturedPieces new value of playerCapturedPieces
+     */
+    public void setPlayerCapturedPieces(CapturedPieceDisplay playerCapturedPieces) {
+        this.playerCapturedPieces = playerCapturedPieces;
+    }
+
+
+    /**
+     * Get the value of opponentCapturedPieces
+     *
+     * @return the value of opponentCapturedPieces
+     */
+    public CapturedPieceDisplay getOpponentCapturedPieces() {
+        return opponentCapturedPieces;
+    }
+
+    /**
+     * Set the value of opponentCapturedPieces
+     *
+     * @param opponentCapturedPieces new value of opponentCapturedPieces
+     */
+    public void setOpponentCapturedPieces(CapturedPieceDisplay opponentCapturedPieces) {
+        this.opponentCapturedPieces = opponentCapturedPieces;
+    }
+
 }
