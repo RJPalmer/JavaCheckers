@@ -115,15 +115,18 @@ public class Checkers {
 //        gamePieces = new Piece[GAME_PIECE_COUNT];
         players = new Player[PLAYER_COUNT];
         gameGUI = new JFrame("Welcome to Checkers");
-        gameGUI.setSize(900, 900);
+        gameGUI.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         gameGUI.setLocationRelativeTo(null);
         //gameGUI.pack();
         gameGUI.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         gameGUI.addComponentListener(resizer);
         newGame = new Game(gameGUI, board, gamePieces, players);
         newGame.getGameState().setCheckersGame(newGame);
+        isLoading = false;
         
     }
+    public static final int FRAME_HEIGHT = 950;
+    public static final int FRAME_WIDTH = 950;
     private static final int PLAYER_COUNT = 2;
     private static final int GAME_PIECE_COUNT = 24;
 
