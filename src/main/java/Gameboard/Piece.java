@@ -292,7 +292,7 @@ public class Piece implements Cloneable, Comparable {
         } else {
             g2.setColor(pieceColor);
         }
-        g2.fillArc(xPos, yPos, width, height, startAngle, endAngle);
+        g2.fillOval(xPos, yPos, width, height);
     }
 
     /**
