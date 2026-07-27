@@ -79,24 +79,23 @@ public class GameStateContext {
      * @param currentState the currentState to set
      */
     public void setCurrentState(State currentState) {
-        
-        if(this.prevState != null){
-           this.prevState = currentState;
-           this.currentState = currentState; 
-        }else{
-            this.currentState = currentState;
-        } 
+           this.prevState = this.currentState;
+           this.currentState = currentState;
     }
-
-    /*
-     *
-     */
 
     /**
      *
      * @return
      */
 
+    public State getCurrentState(){
+        return currentState;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
     public String getState() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return currentState.getState();

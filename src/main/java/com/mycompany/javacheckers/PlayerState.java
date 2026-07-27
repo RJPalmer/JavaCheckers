@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
 
 /**
  * A State that represents the player's turn
@@ -21,6 +22,25 @@ import java.util.Objects;
  */
 public class PlayerState implements State {
 
+    private final List<Piece> capturedPieces = new ArrayList<>();
+
+    /**
+     * Get the value of capturedPieces
+     *
+     * @return the value of capturedPieces
+     */
+    public List<Piece> getCapturedPieces() {
+        return capturedPieces;
+    }
+
+    /**
+     * Get the number of capturedPieces
+     * 
+     * @return the size of capturedPieces
+     */
+    public int getCapturedPieceCount(){
+        return capturedPieces.size();
+    }
     private static final String START = "START";
     private static final String YOUR_TURN = "YOUR_TURN";
     private static final String PAUSED = "Paused";
@@ -40,6 +60,15 @@ public class PlayerState implements State {
         this.gameboard = gameboard;
     }
 
+    /**
+     * 
+     */
+    public void addCapturedPiece(Piece capturedPiece){
+        if(capturedPiece != null){
+            capturedPieces.add(capturedPiece);
+        }
+    }
+    
     /**
      *
      */
@@ -240,139 +269,9 @@ public class PlayerState implements State {
         gameboardMouseListener.getBoard().repaint();
         return false;
     }
-
     /*
      * 
      */
-    private void releaseGamePiece_deprecated(GameboardMouseListener gameboardMouseListener, MouseEvent e) {
-        int currentX;
-        int currentY;
-        Piece existPiece;
-
-        //Get information about the released piece
-        Piece gamePiece = gameboardMouseListener.getGamePiece();
-        if (gamePiece == null) {
-            return;
-        }
-
-        if (gamePiece != null) {
-
-            //find out release location
-            currentX = e.getX();
-            currentY = e.getY();
-            gameboardMouseListener.translateToGrid(currentX, currentY);
-            GameBoard board = this.getGameboard();
-            int squareX = gameboardMouseListener.getSquareX();
-            int squareY = gameboardMouseListener.getSquareY();
-
-            //check if there's an existing piece
-            existPiece = board.checkForGamePiece(squareX, squareY);
-            boolean nothingThere = Objects.isNull(existPiece);
-            //<editor-fold defaultstate="collapsed" desc="old release logic">
-//            if (gamePiece.isHasMoved()) {
-//                if (Objects.isNull(existPiece)) {
-//                    BoardSquare currentSqre = aThis.getBoard().getBoardSquare(aThis.getSquareX(), aThis.getSquareY());
-//                    if (currentSqre.getColor() == Color.BLACK) {
-//                        GameBoard board = aThis.getBoard();
-//                        board.movePiece(gamePiece, aThis.getMoveCopy(), aThis.getSquareX(), aThis.getSquareY());
-//                        aThis.setMoveCopy(null);
-//                        gamePiece.setHasMoved(false);
-//                        
-//                        userPlayer.setMoveComplete();
-//                        getGameState().processMouseEvent(gameState, aThis, e, RELEASED);
-            ////                    changeState();
-//                    } else {
-//                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
-//                        aThis.setMoveCopy(null);
-//                        gamePiece.setHasMoved(false);
-//                    }
-//                } else {
-//                    if (gamePiece.IsMoveable()) {
-//                        aThis.getBoard().resetPiece(gamePiece, aThis.getMoveCopy());
-//                        aThis.setMoveCopy(null);
-//                        gamePiece.setHasMoved(false);
-//                    }
-//                }
-//            }
-//</editor-fold>
-            if (nothingThere) {
-                BoardSquare currentSqre = board.getBoardSquare(squareX, squareY);
-                BoardSquare oldSqr;
-                Piece moveCopy = gameboardMouseListener.getMoveCopy();
-
-                // Get the starting and ending positions
-                if (currentSqre.getColor() == Color.BLACK) {
-                    int oldX = moveCopy.getxCol();
-                    int oldY = moveCopy.getyRow();
-
-                    int newX = squareX;
-                    int newY = squareY;
-
-                    // Calculate how far the piece moved
-                    int deltaX = Math.abs(newX - oldX);
-                    int deltaY = Math.abs(newY - oldY);
-
-                    oldSqr = board.getBoardSquare(oldX, oldY);
-
-                    // If it's a jump move (moved two squares in any direction)
-                    if (deltaX == 2 && deltaY == 2) {
-                        // Find the middle square (the piece being jumped over)
-                        int midX = (oldX + newX) / 2;
-                        int midY = (oldY + newY) / 2;
-
-                        BoardSquare middleSquare = board.getBoardSquare(midX, midY);
-
-                        if (middleSquare.isHasPiece()) {
-                            Piece jumpedPiece = middleSquare.getCurrentPiece();
-
-                            // Optionally: Check if it's an opponent's piece before removing
-                            if (jumpedPiece != null && jumpedPiece.getPieceColor() != gamePiece.getPieceColor()) {
-                                // Remove the opponent's piece
-
-                                board.clearSquare(middleSquare);
-
-                                List<Piece> pieceIndex = this.gameboard.getPieces();
-                                pieceIndex.remove(jumpedPiece);
-                                this.getGameboard().setPieces(pieceIndex);
-                                // You could also add it to a "captured pieces" list if you want to track
-                                System.out.println("Jumped over and removed opponent's piece at: (" + midX + ", " + midY + ")");
-
-                                // Clear the old square
-                                board.clearSquare(oldSqr);
-
-                                // Update the piece state
-                                gamePiece.isSelected = !gamePiece.isSelected;
-                                gamePiece.setHasMoved(!gamePiece.isHasMoved());
-
-                                // Move the piece to the new square
-                                board.movePieceToSquare(gamePiece, new Point(newX, newY));
-                            }
-                        }
-                    } else if (deltaX == 1 && deltaY == 1) {
-                        // Clear the old square
-                        board.clearSquare(oldSqr);
-
-                        // Update the piece state
-                        gamePiece.isSelected = !gamePiece.isSelected;
-                        gamePiece.setHasMoved(!gamePiece.isHasMoved());
-
-                        // Move the piece to the new square
-                        board.movePieceToSquare(gamePiece, new Point(newX, newY));
-                    } else {
-                        board.resetPiece(gamePiece, gameboardMouseListener.getMoveCopy());
-                        gamePiece.setHasMoved(false);
-                    }
-                } else {
-                    board.resetPiece(gamePiece, gameboardMouseListener.getMoveCopy());
-                    gamePiece.setHasMoved(false);
-                }
-
-            }
-
-            board.repaint();
-        }
-
-    }
 
     /**
      * Handles the release of a dragged game piece.
@@ -456,6 +355,7 @@ public class PlayerState implements State {
                 }
 
                 // Remove captured piece
+                addCapturedPiece(jumpedPiece);
                 board.clearSquare(middleSquare);
 
                 List<Piece> pieces = board.getPieces();
