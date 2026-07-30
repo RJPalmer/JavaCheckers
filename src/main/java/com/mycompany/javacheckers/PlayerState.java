@@ -4,6 +4,7 @@
  */
 package com.mycompany.javacheckers;
 
+import Gameboard.BoardContainer;
 import Gameboard.BoardSquare;
 import Gameboard.GameBoard;
 import Gameboard.GameboardMouseListener;
@@ -13,7 +14,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Objects;
-import java.util.ArrayList;
 
 /**
  * A State that represents the player's turn
@@ -22,7 +22,27 @@ import java.util.ArrayList;
  */
 public class PlayerState implements State {
 
-    private final List<Piece> capturedPieces = new ArrayList<>();
+    private Game currentGame;
+
+    /**
+     * Get the value of currentGame
+     *
+     * @return the value of currentGame
+     */
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    /**
+     * Set the value of currentGame
+     *
+     * @param currentGame new value of currentGame
+     */
+    public void setCurrentGame(Game currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    private List<Piece> capturedPieces = null;
 
     /**
      * Get the value of capturedPieces
@@ -30,16 +50,16 @@ public class PlayerState implements State {
      * @return the value of capturedPieces
      */
     public List<Piece> getCapturedPieces() {
-        return capturedPieces;
+        return boardContainer.getPlayerCapturedPieces();
     }
 
     /**
-     * Get the number of capturedPieces
-     * 
+     * Get the number of captured
+     *
      * @return the size of capturedPieces
      */
-    public int getCapturedPieceCount(){
-        return capturedPieces.size();
+    public int getCapturedPieceCount() {
+        return currentGame.getPlayerCapturedPiecesCount();
     }
     private static final String START = "START";
     private static final String YOUR_TURN = "YOUR_TURN";
@@ -48,6 +68,7 @@ public class PlayerState implements State {
     private static final String DRAGGED = "Dragged";
     private static final String PRESSED = "Pressed";
     private GameBoard gameboard;
+    private BoardContainer boardContainer;
 
     private boolean hasMoved;
 
@@ -58,22 +79,44 @@ public class PlayerState implements State {
         super();
         this.gamePlayer = new Player();
         this.gameboard = gameboard;
+        this.boardContainer = null;
+        this.currentGame = null;
+    }
+
+    PlayerState(BoardContainer bc) {
+        super();
+        this.gamePlayer = new Player();
+        this.boardContainer = bc;
+        this.gameboard = bc.getGameBoard();
+        this.capturedPieces = bc.getPlayerCapturedPieces();
+        this.currentGame = null;
     }
 
     /**
+     * adds piece to the captured list
      * 
+     * @param capturedPiece
      */
-    public void addCapturedPiece(Piece capturedPiece){
-        if(capturedPiece != null){
-            capturedPieces.add(capturedPiece);
+    public void addCapturedPiece(Piece capturedPiece) {
+        if (capturedPiece != null) {
+            currentGame.getPlayerCapturedPieceList().add(capturedPiece);
         }
     }
-    
+
+    public PlayerState(Game currentGame) {
+        super();
+        this.currentGame = currentGame;
+        this.gamePlayer = currentGame.getUserPlayer();
+        this.boardContainer = currentGame.getBoardContainer();
+        this.gameboard = boardContainer.getGameBoard();
+    }
+
     /**
      *
      */
     public PlayerState() {
         gamePlayer = new Player();
+        this.currentGame = null;
     }
 
     /**
@@ -269,6 +312,7 @@ public class PlayerState implements State {
         gameboardMouseListener.getBoard().repaint();
         return false;
     }
+
     /*
      * 
      */
@@ -392,7 +436,8 @@ public class PlayerState implements State {
         } else {
             resetMove(board, gamePiece, gameboardMouseListener);
         }
-        board.repaint();
+        currentGame.updateScores();
+        boardContainer.repaint();
     }
 
     /**
