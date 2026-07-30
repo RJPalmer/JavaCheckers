@@ -127,7 +127,7 @@ public class CapturedPieceDisplay extends JPanel {
     public CapturedPieceDisplay() {
         opponentPieceIcon = createPieceIcon(getGraphics());
         capturedPieceCount = 0;
-        capturedPieceLabel = new JLabel("x " + capturedPieceCount);
+        capturedPieceLabel = new JLabel();
         capturedPieceLabel.setFont(new Font("Serif", Font.BOLD, 14));
         capturedPieceLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         capturedPieceLabel.setIcon(opponentPieceIcon);
@@ -137,13 +137,17 @@ public class CapturedPieceDisplay extends JPanel {
         
     }
 
+    private String printText() {
+        return "x " + capturedPieceCount;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D)g;
         ImageIcon pieceImageIcon = createPieceIcon(g2d);
         
         setOpponentPieceIcon(pieceImageIcon);
-        
+        capturedPieceLabel.setText(printText());
         super.paintComponent(g); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
         
         
