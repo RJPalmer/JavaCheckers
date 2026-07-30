@@ -4,11 +4,13 @@
  */
 package Gameboard;
 
-import java.awt.BorderLayout;
+import com.mycompany.javacheckers.Game;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -18,7 +20,34 @@ import javax.swing.border.EmptyBorder;
  */
 public class BoardContainer extends JPanel {
 
+
     private CapturedPieceContainer capturePiecesPanel;
+
+    private com.mycompany.javacheckers.Game gameConnection;
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        updatePlayerScores(gameConnection);
+        super.paintComponent(g); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+    }
+
+    /**
+     * Get the value of gameConnection
+     *
+     * @return the value of gameConnection
+     */
+    public com.mycompany.javacheckers.Game getGameConnection() {
+        return gameConnection;
+    }
+
+    /**
+     * Set the value of gameConnection
+     *
+     * @param gameConnection new value of gameConnection
+     */
+    public void setGameConnection(com.mycompany.javacheckers.Game gameConnection) {
+        this.gameConnection = gameConnection;
+    }
 
     /**
      * Get the value of capturePiecesPanel
@@ -59,6 +88,18 @@ public class BoardContainer extends JPanel {
         initializeLayout();
     }
 
+    /**
+     *
+     * @param gameConnection
+     */
+    public BoardContainer(Game gameConnection) {
+        this.gameConnection = gameConnection;
+        this.gameBoard = gameConnection.gameboard;
+        initializeLayout();
+    }
+     
+     
+
     private void initializeLayout() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         capturePiecesPanel = new CapturedPieceContainer();
@@ -75,5 +116,20 @@ public class BoardContainer extends JPanel {
         add(capturePiecesPanel, gridBagConstraints);
         setBorder(new EmptyBorder(20, 20, 20, 20));
         setBackground(Color.DARK_GRAY);
+    }
+
+
+    public List<Piece> getPlayerCapturedPieces() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /**
+     * 
+     * @param gameConnection 
+     */
+    private void updatePlayerScores(Game gameConnection) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+       capturePiecesPanel.updatePlayerScore(gameConnection.getPlayerCapturedPiecesCount());
+       capturePiecesPanel.updateOpponentScore(gameConnection.getOpponentCapturedPieceCount());
     }
 }
