@@ -12,14 +12,41 @@ import java.awt.event.MouseEvent;
  *
  * @author robertpalmer
  */
+import Gameboard.BoardContainer;
+
 public class OpponentState implements State {
 
     private ComputerPlayer playerLogic;
 
     public OpponentState(ComputerPlayer opponent, GameBoard gameboard) {
         this.playerLogic = opponent;
-        
+
     }
+
+    public OpponentState(ComputerPlayer opponent, BoardContainer boardContainer) {
+        this.playerLogic = opponent;
+
+    }
+    private BoardContainer boardContainer;
+
+    /**
+     * Get the value of boardContainer
+     *
+     * @return the value of boardContainer
+     */
+    public BoardContainer getBoardContainer() {
+        return boardContainer;
+    }
+
+    /**
+     * Set the value of boardContainer
+     *
+     * @param boardContainer new value of boardContainer
+     */
+    public void setBoardContainer(BoardContainer boardContainer) {
+        this.boardContainer = boardContainer;
+    }
+
     private GameBoard gameboard;
 
     /**
@@ -39,7 +66,6 @@ public class OpponentState implements State {
     public void setGameboard(GameBoard gameboard) {
         this.gameboard = gameboard;
     }
-
 
     /**
      * Get the value of playerLogic
@@ -98,31 +124,32 @@ public class OpponentState implements State {
     public void handleRequest(com.mycompany.javacheckers.GameStateContext gs, java.lang.String command) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         System.out.println("It's the opponent's turn");
+        Game checkersGame = gs.getCheckersGame();
         switch (command) {
             case "START":
-                if (!gs.getCheckersGame().isGameOver()) {
-                    GameBoard gameboard = gs.getCheckersGame().gameboard;
-                    playerLogic.makeMove(gameboard);
+                if (!checkersGame.isGameOver()) {
+                    setBoardContainer(checkersGame.getBoardContainer());
+                    playerLogic.makeMove(getBoardContainer().getGameBoard());
                     if (playerLogic.isMoveMade()) {
                         playerLogic.setMoveMade(false);
-                        gs.setCurrentState(new PlayerState(gameboard));
+                        gs.setCurrentState(new PlayerState(checkersGame));
                         gs.processState(gs, "YOUR_TURN");
                     }
 
                 }
                 break;
-                
+
             case "Paused":
                 gs.setCurrentState(new PausedState());
                 gs.processState(gs, "Paused");
                 break;
 
             case "YOUR_TURN":
-                GameBoard gameboard = gs.getCheckersGame().gameboard;
-                playerLogic.makeMove(gameboard);
+                boardContainer = checkersGame.getBoardContainer();
+                playerLogic.makeMove(boardContainer.getGameBoard());
                 if (playerLogic.isMoveMade()) {
-                    playerLogic.setMoveMade(false); 
-                    gs.setCurrentState(new PlayerState(gameboard));
+                    playerLogic.setMoveMade(false);
+                    gs.setCurrentState(new PlayerState(checkersGame));
                     gs.processState(gs, "YOUR_TURN");
                 }
                 break;
@@ -147,6 +174,11 @@ public class OpponentState implements State {
     @Override
     public void switchToPause(GameStateContext gameState) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public int getCapturedPieceCount() {
+        //       throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return 0;
     }
 
 }
