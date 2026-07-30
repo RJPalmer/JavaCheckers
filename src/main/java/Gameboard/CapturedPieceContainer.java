@@ -30,8 +30,9 @@ public class CapturedPieceContainer extends JPanel {
         playerCapturedPieces = new CapturedPieceDisplay();
         playerCapturedPieces.setBorder(BorderFactory.createLineBorder(Color.yellow));
         
-        add(opponentCapturedPieces);
         add(playerCapturedPieces);
+        add(opponentCapturedPieces);
+        
 //        setLayout(B);
     }
     
@@ -73,5 +74,17 @@ public class CapturedPieceContainer extends JPanel {
     public void setOpponentCapturedPieces(CapturedPieceDisplay opponentCapturedPieces) {
         this.opponentCapturedPieces = opponentCapturedPieces;
     }
+
+    public void updatePlayerScore(int capturedPieceCount) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        playerCapturedPieces.setCapturedPieceCount(capturedPieceCount);
+    }
+
+    public void updateOpponentScore(int capturedPieceCount) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        opponentCapturedPieces.setCapturedPieceCount(capturedPieceCount);
+    }
+
+
 
 }
