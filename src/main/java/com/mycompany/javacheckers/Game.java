@@ -33,10 +33,41 @@ import javax.swing.KeyStroke;
 public class Game {
 
     private static final int COLUMN_COUNT = 8;
+    private List<Piece> playerCapturedPieceList = new ArrayList();
+
+    /**
+     * Get the value of playerCapturedPieceList
+     *
+     * @return the value of playerCapturedPieceList
+     */
+    public List<Piece> getPlayerCapturedPieceList() {
+        return playerCapturedPieceList;
+    }
+
+    /**
+     * Set the value of playerCapturedPieceList
+     *
+     * @param playerCapturedPieceList new value of playerCapturedPieceList
+     */
+    public void setPlayerCapturedPieceList(List<Piece> playerCapturedPieceList) {
+        this.playerCapturedPieceList = playerCapturedPieceList;
+    }
+
     private static final String PAUSED = "Paused";
     private static final String PRESSED = "Pressed";
     private static final String RELEASED = "Released";
     private static final int ROW_COUNT = 8;
+    private final List<Piece> opponentCapturedPieceList = new ArrayList();
+
+    /**
+     * Get the value of opponentCapturedPieceList
+     *
+     * @return the value of opponentCapturedPieceList
+     */
+    public List<Piece> getOpponentCapturedPieceList() {
+        return opponentCapturedPieceList;
+    }
+
     
 
     /**
@@ -78,7 +109,8 @@ public class Game {
      *
      */
     public PlayerArea[] playerDomains;
-    private String NEGATIVE = "NEGATIVE";
+    private final String NEGATIVE = "NEGATIVE";
+    private BoardContainer boardContainer;
 
     /**
      * Empty Game Constructor
@@ -93,9 +125,53 @@ public class Game {
         userColor = "";
         this.playerDomains = new PlayerArea[0];
         this.userPlayer = new Player();
-        
+//        boardContainer = new BoardContainer(gameboard);
         gameState = new GameStateContext();
+        boardContainer = new BoardContainer(this);               
+    }
 
+    /**
+     * Returns the number of captured pieces from the GameContext
+     * 
+     * @return the number of captured pieces
+     */ 
+   
+    private int opponentCapturedPieceCount;
+
+    /**
+     * Get the value of opponentCapturedPieceCount
+     *
+     * @return the value of opponentCapturedPieceCount
+     */
+    public int getOpponentCapturedPieceCount() {
+        return opponentCapturedPieceCount;
+    }
+
+    /**
+     * Set the value of opponentCapturedPieceCount
+     *
+     * @param opponentCapturedPieceCount new value of opponentCapturedPieceCount
+     */
+    public void setOpponentCapturedPieceCount(int opponentCapturedPieceCount) {
+        this.opponentCapturedPieceCount = opponentCapturedPieceCount;
+    }
+
+
+    /**
+     * Get the value of playerCapturedPiecesCount
+     *
+     * @return the value of playerCapturedPiecesCount
+     */
+    public int getPlayerCapturedPiecesCount() {
+        return getPlayerCapturedPieceList().size();
+    }
+
+    /**
+     * Set the value of playerCapturedPiecesCount
+     *
+     * @param playerCapturedPiecesCount new value of playerCapturedPiecesCount
+     */
+    public void setPlayerCapturedPiecesCount(int playerCapturedPiecesCount) {
     }
 
     /**
@@ -177,7 +253,7 @@ public class Game {
         gameMenu.setCardLayout(cardLayout);
         gameMenu.setIsNext(false);
         
-        BoardContainer boardContainer = new BoardContainer(gameboard);
+        boardContainer = new BoardContainer(this);
         cards.add("menu", gameMenu);
         cards.add("board", boardContainer);
         //cards.addKeyListener(new GameboardKeyBoardListener(gameboard));
@@ -610,7 +686,7 @@ public class Game {
             
             playerDomains[0].setAreaColor(PLAYER_COLOR_YELLOW);
             opponent = new ComputerPlayer(randomGenVar, playerDomains[0], PLAYER_PIECE_COUNT, null, PLAYER_COLOR_YELLOW);
-            PlayerState playerState = new PlayerState(gameboard);
+            PlayerState playerState = new PlayerState(this);
             getGameState().setCurrentState(playerState);
         }
          
@@ -672,6 +748,24 @@ public class Game {
      */
     public ComputerPlayer getOpponentPlayer() {
         return this.opponent;
+    }
+
+    public BoardContainer getBoardContainer() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return boardContainer;
+    }
+
+    /**
+     *
+     * 
+     */
+    public void updateScores() {
+        int playerCapturedCount = getPlayerCapturedPieceList().size();
+        int opponentCapturedCount = getOpponentCapturedPieceList().size();
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        setOpponentCapturedPieceCount(opponentCapturedCount);
+        setPlayerCapturedPiecesCount(playerCapturedCount);
+        
     }
 
 }
