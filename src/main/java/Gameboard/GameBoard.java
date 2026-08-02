@@ -13,7 +13,6 @@ import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.JPanel;
@@ -37,16 +36,10 @@ public class GameBoard extends JPanel {
     public static int getMARGIN_SIZE() {
         return MARGIN_SIZE;
     }
-
-
     /*
      *
      */
-    private void highlightPossibleJumps(Piece gamePiece) {
-        int selectedX = gamePiece.getxCol();
-        int selectedY = gamePiece.getyRow();
 
-    }
 
     public void clearSquare(BoardSquare currentSqr) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -396,11 +389,6 @@ public class GameBoard extends JPanel {
                     this.drawBoardSquare(g2, boardSquare);
                 }
             }
-//            boardSquare1 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLUE);
-//            boardSquare2 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLACK);
-
-            int swap = 1;
-
 //            for (int k = 0; k <= this.getHeight(); k += (getSquareWidth())) {
 //                if (swap % 2 == 1) {
 //                    drawBoardRow(g2, k, false);
@@ -414,20 +402,16 @@ public class GameBoard extends JPanel {
 //                    swap = 1;
 //                }
 //            } // end for loop
+//            boardSquare1 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLUE);
+//            boardSquare2 = new Square(0, 0, getSquareWidth(), getSquareWidth(), Color.BLACK);
         }
     }
-
     /**
      * @param g2
      * @param k
      * @param i
      * @param square
      */
-    private void drawBoardSquare(Graphics2D g2, int k, int i, Square square) {
-        g2.setColor(square.getSquareColor());
-        g2.fillRect(i, k,
-                square.getWidth(), square.getHeight());
-    }
 
     /**
      *
