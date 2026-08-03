@@ -742,16 +742,18 @@ public class GameBoard extends JPanel {
         int pieceRow = movingPiece.getyRow();
         String pieceDirection = movingPiece.getPieceDirection();
         int col_neg_id = pieceCol - 1;
-        int row_id = pieceRow - 1;
+        int row_id;
         int col_pos_id = pieceCol + 1;
         switch (pieceDirection) {
             //the piece is moving towards the bottom 
             case POSITIVE -> {
+                row_id = pieceRow + 1;
                 checkNearbySquares(row_id, col_neg_id, col_pos_id, optionList);
             }
 
             //the piece is moving towards the top
             case NEGATIVE -> {
+                row_id = pieceRow - 1;
                 checkNearbySquares(row_id, col_neg_id, col_pos_id, optionList);
             }
 

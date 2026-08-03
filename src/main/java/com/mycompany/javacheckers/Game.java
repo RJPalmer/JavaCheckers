@@ -684,6 +684,7 @@ public class Game {
             getGameState().setCurrentState(opponentState);
         } else {
             
+            //setup the opponent area
             playerDomains[0].setAreaColor(PLAYER_COLOR_YELLOW);
             opponent = new ComputerPlayer(randomGenVar, playerDomains[0], PLAYER_PIECE_COUNT, null, PLAYER_COLOR_YELLOW);
             PlayerState playerState = new PlayerState(this);
