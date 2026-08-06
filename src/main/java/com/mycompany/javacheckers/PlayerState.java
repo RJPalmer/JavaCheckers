@@ -399,12 +399,12 @@ public class PlayerState implements State {
                 }
 
                 // Remove captured piece
-                addCapturedPiece(jumpedPiece);
-                board.clearSquare(middleSquare);
-
-                List<Piece> pieces = board.getPieces();
-                pieces.remove(jumpedPiece);
-                board.setPieces(pieces);
+//                addCapturedPiece(jumpedPiece);
+//                board.clearSquare(middleSquare);
+                currentGame.capturePiece(this, jumpedPiece);
+//                List<Piece> pieces = board.getPieces();
+//                pieces.remove(jumpedPiece);
+//                board.setPieces(pieces);
 
                 completeMove(
                         board,
