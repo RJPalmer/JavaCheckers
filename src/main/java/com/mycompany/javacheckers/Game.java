@@ -769,4 +769,22 @@ public class Game {
         
     }
 
+    //
+
+    /**
+     *
+     * @param aThis
+     * @param jumpedPiece
+     */
+    public void capturePiece(State aThis, Piece jumpedPiece) {
+        if(aThis instanceof PlayerState playerState){
+            getPlayerCapturedPieceList().add(jumpedPiece);
+            getOpponentPlayer().playerPieces.remove(jumpedPiece);
+        }
+        else{
+            getOpponentCapturedPieceList().add(jumpedPiece);
+            getUserPlayer().playerPieces.remove(jumpedPiece);
+        }
+    }
+
 }
