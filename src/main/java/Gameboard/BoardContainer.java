@@ -82,8 +82,8 @@ public class BoardContainer extends JPanel {
     }
     private GameBoard gameBoard;
     private static final int MARGIN = 20;
-    
-     public BoardContainer(GameBoard board){
+
+    public BoardContainer(GameBoard board) {
         this.gameBoard = board;
         initializeLayout();
     }
@@ -97,20 +97,18 @@ public class BoardContainer extends JPanel {
         this.gameBoard = gameConnection.gameboard;
         initializeLayout();
     }
-     
-     
 
     private void initializeLayout() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        capturePiecesPanel = new CapturedPieceContainer();
+            capturePiecesPanel = new CapturedPieceContainer();
         setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        
+
         gridBagConstraints.insets = new Insets(10, 10, 10, 10);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         add(getGameBoard(), gridBagConstraints);
-        
+
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         add(capturePiecesPanel, gridBagConstraints);
@@ -118,18 +116,17 @@ public class BoardContainer extends JPanel {
         setBackground(Color.DARK_GRAY);
     }
 
-
     public List<Piece> getPlayerCapturedPieces() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
-     * 
-     * @param gameConnection 
+     *
+     * @param gameConnection
      */
     private void updatePlayerScores(Game gameConnection) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-       capturePiecesPanel.updatePlayerScore(gameConnection.getPlayerCapturedPiecesCount());
-       capturePiecesPanel.updateOpponentScore(gameConnection.getOpponentCapturedPieceCount());
+        capturePiecesPanel.updatePlayerScore(gameConnection.getPlayerCapturedPiecesCount());
+        capturePiecesPanel.updateOpponentScore(gameConnection.getOpponentCapturedPieceCount());
     }
 }
