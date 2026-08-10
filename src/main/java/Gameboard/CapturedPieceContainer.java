@@ -15,28 +15,43 @@ import javax.swing.JPanel;
  * @author robertpalmer
  */
 public class CapturedPieceContainer extends JPanel {
-    
+
     private CapturedPieceDisplay opponentCapturedPieces;
-    
+
     private CapturedPieceDisplay playerCapturedPieces;
 
-    
     public CapturedPieceContainer() {
-        
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         opponentCapturedPieces = new CapturedPieceDisplay();
         opponentCapturedPieces.setBorder(BorderFactory.createLineBorder(Color.RED));
-        
+
         playerCapturedPieces = new CapturedPieceDisplay();
         playerCapturedPieces.setBorder(BorderFactory.createLineBorder(Color.yellow));
-        
-        add(playerCapturedPieces);
-        add(opponentCapturedPieces);
-        
-//        setLayout(B);
+
     }
-    
-    
+
+    public void assignPlaces(String playerColorString) {
+        
+        //remove the existing components
+        this.removeAll();
+        
+        //add the components based on the user color
+        if (playerColorString.equalsIgnoreCase("Yellow") || playerColorString.equals("")) {
+            getPlayerCapturedPieces().setBorder(BorderFactory.createLineBorder(Color.RED));
+            add(getPlayerCapturedPieces());
+            
+            getOpponentCapturedPieces().setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+            add(getOpponentCapturedPieces());
+        } else {
+            add(getOpponentCapturedPieces());
+            add(getPlayerCapturedPieces());
+        }
+//        setLayout(B);
+        revalidate();
+        repaint();
+    }
+
 
     /**
      * Get the value of playerCapturedPieces
@@ -55,7 +70,6 @@ public class CapturedPieceContainer extends JPanel {
     public void setPlayerCapturedPieces(CapturedPieceDisplay playerCapturedPieces) {
         this.playerCapturedPieces = playerCapturedPieces;
     }
-
 
     /**
      * Get the value of opponentCapturedPieces
@@ -84,7 +98,5 @@ public class CapturedPieceContainer extends JPanel {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         opponentCapturedPieces.setCapturedPieceCount(capturedPieceCount);
     }
-
-
 
 }
