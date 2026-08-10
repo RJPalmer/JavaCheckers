@@ -371,6 +371,7 @@ public class Game {
             chosenPlayer = new Player(playerDomains[0], PLAYER_PIECE_COUNT, null, pieceColors[choice]);
         }
 
+        getBoardContainer().getCapturePiecesPanel().assignPlaces(pieceColors[choice]);
         //chosenPlayer = new Player(, PLAYER_PIECE_COUNT, null, pieceColors[choice]);
         return chosenPlayer;
     }
