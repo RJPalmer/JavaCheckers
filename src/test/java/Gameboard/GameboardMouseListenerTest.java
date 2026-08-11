@@ -35,6 +35,7 @@ public class GameboardMouseListenerTest {
     
     @BeforeAll
     public static void setUpClass() {
+        System.setProperty("java.awt.headless", "true");
         GameBoard.setBOARD_COLUMNS(8);
         GameBoard.setBOARD_ROWS(8);
         board = new GameBoard();
