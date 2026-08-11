@@ -82,6 +82,15 @@ BoardSquare[][] squares = new BoardSquare[8][8];
         assertDoesNotThrow(() -> listener.mouseMoved(mouseEvent(MouseEvent.MOUSE_MOVED)));
     }
 
+    private static void setBoardData(GameBoard target, BoardSquare[][] squares) {
+    try {
+        Field gameDataBoard = GameBoard.class.getDeclaredField("gameDataBoard");
+        gameDataBoard.setAccessible(true);
+        gameDataBoard.set(target, squares);
+    } catch (ReflectiveOperationException exception) {
+        throw new IllegalStateException("Unable to initialize the test board", exception);
+    }
+}
     private static MouseEvent mouseEvent(int eventType) {
         return new MouseEvent(
                 board,
