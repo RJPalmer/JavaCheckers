@@ -356,7 +356,7 @@ public class PlayerState implements State {
             resetMove(board, gamePiece, gameboardMouseListener);
             board.repaint();
             return;
-        }
+            }
 
         BoardSquare destinationSquare = board.getBoardSquare(newX, newY);
 
@@ -400,11 +400,11 @@ public class PlayerState implements State {
 
                 // Remove captured piece
 //                addCapturedPiece(jumpedPiece);
-//                board.clearSquare(middleSquare);
+                board.clearSquare(middleSquare);
                 currentGame.capturePiece(this, jumpedPiece);
-//                List<Piece> pieces = board.getPieces();
-//                pieces.remove(jumpedPiece);
-//                board.setPieces(pieces);
+                List<Piece> pieces = board.getPieces();
+                pieces.remove(jumpedPiece);
+                board.setPieces(pieces);
 
                 completeMove(
                         board,
