@@ -19,6 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author robertpalmer
  */
 public class GameboardMouseListenerTest {
+
+    static {
+        // Set during class loading, before setup can construct any AWT component.
+        System.setProperty("java.awt.headless", "true");
+    }
+    
     public static GameBoard board;
     public static Piece gamePiece;
     public static Piece moveCopy;
@@ -35,7 +41,7 @@ public class GameboardMouseListenerTest {
     
     @BeforeAll
     public static void setUpClass() {
-        System.setProperty("java.awt.headless", "true");
+        // System.setProperty("java.awt.headless", "true");
         GameBoard.setBOARD_COLUMNS(8);
         GameBoard.setBOARD_ROWS(8);
         board = new GameBoard();
