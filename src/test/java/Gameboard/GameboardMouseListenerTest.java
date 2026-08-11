@@ -33,14 +33,13 @@ class GameboardMouseListenerTest {
         board = new GameBoard();
         board.setSquareWidth(10);
 
-        for (int column = 0; column < 8; column++) {
-            for (int row = 0; row < 8; row++) {
-                board.setBoardSquare(
-                        column,
-                        row,
-                        new BoardSquare(null, false, null));
+BoardSquare[][] squares = new BoardSquare[8][8];
+        for (int column = 0; column < squares.length; column++) {
+            for (int row = 0; row < squares[column].length; row++) {
+                squares[column][row] = new BoardSquare(null, false, null);
             }
         }
+        setBoardData(board, squares);
 
         Game game = new Game();
         game.setUserColor("Red");
