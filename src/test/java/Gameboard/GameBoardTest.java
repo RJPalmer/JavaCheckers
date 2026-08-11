@@ -605,7 +605,7 @@ public class GameBoardTest {
 
         // Place a piece at (3, 3)
         Piece pieceToMove = new Piece();
-        pieceToMove.setPieceDirection(POSITIVE);
+        pieceToMove.setPieceDirection(POSITIVE);  //moving towards the bottom
         pieceToMove.setxCol(0);
         pieceToMove.setyRow(6);
         gameDataBoard[6][0].setHasPiece(true);
@@ -613,7 +613,7 @@ public class GameBoardTest {
 
         // Define forward-left and forward-right squares
         //gameDataBoard[2][6] = new BoardSquare(Color.BLACK, false, null); // Empty square
-        gameDataBoard[5][1] = new BoardSquare(Color.BLACK, false, null); // Empty square
+        gameDataBoard[7][1] = new BoardSquare(Color.BLACK, false, null); // Empty square
 
         // Act: Get the move options
         testBoard.setGameBoard(gameDataBoard);
@@ -621,7 +621,7 @@ public class GameBoardTest {
 
         // Assert: Verify the results
         assertEquals(1, options.size(), "Should have 2 valid move options.");
-        assertTrue(options.contains(new Point(1, 5)), "Forward-left should be a valid move.");
+        assertTrue(options.contains(new Point(1, 7)), "Forward-left should be a valid move.");
         //assertTrue(options.contains(new Point(6, 4)), "Forward-right should be a valid move.");
     }
     private static final String POSITIVE = "POSITIVE";
