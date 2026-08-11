@@ -1,243 +1,97 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package Gameboard;
 
 import com.mycompany.javacheckers.Game;
 import com.mycompany.javacheckers.Player;
 import java.awt.event.MouseEvent;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * Headless tests for {@link GameboardMouseListener}.
  *
- * @author robertpalmer
+ * <p>These tests deliberately create only lightweight AWT event objects; they
+ * do not display a window, create a Robot, or access a screen device.</p>
  */
-public class GameboardMouseListenerTest {
+class GameboardMouseListenerTest {
 
     static {
         // Set during class loading, before setup can construct any AWT component.
         System.setProperty("java.awt.headless", "true");
     }
-    
-    public static GameBoard board;
-    public static Piece gamePiece;
-    public static Piece moveCopy;
-    public static int squareX;
-    public static int squareY;
-    public static int mouseX;
-    public static int mouseY;
-    public static GameboardMouseListener instance;
-    public static BoardSquare[][] dataBoard;
-    public static Game gameObject;
-    
-    public GameboardMouseListenerTest() {
-    }
-    
+
+    private static GameBoard board;
+    private static GameboardMouseListener listener;
+
     @BeforeAll
-    public static void setUpClass() {
-        // System.setProperty("java.awt.headless", "true");
+    static void setUpClass() {
         GameBoard.setBOARD_COLUMNS(8);
         GameBoard.setBOARD_ROWS(8);
         board = new GameBoard();
-        dataBoard = new BoardSquare[8][8];
-        gameObject = new Game();
-        gameObject.setUserColor("Red");
-        gameObject.setUserPlayer(new Player());
-        instance = new GameboardMouseListener(board, gameObject);
-        gamePiece = new Piece();
-        moveCopy = new Piece();
-        board.setGameBoard(dataBoard);
         board.setSquareWidth(10);
-        board.setBoardSquare(4, 4, new BoardSquare(null, false, null));
-        board.getBoardSquare(4, 4).setCurrentPiece(gamePiece);
-        board.getBoardSquare(4, 4).setHasPiece(true);
-        board.setGameBoard(dataBoard);
-        instance.setBoard(board);
-        
-        
 
-        
-        
-        
+        for (int column = 0; column < 8; column++) {
+            for (int row = 0; row < 8; row++) {
+                board.setBoardSquare(
+                        column,
+                        row,
+                        new BoardSquare(null, false, null));
+            }
+        }
+
+        Game game = new Game();
+        game.setUserColor("Red");
+        game.setUserPlayer(new Player());
+        listener = new GameboardMouseListener(board, game);
     }
-    
+
     @AfterAll
-    public static void tearDownClass() {
-    }
-    
-    @BeforeEach
-    public void setUp() {
-    }
-    
-    @AfterEach
-    public void tearDown() {
+    static void tearDownClass() {
+        listener = null;
+        board = null;
     }
 
-    /**
-     * Test of getSquareX method, of class GameboardMouseListener.
-     */
     @Test
-    public void testGetSquareX() {
-        System.out.println("getSquareX");
-        
-        int expResult = 0;
-        int result = instance.getSquareX();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
+    void squareCoordinatesCanBeReadAndWritten() {
+        listener.setSquareX(3);
+        listener.setSquareY(5);
+
+        assertEquals(3, listener.getSquareX());
+        assertEquals(5, listener.getSquareY());
     }
 
-    /**
-     * Test of setSquareX method, of class GameboardMouseListener.
-     */
     @Test
-    public void testSetSquareX() {
-        System.out.println("setSquareX");
-        int squareX = 0;
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.setSquareX(squareX);
-        assertEquals(squareX, instance.getSquareX());
-        // TODO review the generated test code and remove the default call to fail.
-        //` fail("The test case is a prototype.");
+    void boardCanBeReplaced() {
+        assertDoesNotThrow(() -> listener.setBoard(board));
     }
 
-    /**
-     * Test of getSquareY method, of class GameboardMouseListener.
-     */
     @Test
-    public void testGetSquareY() {
-        System.out.println("getSquareY");
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        int expResult = 0;
-        int result = instance.getSquareY();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
+    void mouseCallbacksDoNotRequireADisplay() {
+        Game emptyGame = new Game();
+        emptyGame.setUserColor("Red");
+        emptyGame.setUserPlayer(new Player());
+        listener.setCheckersGame(emptyGame);
+
+        assertDoesNotThrow(() -> listener.mouseClicked(mouseEvent(MouseEvent.MOUSE_CLICKED)));
+        assertDoesNotThrow(() -> listener.mousePressed(mouseEvent(MouseEvent.MOUSE_PRESSED)));
+        assertDoesNotThrow(() -> listener.mouseReleased(mouseEvent(MouseEvent.MOUSE_RELEASED)));
+        assertDoesNotThrow(() -> listener.mouseExited(mouseEvent(MouseEvent.MOUSE_EXITED)));
+        assertDoesNotThrow(() -> listener.mouseDragged(mouseEvent(MouseEvent.MOUSE_DRAGGED)));
+        assertDoesNotThrow(() -> listener.mouseMoved(mouseEvent(MouseEvent.MOUSE_MOVED)));
     }
 
-    /**
-     * Test of setSquareY method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testSetSquareY() {
-        System.out.println("setSquareY");
-        int squareY = 0;
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.setSquareY(squareY);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
+    private static MouseEvent mouseEvent(int eventType) {
+        return new MouseEvent(
+                board,
+                eventType,
+                System.currentTimeMillis(),
+                0,
+                45,
+                45,
+                1,
+                false);
     }
-
-    /**
-     * Test of mouseClicked method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testMouseClicked() {
-        System.out.println("mouseClicked");
-        MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 45, 45,1,false);
-        //MouseEvent e = null;
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.setCheckersGame(new Game());
-        instance.mouseClicked(e);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of mousePressed method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testMousePressed() {
-        System.out.println("mousePressed");
-        MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 45, 45,1,false);
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.setCheckersGame(new Game());
-        instance.mousePressed(e);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of mouseReleased method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testMouseReleased() {
-        System.out.println("mouseReleased");
-        MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 45, 45,1,false);
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.mouseReleased(e);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-
-//    /**
-//     * Test of mouseEntered method, of class GameboardMouseListener.
-//     */
-//    @Test
-//    public void testMouseEntered() {
-//        System.out.println("mouseEntered");
-//        MouseEvent e = null;
-//        GameboardMouseListener instance = new GameboardMouseListener();
-//        instance.mouseEntered(e);
-//        // TODO review the generated test code and remove the default call to fail.
-//        //fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of mouseExited method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testMouseExited() {
-        System.out.println("mouseExited");
-        MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_EXITED, System.currentTimeMillis(), 0, 45, 45,1,false);
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.mouseExited(e);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of mouseDragged method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testMouseDragged() {
-        System.out.println("mouseDragged");
-        MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0, 45, 45,1,false);        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.mouseDragged(e);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of mouseMoved method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testMouseMoved() {
-        System.out.println("mouseMoved");
-        MouseEvent e = new MouseEvent(board, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, 45, 45,1,false);
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.mouseMoved(e);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setBoard method, of class GameboardMouseListener.
-     */
-    @Test
-    public void testSetBoard() {
-        System.out.println("setBoard");
-        //GameBoard board = null;
-        //GameboardMouseListener instance = new GameboardMouseListener();
-        instance.setBoard(board);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
-    }
-    
 }
